@@ -2021,6 +2021,7 @@ def txt2img(prompt: str, ddim_steps: int, sampler_name: str, realesrgan_model_na
 
         return samples_ddim
 
+    output_images = None
     try:
         output_images, seed, info, stats = process_images(
             outpath=outpath,
@@ -2052,7 +2053,8 @@ def txt2img(prompt: str, ddim_steps: int, sampler_name: str, realesrgan_model_na
         )
     except Exception as e:
         print(e)
+    finally:
 
-    del sampler
+        del sampler
 
-    return output_images, seed, info, stats
+        return output_images, seed, info, stats

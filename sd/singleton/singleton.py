@@ -15,13 +15,6 @@ class Singleton:
 	_instance = None
 	_lock = threading.Lock()
 
-	def __init__(self):
-		self.test = {
-			'a':1
-		}
-
-
-
 	def __new__(cls, *args, **kwargs):
 		if not cls._instance:
 			with cls._lock:

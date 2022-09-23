@@ -272,32 +272,36 @@ def layoutFunc():
 """
 def run_txt2img_json(json):
 
+	print(json, flush=True)
+	output_images = None
 	try:
-		output_images, seeds, info, stats = txt2img(json["prompt"],
-													json["steps"],
-													json["sampler"],
-													json["RealESRGAN_model"],
-													json["iterations"],
-													json["batch_size"],
-													json["scale"],
-													json["seed"],
-													json["H"],
-													json["W"],
-													json["separate_prompts"],
-													json["normalize_prompt_weights"] ,
-													json["save_individual_images"],
-													False,
-													json["group_by_prompt"],
-													json["save_as_jpg"],
-													json["use_GFPGAN"],
-													json["use_RealESRGAN"],
-													json["RealESRGAN_model"],
+		output_images, seeds, info, stats = txt2img(prompt=json["prompt"],
+													ddim_steps=json["steps"],
+													sampler_name=json["sampler"],
+													realesrgan_model_name=json["realesrgan_model_name"],
+													n_iter=json["iterations"],
+													batch_size=json["batch_size"],
+													cfg_scale=json["scale"],
+													seed=json["seed"],
+													height=json["H"],
+													width=json["W"],
+													separate_prompts=json["separate_prompts"],
+													normalize_prompt_weights=json["normalize_prompt_weights"] ,
+													save_individual_images=json["save_individual_images"],
+													save_grid=False,
+													group_by_prompt=json["group_by_prompt"],
+													save_as_jpg=json["save_as_jpg"],
+													use_GFPGAN=json["use_GFPGAN"],
+													use_RealESRGAN=json["use_RealESRGAN"],
+													RealESRGAN_model=json["RealESRGAN_model"],
 													fp=json['fp'],
 													variant_amount=json["variant_amount"],
 													variant_seed=json["variant_seed"],
 													write_info_files=json["write_info_files"])
 	except Exception as e:
 		print(e)
+	finally:
+		return output_images
 
 
 def run_txt2img():
@@ -306,7 +310,7 @@ def run_txt2img():
 	g_store.txt2img["prompt"] = 'a corgi'
 	g_store.txt2img["steps"] = 10
 	g_store.txt2img["sampler"] = 'klms'
-	g_store.txt2img["RealESRGAN_model"] = None
+	g_store.txt2img["realesrgan_model_name"] = None
 	g_store.txt2img["iterations"] = 1
 	g_store.txt2img["batch_size"] = 10
 	g_store.txt2img["scale"] = 7.5
@@ -332,7 +336,7 @@ def run_txt2img():
 		output_images, seeds, info, stats = txt2img(g_store.txt2img["prompt"],
 													g_store.txt2img["steps"],
 													g_store.txt2img["sampler"],
-													g_store.txt2img["RealESRGAN_model"],
+													g_store.txt2img["realesrgan_model_name"],
 													g_store.txt2img["iterations"],
 													g_store.txt2img["batch_size"],
 													g_store.txt2img["scale"],
