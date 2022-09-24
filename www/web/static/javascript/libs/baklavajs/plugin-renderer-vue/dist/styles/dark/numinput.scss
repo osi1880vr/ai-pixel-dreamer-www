@@ -1,0 +1,71 @@
+.dark-num-input {
+    background: $color-control-dark-background;
+    color: $color-control-dark-foreground;
+    border-radius: $border-radius-control;
+    display: flex;
+
+    & > .__button {
+        display: flex;
+        flex: 0 0 auto;
+        width: 20px;        
+        justify-content: center;
+        align-items: center;
+        transition: background $visual-transition;
+        cursor: pointer;
+
+        &:hover {
+            background-color: $color-control-dark-hover;
+        }
+        &:active {
+            background-color: $color-control-dark-active;
+        }
+
+        &.--dec > svg {
+            transform: rotateZ(90deg);
+        }
+
+        &.--inc > svg {
+            transform: rotateZ(-90deg);
+        }
+
+        & path {
+            stroke: $color-control-dark-foreground;
+            fill: $color-control-dark-foreground;
+        }
+
+    }
+
+    & > .__content {
+        display: flex;
+        flex: 1 1 auto;
+        cursor: pointer;
+
+        &:hover {
+            background-color: $color-control-dark-hover;
+        }
+        &:active {
+            background-color: $color-control-dark-active;
+        }
+
+        & > .__label, & > .__value {
+            flex: 1 1 auto;
+            margin: 0.35em 0;
+            padding: 0 0.5em;
+            text-overflow: ellipsis;
+        }
+
+        & > .__value {
+            text-align: right;
+        }
+
+        & > input {
+            background-color: $color-control-dark-background;
+            color: $color-control-dark-foreground;
+            caret-color: $color-primary;
+            padding: 0.35em;
+            width: 100%;
+        }
+
+    }
+
+}
