@@ -49,6 +49,57 @@ aid.views.txt2img = {
 
 
         },
+        'txt2img_basic_settings'(){
+                webix.ui({
+                    view: 'txt2img_basic_settings',
+                    //dataSet: aid.model.txt2img.dataSets['vul']
+                }, $$('right-content'));
+
+                console.log('hello');
+
+
+            },
+             'txt2img_prompt_help'(){
+                     webix.ui({
+                         view: 'txt2img_prompt_help',
+                         //dataSet: aid.model.txt2img.dataSets['vul']
+                     }, $$('right-content'));
+
+                     console.log('hello');
+
+
+                 },
+              'txt2img_rendering_basic'(){
+                      webix.ui({
+                          view: 'txt2img_rendering_basic',
+                          //dataSet: aid.model.txt2img.dataSets['vul']
+                      }, $$('right-content'));
+
+                      console.log('hello');
+
+
+                  },
+                  'txt2img_rendering_mask'(){
+                           webix.ui({
+                               view: 'txt2img_rendering_mask',
+                               //dataSet: aid.model.txt2img.dataSets['vul']
+                           }, $$('right-content'));
+
+                           console.log('hello');
+
+
+                       },
+                        'txt2img_rendering_init'(){
+                                webix.ui({
+                                    view: 'txt2img_rendering_init',
+                                    //dataSet: aid.model.txt2img.dataSets['vul']
+                                }, $$('right-content'));
+
+                                console.log('hello');
+
+
+                            }
+
 
     },
 
