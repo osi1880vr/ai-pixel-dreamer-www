@@ -35,9 +35,22 @@
             .build();
         editor.registerNodeType("My Node2", myNode);
     </script>
+    <script>
+
+        async function get_result(){
+            const result = await engine.calculate({ foo: "bar" });
+            for (const v of result.values()) {
+                console.log(v);
+            }
+        }
+
+    </script>
+
 </head>
 <body>
-
+<div>
+    <button type="button" onclick="get_result()">Click Me!</button>
+</div>
 
 
 </body>
