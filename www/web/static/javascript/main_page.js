@@ -50,10 +50,14 @@ async function fetchInitial() {
 
     ])
 }
-
+function removeHash () {
+    history.pushState("", document.title, window.location.pathname
+                                                       + window.location.search);
+}
 
 async function startUp(){
      //   await fetchInitial();
+        removeHash();
         document.body.innerHTML = '';
         webix.ui({view: 'mainView'});
 }
