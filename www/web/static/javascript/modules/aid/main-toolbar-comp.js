@@ -18,8 +18,6 @@ webix.protoUI({
             {id: 'help-button', view: 'icon', icon: 'fas fa-question-circle', css: 'user-option-icon', click: this.openHelpPage}
         ];
 
-
-
         this.$ready.push(this.initComponent);
     },
 
@@ -28,11 +26,8 @@ webix.protoUI({
     },
 
     async setTitle() {
-
         aid.title = `Create Art in a different new way`
         let title = `<span><icon class="fas fa-users" style="color: ${aid.helper.colors.aid.blue}; padding-right: 8px"></icon>${aid.title}</span>`
-
-
     },
 
     openHelpPage() {

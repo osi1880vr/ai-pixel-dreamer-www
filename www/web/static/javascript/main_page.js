@@ -40,22 +40,22 @@ function loadNewPage(isInitialLoad=false) {
         handleHashRoute(routes, hashRoute)
     }
 }
+
+
+
 async function fetchInitial() {
     return Promise.all([
         aid.views.nodes.fetch(),
-        aid.views.txt2img.fetch(),
+       // aid.views.txt2img.fetch(),
 
     ])
 }
 
 
 async function startUp(){
-
-        await fetchInitial();
-
+     //   await fetchInitial();
         document.body.innerHTML = '';
         webix.ui({view: 'mainView'});
-
 }
 webix.ready(async () => {
 
