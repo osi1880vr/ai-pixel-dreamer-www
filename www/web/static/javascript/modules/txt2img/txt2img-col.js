@@ -1,5 +1,5 @@
-import {Collection} from '../core/collection.js';
-import {Txt2imgModel} from "./txt2img-model.js";
+import { Collection } from '../core/collection.js';
+import { Txt2imgModel } from "./txt2img-model.js";
 
 export class Txt2imgCollection extends Collection {
     constructor(params) {
@@ -10,27 +10,27 @@ export class Txt2imgCollection extends Collection {
         }
     }
 
-    getUrlPath(){ return `/txt2img/${this.id}`}
+    getUrlPath() { return `/txt2img/${this.id}` }
 
-    getItemsPayload(){ return this.responseJson.items }
+    getItemsPayload() { return this.responseJson.items }
 
-    getOverviewListData(dataSet){
+    getOverviewListData(dataSet) {
         const json = []
 
-        for(const item of this.dataSets[dataSet]){
+        for (const item of this.dataSets[dataSet]) {
             json.push(item.getFormattedData())
         }
 
         return json
     }
 
-    onParse(){
+    onParse() {
         this.setDataSets();
     }
 
-    getDataSet(){}
+    getDataSet() { }
 
-    setDataSets(){}
+    setDataSets() { }
 
 
 }

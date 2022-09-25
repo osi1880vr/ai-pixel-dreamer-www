@@ -1,4 +1,4 @@
-import {Model} from '../core/model.js';
+import { Model } from '../core/model.js';
 
 export class Txt2imgModel extends Model {
     constructor(params) {
@@ -8,7 +8,7 @@ export class Txt2imgModel extends Model {
 
 
 
-    toViewJSON(){
+    toViewJSON() {
 
         const webixData = {
 

@@ -32,7 +32,6 @@ webix.protoUI({
                 type: {
                     folder (obj) {
                         if (obj.hasOwnProperty('icon')) {
-                        console.log(obj.icon)
                             return obj.icon
                         }
                     }

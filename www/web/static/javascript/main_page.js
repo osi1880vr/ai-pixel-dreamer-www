@@ -46,7 +46,7 @@ function loadNewPage(isInitialLoad=false) {
 async function fetchInitial() {
     return Promise.all([
         aid.views.nodes.fetch(),
-       // aid.views.txt2img.fetch(),
+        aid.views.txt2img.fetch(),
 
     ])
 }
@@ -56,7 +56,7 @@ function removeHash () {
 }
 
 async function startUp(){
-     //   await fetchInitial();
+        await fetchInitial();
         removeHash();
         document.body.innerHTML = '';
         webix.ui({view: 'mainView'});

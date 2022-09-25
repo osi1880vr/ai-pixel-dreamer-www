@@ -25,7 +25,7 @@ webix.ui.datafilter.customSelectStatus = {
             console.log('onchange')
             master.filterByAll();
         };
-        node.onclick = webix.html.preventEvent;
+        //node.onclick = webix.html.preventEvent;
     },
     render(a, b){
         console.log('render')
