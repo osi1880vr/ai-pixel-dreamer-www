@@ -1,10 +1,12 @@
 
 
 aid.nav_tree = {id:"root", value:"Chose your Dream", open:true, data:[
-                                               { id:"1",
+                                               { id:"txt2img",
                                                open:true,
+                                               type:"txt2img",
                                                value:"Text 2 Image",
                                                icon: '<span class="fa-regular fa-image" style="color: orange; width: 20px"></span>',
+                                               action() { window.location.hash = `#${this.type}`; },
                                                data:[
                                                    { id:"1.1",
                                                    value:"Basic Settings",
@@ -63,8 +65,12 @@ aid.nav_tree = {id:"root", value:"Chose your Dream", open:true, data:[
                                              data:[
 
                                              ]},
-                                             { id:"6", open:false, value:"aiNodes",
+                                             { id:"ai-nodes",
+                                             open:false,
+                                             value:"aiNodes",
+                                             type:"ai-nodes",
                                              icon: '<span class="fa-solid fa-network-wired" style="color: orange; width: 20px"></span>',
+                                             action() { window.location.hash = `#${this.type}`; },
                                              data:[
 
                                              ]}

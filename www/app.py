@@ -25,7 +25,7 @@ app.wsgi_app = ProxyFix(app.wsgi_app)
 CORS(app)
 
 
-
+app.register_blueprint(blueprint, url_prefix='/api/v1')
 
 
 @app.route("/")
@@ -33,7 +33,7 @@ def index():
 	return redirect('index.html')
 
 
-app.register_blueprint(blueprint, url_prefix='/api/v1')
+
 
 if __name__ == '__main__':
 	hostname = socket.gethostname()

@@ -5,44 +5,29 @@
     <script src="javascript/libs/webix/codebase/webix.js" type="text/javascript" charset="utf-8"></script>
     <script src="javascript/libs/fontawesome-free-6.2.0-web/js/all.min.js"></script>
     <script src="javascript/libs/underscore-min.js" type="module"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+    <script src="javascript/libs/baklavajs/main.js"></script>
+
+
+    <script>
+        const aid = {};
+        aid.views = {};
+        aid.model = {};
+        aid.api = {
+            host: 'http://localhost:8080/apis/v1'
+        }
+
+        aid.buildVersion = '0.0.1';
+    </script>
 
     <script src="javascript/main_page.js" type="module"></script>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/baklavajs/dist/styles.css">
 
-    <script>
-        const aid = {}
-        aid.buildVersion = '0.0.1'
-    </script>
 
 
 </head>
 <body>
-<div style="width:90vw;height:90vh">
-    <div id="editor"></div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
-<script src="javascript/libs/baklavajs/main.js"></script>
-<script src="javascript/libs/baklavajs/plugin-engine/dist/index.js"></script>
-<script src="javascript/libs/baklavajs/plugin-interface-types/dist/index.js"></script>
-
-<script>
-        const plugin = BaklavaJS.createBaklava(document.getElementById("editor"));
-        const editor = plugin.editor;
-
-const engine = new BaklavaJSEngine.Engine(true /* whether to automatically calculate on changes */);
-editor.use(engine);
-
-        const myNode = new BaklavaJS.Core.NodeBuilder("My Node")
-            .addInputInterface("My Interface")
-            .build();
-        editor.registerNodeType("My Node", myNode);
-        const myNode2 = new BaklavaJS.Core.NodeBuilder("My Node2")
-            .addInputInterface("My Interface2")
-            .build();
-        editor.registerNodeType("My Node2", myNode);
-    </script>
 </body>
 
 

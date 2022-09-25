@@ -137,7 +137,7 @@ aid.helper = {
       },
 
     colors: {
-        suva: {
+        aid: {
             blue: "#1CA1C1",
             red: '#eb0064',
             green: '#c1e200',

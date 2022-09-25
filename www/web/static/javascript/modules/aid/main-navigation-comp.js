@@ -18,7 +18,7 @@ webix.protoUI({
                 paddingX: 10,
                 elements: [
                     {view: "label", label: "Navigation", align: "left"},
-                    {view: "icon", width: 40, icon: "fas fa-sync-alt", align: "right", click() {vms.reload()}},
+                    {view: "icon", width: 40, icon: "fas fa-sync-alt", align: "right", click() {aid.reload()}},
                 ]
             },
             {
