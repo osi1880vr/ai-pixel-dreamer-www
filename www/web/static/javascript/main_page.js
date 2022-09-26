@@ -1,5 +1,7 @@
 import './helper.js'
 import './modules/aid/main-comp.js';
+
+import { SettingsModel } from './modules/core/settings-model.js'
 import './modules/nodes/nodes-config.js';
 import './modules/txt2img/txt2img-config.js';
 
@@ -47,6 +49,8 @@ async function fetchInitial() {
     return Promise.all([
         aid.views.nodes.fetch(),
         aid.views.txt2img.fetch(),
+            aid.model.settings = new SettingsModel(),
+            await aid.model.settings.getSettings()
 
     ])
 }
@@ -56,6 +60,8 @@ function removeHash () {
 }
 
 async function startUp(){
+
+
         await fetchInitial();
         removeHash();
         document.body.innerHTML = '';
@@ -64,6 +70,11 @@ async function startUp(){
 webix.ready(async () => {
 
  await startUp()
+
+
+
+
+
 
      window.addEventListener('hashchange', () => {
         console.log('hashchange event')

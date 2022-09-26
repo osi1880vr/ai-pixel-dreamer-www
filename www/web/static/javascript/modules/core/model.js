@@ -6,12 +6,25 @@ import {Request} from "./http-request.js";
 export class Model {
     constructor(params={}) {
         _.extend(this, params)
-        this.attributes = {};
+        this.attr = {};
 
         if (this.hasOwnProperty('id')){
-            this.attributes.id = params.id
+            this.attr.id = params.id
         }
 
+    }
+
+
+
+
+    async getSettings() {
+        const settings = new Request({
+            url: this.getSettingsPath(),
+            method: 'GET'
+        })
+
+        this.responseJson = await settings.fetch()
+        this.parse()
     }
 
 
@@ -57,7 +70,7 @@ export class Model {
         this.parse()
     }
 
-    getUrlHost(){ return vms.api.host }
+    getUrlHost(){ return aid.api.host }
     getUrlPath(){ return ''}
     getUrlQuery(){ return ''}
 

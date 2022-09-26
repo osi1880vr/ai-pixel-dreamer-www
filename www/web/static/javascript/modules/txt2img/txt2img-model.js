@@ -6,17 +6,7 @@ export class Txt2imgModel extends Model {
         this.url = `${aid.api.host}/nodes`
     }
 
+// # Textual inversion embeddings file path: fp
 
-
-    toViewJSON() {
-
-        const webixData = {
-
-            _model: this
-        }
-
-
-        return webixData
-    }
 
 }

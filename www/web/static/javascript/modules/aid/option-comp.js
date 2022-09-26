@@ -17,7 +17,7 @@ webix.protoUI({
     load(){
         const fnMap = {};
         const data = [];
-        const userActions = _.chain(vms.views)
+        const userActions = _.chain(aid.views)
             .filter((view) => { return view.hasOwnProperty('user_action') })
             .sortBy((view) => {return view.user_action.order})
             .map((view) => {return view.user_action})

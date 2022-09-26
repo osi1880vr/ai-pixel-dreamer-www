@@ -27,6 +27,8 @@ webix.ui.datafilter.customSelectStatus = {
         };
         //txt2img.onclick = webix.html.preventEvent;
     }
+
+
 };
 
 webix.protoUI({
@@ -51,10 +53,11 @@ webix.protoUI({
                 id: "myform1",
                 height: 900,
 
+
                 elements: [
                     {
                         view: "text",
-                        id: 'prompt',
+                        id: 'txt2img_prompt',
                         labelWidth: 250,
                         value: "",
                         label: "Prompt",
@@ -67,12 +70,26 @@ webix.protoUI({
                         css: "webix_primary",
                         inputWidth: 100,
                         click: function (id, event) {
-                            // your code here
-                            webix.message("Click on button " + id);
-                            // "Click on button btn1"
+                            aid.model.txt2img.dream()
                         }
+                    },
+                     {
+
+                            view:"template",
+                            id:"carousel_template",
+                            scroll: true,
+                            template: '<div id="container"></div>'
+
+
+                     }
+                ],
+                 elementsConfig:{
+                     on:{
+                       onChange: function(){
+                         aid.model.settings.attr.txt2img[this.config.id.replaceAll('txt2img_','')] = this.config.value
+                       }
                     }
-                ]
+                   }
             }
 
         ];
@@ -94,6 +111,7 @@ webix.protoUI({
     name: 'txt2img_basic_settings',
 
     $init(config) {
+        config.txt2img = aid.model.settings.attr.txt2img
         config.id = 'right-content';
         config.rows = [
             {
@@ -112,53 +130,60 @@ webix.protoUI({
                 id: "myform1",
                 height: 900,
                 elements: [
-                    { view: "slider", id: 'txt2img_height', labelWidth: 250, type: "alt", label: "Height", value: "512", name: "H", min: 1, max: 2048, title: webix.template("#value#") },
-                    { view: "slider", id: 'txt2img_width', labelWidth: 250, type: "alt", label: "Width", value: "512", name: "W", min: 1, max: 2048, title: webix.template("#value#") },
-                    { view: "slider", id: 'txt2img_steps', labelWidth: 250, type: "alt", label: "Steps", value: "30", name: "steps", min: 1, max: 200, title: webix.template("#value#") },
+                    { view: "slider", id: 'txt2img_H', labelWidth: 250, type: "alt", label: "Height", value: config.txt2img.H , name: "H", min: 1, max: 2048, step: 64, title: webix.template("#value#") },
+                    { view: "slider", id: 'txt2img_W', labelWidth: 250, type: "alt", label: "Width", value: config.txt2img.W, name: "W", min: 1, max: 2048, step: 64,  title: webix.template("#value#") },
+                    { view: "slider", id: 'txt2img_steps', labelWidth: 250, type: "alt", label: "Steps", value: config.txt2img.steps , name: "steps", min: 1, max: 200, title: webix.template("#value#") },
+                    { view: "slider", id: 'txt2img_iterations', labelWidth: 250, type: "alt", label: "Iterations", value: config.txt2img.iterations, name: "iterations", min: 1, max: 200, title: webix.template("#value#") },
+                    { view: "slider", id: 'txt2img_batch_size', labelWidth: 250, type: "alt", label: "Batch Size", value: config.txt2img.batch_size, name: "batch_size", min: 1, max: 50, title: webix.template("#value#") },
+                    { view: "slider", id: 'txt2img_scale', labelWidth: 250, type: "alt", label: "Scale", value: config.txt2img.scale, name: "scale", min: 1, max: 30, step: 0.2, title: webix.template("#value#") },
                     {
                         view: "combo",
                         id: 'txt2img_sampler',
                         label: 'Sampler',
                         labelWidth: 250,
-                        value: "ddim",
-                        options: ["ddim", "plms", "klms", "dpm2", "dpm2_ancestral", "heun", "euler", "euler_ancestral"]
-                    },
-                    { view: "slider", id: 'txt2img_interations', labelWidth: 250, type: "alt", label: "Iterations", value: "1", name: "iterations", min: 1, max: 200, title: webix.template("#value#") },
-                    { view: "slider", id: 'txt2img_batch_size', labelWidth: 250, type: "alt", label: "Batch Size", value: "1", name: "batch_size", min: 1, max: 50, title: webix.template("#value#") },
-                    { view: "slider", id: 'txt2img_scale', labelWidth: 250, type: "alt", label: "Scale", value: "7.5", name: "scale", min: 1, max: 30, step: 0.2, title: webix.template("#value#") },
-                    {
-                        view: "text",
-                        labelWidth: 250,
-                        value: "",
-                        id: 'txt2img_seed',
-                        label: "Seed"
+                        value: config.txt2img.sampler,
+                        options: config.txt2img.sampler_list
                     },
                     {
                         view: "combo",
                         id: 'txt2img_sampling_mode',
                         labelWidth: 250,
                         label: 'Sampling Mode',
-                        value: "bicubic",
-                        options: ['bicubic', 'bilinear', 'nearest']
+                        value: config.txt2img.sampling_mode,
+                        options: config.txt2img.sampling_mode_list
+                    },
+                   {
+                        view: "text",
+                        labelWidth: 250,
+                        value: config.txt2img.seed,
+                        id: 'txt2img_seed',
+                        label: "Seed"
                     },
                     {
                         view: "combo",
                         id: 'txt2img_seed_behavior',
                         labelWidth: 250,
                         label: 'Seed behavior',
-                        value: "iter",
-                        options: ["iter", "fixed", "random"]
+                        value: config.txt2img.seed_behavior,
+                        options: config.txt2img.seed_behavior_list
                     },
                     {
                         view: "text",
                         id: 'txt2img_variant_seed',
                         labelWidth: 250,
-                        value: "",
+                        value: config.txt2img.variant_seed,
                         label: "Variant Seed"
                     },
-                    { view: "slider", labelWidth: 250, id: "txt2img_variant_amount", type: "alt", label: "Variant Amount", value: "0.0", name: "scale", min: 1, max: 30, step: 0.1, title: webix.template("#value#") },
+                    { view: "slider", labelWidth: 250, id: "txt2img_variant_amount", type: "alt", label: "Variant Amount", value: config.txt2img.variant_amount, name: "scale", min: 1, max: 30, step: 0.1, title: webix.template("#value#") },
 
-                ]
+                ],
+                 elementsConfig:{
+                     on:{
+                       onChange: function(){
+                         aid.model.settings.attr.txt2img[this.config.id.replaceAll('txt2img_','')] = this.config.value
+                       }
+                    }
+                   }
 
             }
 
@@ -230,6 +255,7 @@ webix.protoUI({
 
     $init(config) {
         config.id = 'right-content';
+        config.txt2img = aid.model.settings.attr.txt2img
         config.rows = [
             {
                 id: TOOLBAR_ID,
@@ -252,52 +278,53 @@ webix.protoUI({
                     {
                         view: "checkbox",
                         id: 'txt2img_save_as_jpg',
-                        labelWidth: 250,
-                        labelRight: "Save as JPG",
                         labelWidth: 0,
-                        value: 0,
+                        labelRight: "Save as JPG",
+                        value: config.txt2img.save_as_jpg,
                     },
                     {
                         view: "checkbox",
                         id: 'txt2img_write_info_files',
-                        labelWidth: 250,
-                        labelRight: "Write Info YAML Files",
                         labelWidth: 0,
-                        value: 1,
+                        labelRight: "Write Info YAML Files",
+                        value: config.txt2img.write_info_files,
                     },
                     {
                         view: "checkbox",
                         id: 'txt2img_group_by_prompt',
-                        labelWidth: 250,
-                        labelRight: "Group by Prompt",
                         labelWidth: 0,
-                        value: 1,
+                        labelRight: "Group by Prompt",
+                        value: config.txt2img.group_by_prompt,
                     },
                     {
                         view: "checkbox",
                         id: 'txt2img_save_individual_images',
-                        labelWidth: 250,
-                        labelRight: "Save individual Images",
                         labelWidth: 0,
-                        value: 1,
+                        labelRight: "Save individual Images",
+                        value: config.txt2img.save_individual_images,
                     },
                     {
                         view: "checkbox",
                         id: 'txt2img_separate_prompts',
-                        labelWidth: 250,
-                        labelRight: "Separate Prompts",
                         labelWidth: 0,
-                        value: 1,
+                        labelRight: "Separate Prompts",
+                        value: config.txt2img.separate_prompts,
                     },
                     {
                         view: "checkbox",
                         id: 'txt2img_normalize_prompt_weights',
-                        labelWidth: 250,
                         labelRight: "Normalize Propmt Weights",
                         labelWidth: 0,
-                        value: 1,
+                        value: config.txt2img.normalize_prompt_weights,
                     }
-                ]
+                ],
+                 elementsConfig:{
+                     on:{
+                       onChange: function(){
+                         aid.model.settings.attr.txt2img[this.config.id.replaceAll('txt2img_','')] = this.config.value
+                       }
+                    }
+                   }
 
             },
 
@@ -323,6 +350,7 @@ webix.protoUI({
 
     $init(config) {
         config.id = 'right-content';
+        config.txt2img = aid.model.settings.attr.txt2img
         config.rows = [
             {
                 id: TOOLBAR_ID,
@@ -342,41 +370,39 @@ webix.protoUI({
                 elements: [
                     {
                         view: "checkbox",
-                        id: 'txt2img_use_GFPGAN',
-                        labelWidth: 250,
+                        id: 'txt2img_use_gfpgan',
                         labelRight: "Use GFPGAN",
                         labelWidth: 0,
-                        value: 0,
+                        value: config.txt2img.use_gfpgan,
                     },
                     {
                         view: "checkbox",
-                        id: 'txt2img_use_RealESRGAN',
-                        labelWidth: 250,
-                        labelRight: "Use RealESGRAN",
+                        id: 'txt2img_use_realesrgan',
+                        labelRight: "Use RealESRGAN",
                         labelWidth: 0,
-                        value: 0,
+                        value: config.txt2img.use_realesrgan,
                     },
 
                     {
                         view: "text",
                         id: 'txt2img_realesrgan_model_name',
                         labelWidth: 250,
-                        value: "",
+                        value: config.txt2img.realesrgan_model_name,
                         label: "RealESRGAN Model Name"
                     },
 
                     {
                         view: "text",
-                        id: 'txt2img_RealESRGAN_model',
+                        id: 'txt2img_realesrgan_model',
                         labelWidth: 250,
-                        value: "",
+                        value: config.txt2img.realesrgan_model,
                         label: "RealESRGAN Model"
                     },
                     {
                         view: "text",
                         id: 'txt2img_fp',
                         labelWidth: 250,
-                        value: "",
+                        value: config.txt2img.fp,
                         label: "FP"
                     },
 
@@ -384,10 +410,8 @@ webix.protoUI({
                 elementsConfig:{
                     on:{
                       onChange: function(){
-                      aid.model.txt2img.dataload[this.config.id] = this.config.value
-                      },
-                      onAfterRender: function() {
-                        aid.model.txt2img.dataload[this.config.id] = this.config.value
+                        const name = this.config.id.replaceAll('txt2img_','')
+                        aid.model.settings.attr.txt2img[name] = this.config.value
                       }
                   	}
                   }

@@ -272,7 +272,6 @@ def layoutFunc():
 """
 def run_txt2img_json(json):
 
-	print(json, flush=True)
 	output_images = None
 	try:
 		output_images, seeds, info, stats = txt2img(prompt=json["prompt"],
@@ -291,9 +290,9 @@ def run_txt2img_json(json):
 													save_grid=False,
 													group_by_prompt=json["group_by_prompt"],
 													save_as_jpg=json["save_as_jpg"],
-													use_GFPGAN=json["use_GFPGAN"],
-													use_RealESRGAN=json["use_RealESRGAN"],
-													RealESRGAN_model=json["RealESRGAN_model"],
+													use_GFPGAN=json["use_gfpgan"],
+													use_RealESRGAN=json["use_realesrgan"],
+													RealESRGAN_model=json["realesrgan_model"],
 													fp=json['fp'],
 													variant_amount=json["variant_amount"],
 													variant_seed=json["variant_seed"],

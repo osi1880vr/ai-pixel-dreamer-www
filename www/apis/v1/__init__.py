@@ -12,7 +12,7 @@ if (os.path.exists("sd/config/userconfig_streamlit.yaml")):
 
 
 from .txt2img import api as txt2img_api
-
+from .settings import api as settings_api
 
 blueprint = Blueprint('api', __name__)
 
@@ -25,4 +25,4 @@ api = Api(
 )
 
 api.add_namespace(txt2img_api)
-
+api.add_namespace(settings_api)

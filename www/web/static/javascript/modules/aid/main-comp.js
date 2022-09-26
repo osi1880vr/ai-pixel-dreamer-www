@@ -23,6 +23,7 @@ webix.protoUI({
     },
 
     initComponent(){
+
         console.log('hello world')
     }
 

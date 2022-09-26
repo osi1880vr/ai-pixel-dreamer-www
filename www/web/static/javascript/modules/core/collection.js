@@ -19,7 +19,7 @@ export class Collection {
         this.parse()
     }
 
-    getUrlHost(){ return vms.api.host}
+    getUrlHost(){ return aid.api.host}
 
     getUrlPath(){ return ''}
 

@@ -63,6 +63,7 @@ aid.views.txt2img = {
 
         },
         'txt2img_rendering_upscaling'() {
+            this.txt2img = aid.model.settings.attr
             webix.ui({
                 view: 'txt2img_rendering_upscaling',
             }, $$('right-content'));
@@ -81,7 +82,6 @@ aid.views.txt2img = {
         console.log('fetch module txt2img')
 
         aid.model.txt2img = new Txt2imgCollection()
-        aid.model.txt2img.dataload = {}
 
     }
 

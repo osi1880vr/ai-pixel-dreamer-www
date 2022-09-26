@@ -31,7 +31,7 @@ webix.protoUI({
     },
 
     openHelpPage() {
-        window.open(aid.vmsDocsUrl)
+        window.open(aid.DocsUrl)
     }
 
 }, webix.ui.toolbar);
