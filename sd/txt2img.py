@@ -303,33 +303,33 @@ def run_txt2img_json(json):
 		return output_images
 
 
-def run_txt2img_json_single(json):
+def run_txt2img_json_single(json_data):
 
 	output_images = None
 	try:
-		output_images, seeds, info, stats = txt2img(prompt=json["prompt"],
-													ddim_steps=json["steps"],
-													sampler_name=json["sampler"],
-													realesrgan_model_name=json["realesrgan_model_name"],
-													n_iter=json["iterations"],
-													batch_size=json["batch_size"],
-													cfg_scale=json["scale"],
-													seed=json["seed"],
-													height=json["H"],
-													width=json["W"],
-													separate_prompts=json["separate_prompts"],
-													normalize_prompt_weights=json["normalize_prompt_weights"] ,
-													save_individual_images=json["save_individual_images"],
+		output_images, seeds, info, stats = txt2img(prompt=json_data["prompt"],
+													ddim_steps=json_data["steps"],
+													sampler_name=json_data["sampler"],
+													realesrgan_model_name=json_data["realesrgan_model_name"],
+													n_iter=json_data["iterations"],
+													batch_size=json_data["batch_size"],
+													cfg_scale=json_data["scale"],
+													seed=json_data["seed"],
+													height=json_data["H"],
+													width=json_data["W"],
+													separate_prompts=json_data["separate_prompts"],
+													normalize_prompt_weights=json_data["normalize_prompt_weights"] ,
+													save_individual_images=json_data["save_individual_images"],
 													save_grid=False,
-													group_by_prompt=json["group_by_prompt"],
-													save_as_jpg=json["save_as_jpg"],
-													use_GFPGAN=json["use_gfpgan"],
-													use_RealESRGAN=json["use_realesrgan"],
-													RealESRGAN_model=json["realesrgan_model"],
-													fp=json['fp'],
-													variant_amount=json["variant_amount"],
-													variant_seed=json["variant_seed"],
-													write_info_files=json["write_info_files"])
+													group_by_prompt=json_data["group_by_prompt"],
+													save_as_jpg=json_data["save_as_jpg"],
+													use_GFPGAN=json_data["use_gfpgan"],
+													use_RealESRGAN=json_data["use_realesrgan"],
+													RealESRGAN_model=json_data["realesrgan_model"],
+													fp=json_data['fp'],
+													variant_amount=json_data["variant_amount"],
+													variant_seed=json_data["variant_seed"],
+													write_info_files=json_data["write_info_files"])
 	except Exception as e:
 		print(e)
 	finally:
