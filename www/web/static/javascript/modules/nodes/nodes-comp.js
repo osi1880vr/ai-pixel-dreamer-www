@@ -59,7 +59,8 @@ webix.protoUI({
             },
 
             {
-                  view:"iframe", id:"frame-body", src:"javascript/modules/nodes/nodes.html"
+                  //view:"iframe", id:"frame-body", src:"javascript/modules/nodes/nodes2.html"
+                  view:"iframe", id:"frame-body", src:"http://localhost:8501"
                 }
 
         ];

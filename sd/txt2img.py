@@ -303,62 +303,34 @@ def run_txt2img_json(json):
 		return output_images
 
 
-def run_txt2img():
+def run_txt2img_json_single(json):
 
-	g_store.txt2img["keyframes"] = None
-	g_store.txt2img["prompt"] = 'a corgi'
-	g_store.txt2img["steps"] = 10
-	g_store.txt2img["sampler"] = 'klms'
-	g_store.txt2img["realesrgan_model_name"] = None
-	g_store.txt2img["iterations"] = 1
-	g_store.txt2img["batch_size"] = 10
-	g_store.txt2img["scale"] = 7.5
-	g_store.txt2img["seed"] = ''
-	g_store.txt2img["H"] = 512
-	g_store.txt2img["W"] = 512
-	g_store.txt2img["separate_prompts"] = False
-	g_store.txt2img["normalize_prompt_weights"] = True
-	g_store.txt2img["save_individual_images"] = True
-	g_store.txt2img["group_by_prompt"] = True
-	g_store.txt2img["save_as_jpg"] = False
-	g_store.txt2img["use_GFPGAN"] = False
-	g_store.txt2img["use_RealESRGAN"] = False
-	g_store.txt2img["RealESRGAN_model"] = False
-	g_store.defaults.general.fp = None
-	g_store.txt2img["variant_amount"] = 0.0
-	g_store.txt2img["variant_seed"] = ''
-	g_store.txt2img["write_info_files"] = True
-
-	g_store.render_mode='txt2img'
-
+	output_images = None
 	try:
-		output_images, seeds, info, stats = txt2img(g_store.txt2img["prompt"],
-													g_store.txt2img["steps"],
-													g_store.txt2img["sampler"],
-													g_store.txt2img["realesrgan_model_name"],
-													g_store.txt2img["iterations"],
-													g_store.txt2img["batch_size"],
-													g_store.txt2img["scale"],
-													g_store.txt2img["seed"],
-													g_store.txt2img["H"],
-													g_store.txt2img["W"],
-													g_store.txt2img["separate_prompts"],
-													g_store.txt2img["normalize_prompt_weights"] ,
-													g_store.txt2img["save_individual_images"],
-													False,
-													g_store.txt2img["group_by_prompt"],
-													g_store.txt2img["save_as_jpg"],
-													g_store.txt2img["use_GFPGAN"],
-													g_store.txt2img["use_RealESRGAN"],
-													g_store.txt2img["RealESRGAN_model"],
-													fp=g_store.defaults.general.fp,
-													variant_amount=g_store.txt2img["variant_amount"],
-													variant_seed=g_store.txt2img["variant_seed"],
-													write_info_files=g_store.txt2img["write_info_files"])
+		output_images, seeds, info, stats = txt2img(prompt=json["prompt"],
+													ddim_steps=json["steps"],
+													sampler_name=json["sampler"],
+													realesrgan_model_name=json["realesrgan_model_name"],
+													n_iter=json["iterations"],
+													batch_size=json["batch_size"],
+													cfg_scale=json["scale"],
+													seed=json["seed"],
+													height=json["H"],
+													width=json["W"],
+													separate_prompts=json["separate_prompts"],
+													normalize_prompt_weights=json["normalize_prompt_weights"] ,
+													save_individual_images=json["save_individual_images"],
+													save_grid=False,
+													group_by_prompt=json["group_by_prompt"],
+													save_as_jpg=json["save_as_jpg"],
+													use_GFPGAN=json["use_gfpgan"],
+													use_RealESRGAN=json["use_realesrgan"],
+													RealESRGAN_model=json["realesrgan_model"],
+													fp=json['fp'],
+													variant_amount=json["variant_amount"],
+													variant_seed=json["variant_seed"],
+													write_info_files=json["write_info_files"])
 	except Exception as e:
 		print(e)
-
-
-
-
-
+	finally:
+		return output_images[0]

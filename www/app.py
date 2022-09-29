@@ -5,25 +5,21 @@ from asgiref.wsgi import WsgiToAsgi
 import eventlet
 from eventlet import wsgi
 from flask import Flask, redirect
-from flask_cors import CORS
-from middleware.counter import CounterMiddleware
+from www.middleware.counter import CounterMiddleware
 from werkzeug.middleware.proxy_fix import ProxyFix
-
-from apis.v1 import blueprint
-
-
+from flask_cors import CORS, cross_origin
+from www.apis.v1 import blueprint
 
 
 eventlet.monkey_patch()
 
-app = Flask('vms_api',
+app = Flask('adi_api',
 			static_url_path='',
 			static_folder='www/web/static',
 			template_folder='www/web/templates')
 app.wsgi_app = CounterMiddleware(app.wsgi_app)
 app.wsgi_app = ProxyFix(app.wsgi_app)
 CORS(app)
-
 
 app.register_blueprint(blueprint, url_prefix='/api/v1')
 
@@ -33,9 +29,7 @@ def index():
 	return redirect('index.html')
 
 
-
-
-if __name__ == '__main__':
+if __name__ == 'www.app':
 	hostname = socket.gethostname()
 	local_ip = socket.gethostbyname(hostname)
-	wsgi.server(eventlet.listen(('0.0.0.0', 8080)), app)
+	wsgi.server(eventlet.listen(('localhost', 8080)), app)

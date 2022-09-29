@@ -5,10 +5,10 @@
 general:
   gpu: 0
   outdir: outputs
-  ckpt: "diffusion/models/models/sd-v1-4.ckpt"
+  ckpt: "diffusion/models/sd-v1-4.ckpt"
   default_model: "Stable Diffusion v1.4"
   default_model_config: "diffusion/configs/stable-diffusion/v1-inference.yaml"
-  default_model_path: "diffusion/models/models/sd-v1-4.ckpt"
+  default_model_path: "diffusion/models/sd-v1-4.ckpt"
   default_path_mode: "subfolders"
   default_path_mode_index: 1
   fp:
