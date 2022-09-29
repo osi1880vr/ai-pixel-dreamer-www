@@ -13,13 +13,18 @@ from io import BytesIO
 import multipart as mp
 
 # from multipart import tob
-
+from sd.inpaint import *
 
 api = Namespace(
     name="Text to Image",
     path="/txttoimg",
     description="Text to Image Related operations"
 )
+
+
+tmp_directory = "./outputs/inpaint/"
+global_prefix = 'inpaint'
+current_id = 1
 
 
 def get_default_dict():
@@ -81,8 +86,29 @@ class run_txt2img(Resource):
     def post(self):
         try:
             my_data = get_default_dict()
-            print(my_data)
-            print(my_data["prompt"])
+
+            #print(request)
+
+            #request.
+
+
+            if 'imageGuide' in request.files and request.files['imageGuide'].filename != '':
+                path = os.path.join(tmp_directory, f"{global_prefix}_{current_id}.png")
+                request.files['imageGuide'].save(path)
+                my_data['image_guide'] = path
+
+                if 'maskForBlend' in request.files and \
+                        request.files['maskForBlend'].filename != '':
+                    mask_path = os.path.join(
+                        tmp_directory, f"{global_prefix}_{current_id}_mask.png")
+                    request.files['maskForBlend'].save(mask_path)
+                    my_data['blend_mask'] = mask_path
+                    my_data['mask_blur'] = max(request.form.get('maskBlur',  default=10, type=int), 0)
+                else:
+                    my_data['strength'] = max(min(request.form.get('strength', default = 0.5, type = float), 0.99), 0.01)
+
+            else:
+                my_data['image_guide'] = False
 
             my_data['prompt'] = request.form.get('prompt', default="countryside landscape, Trending on artstation.")
             my_data['W'] = min(request.form.get('width', default=512, type=int), 2048)
@@ -90,14 +116,17 @@ class run_txt2img(Resource):
             my_data['scale'] = request.form.get('guidance', default=7.0, type=float)
             my_data['seed'] = request.form.get('seed', default=random.randint(0, 99999999), type=int)
             my_data['steps'] = min(request.form.get('steps', default=50, type=int), 150)
-            my_data['iterations'] = min(request.form.get('samples', default=1, type=int), 8)
+            my_data['n_samples'] = min(request.form.get('samples', default=1, type=int), 8)
             my_data['blend_mask'] = ""
             my_data['return_changes_only'] = request.form.get('returnChangesOnly', default=False, type=bool)
 
+            #if my_data['image_guide'] and my_data['mask_for_blend']:
+            #    print('img2img')
 
             mdata = PngInfo()
-            image = run_txt2img_json_single(my_data)
+            #image = run_txt2img_json_single(my_data)
 
+            image = inpaint_txt2img(my_data)
             rnd = int(random.randrange(10000000000))
             filename = f"www/web/static/img/" + str(rnd) + "temp.png"
             image.save(filename, pnginfo=mdata)
