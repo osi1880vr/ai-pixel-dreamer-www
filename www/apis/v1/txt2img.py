@@ -24,7 +24,6 @@ api = Namespace(
 
 def get_default_dict():
     return {"keyframes": "",
-            "prompt": "a cyberpunk setup with plenty rain and a woman walking down the steet with no umbrella",
             "steps": 20,
             "sampler": "klms",
             "realesrgan_model_name": "",
@@ -82,29 +81,24 @@ class run_txt2img(Resource):
         try:
             my_data = get_default_dict()
 
-            print(request.form)
-
-
             my_data['prompt'] = request.form.get('prompt', default="countryside landscape, Trending on artstation.")
-            my_data['W'] = min(request.form.get('width', default=512, type=int), 2048)
-            my_data['H'] = min(request.form.get('height', default=512, type=int), 2048)
-            my_data['scale'] = request.form.get('guidance', default=7.0, type=float)
-            my_data['seed'] = request.form.get('seed', default=random.randint(0, 99999999), type=int)
-            my_data['steps'] = min(request.form.get('steps', default=50, type=int), 150)
-            my_data['iterations'] = min(request.form.get('samples', default=1, type=int), 8)
-            my_data['blend_mask'] = ""
-            my_data['return_changes_only'] = request.form.get('returnChangesOnly', default=False, type=bool)
+            #my_data['W'] = min(request.form.get('width', default=512, type=int), 2048)
+            #my_data['H'] = min(request.form.get('height', default=512, type=int), 2048)
+            #my_data['scale'] = request.form.get('guidance', default=7.0, type=float)
+            #my_data['seed'] = request.form.get('seed', default=random.randint(0, 99999999), type=int)
+            #my_data['steps'] = min(request.form.get('steps', default=50, type=int), 150)
+            #my_data['iterations'] = min(request.form.get('samples', default=1, type=int), 8)
+            #my_data['blend_mask'] = ""
+            #my_data['return_changes_only'] = request.form.get('returnChangesOnly', default=False, type=bool)
 
             txt2img_json = json.dumps(my_data)
-
-            print(txt2img_json)
 
             mdata = PngInfo()
             image = run_txt2img_json_single(txt2img_json)
 
             rnd = int(random.randrange(10000000000))
             filename = f"www/web/static/img/" + str(rnd) + "temp.png"
-            image.save(filename, pnginfo=mdata)
+            #image.save(filename, pnginfo=mdata)
 
             response = make_response(send_file(filename, download_name='test.png'))
             response.headers['Access-Control-Expose-Headers'] = 'Imagine-Seed'
