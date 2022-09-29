@@ -18,8 +18,8 @@ logging.set_verbosity_error()
 from sd.singleton import singleton
 g_store = singleton
 
-from sd.utils import *
-from sd.toxicode_utils import *
+from sd.utils  import *
+import sd.toxicode_utils as toxicode_utils
 
 from sd.ddim_simplified import DDIMSampler
 from ldm.models.diffusion.plms import PLMSSampler
@@ -41,6 +41,8 @@ inpainting_sampler = None
 output_directory = "./outputs/inpaint_out"
 tmp_directory    = "./outputs/inpaint"
 
+device = torch.device("cuda")
+
 locked_params = {
     "C" : 4,
     "f" : 8,
@@ -56,6 +58,18 @@ locked_params = {
     "fixed_code": False,
     "save_intermediate_every": 1000
 }
+
+
+def inpaint_init():
+    global device
+    global config
+    global model
+    config = "../models/v1-inference.yaml"
+
+
+
+
+
 
 def choose_sampler (opt):
     if opt.plms:
@@ -75,6 +89,10 @@ def inpaint_txt2img(opt):
     opt = SimpleNamespace(**opt)
 
     load_models()
+    global plms_sampler
+    global ddim_sampler
+    plms_sampler = PLMSSampler(g_store.models["model"])
+    ddim_sampler = DDIMSampler(g_store.models["model"])
 
 
     print(f"txt2img seed: {opt.seed}   steps: {opt.steps}  prompt: {opt.prompt}")
@@ -207,6 +225,8 @@ def inpaint_txt2img(opt):
 
             image = sampleToImage(grid)
             grid_path = os.path.join(outpath, f'{opt.file_prefix}-0000.png')
+
+            print(image)
 
             image.save(grid_path, pnginfo=toxicode_utils.metadata(
                 opt,

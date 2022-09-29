@@ -91,6 +91,9 @@ class run_txt2img(Resource):
 
             #request.
 
+            my_data['strength'] = 0.5  # why it is missing?
+
+            my_data['file_prefix'] = f"{global_prefix}_{current_id}"
 
             if 'imageGuide' in request.files and request.files['imageGuide'].filename != '':
                 path = os.path.join(tmp_directory, f"{global_prefix}_{current_id}.png")
@@ -126,10 +129,13 @@ class run_txt2img(Resource):
             mdata = PngInfo()
             #image = run_txt2img_json_single(my_data)
 
+            inpaint_init()
             image = inpaint_txt2img(my_data)
             rnd = int(random.randrange(10000000000))
             filename = f"www/web/static/img/" + str(rnd) + "temp.png"
-            image.save(filename, pnginfo=mdata)
+
+
+            image[0].save(filename, pnginfo=mdata)
 
             response = make_response(send_file(filename, download_name='test.png'))
             response.headers['Access-Control-Expose-Headers'] = 'Imagine-Seed'
