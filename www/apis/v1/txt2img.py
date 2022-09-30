@@ -13,7 +13,7 @@ from io import BytesIO
 import multipart as mp
 
 # from multipart import tob
-from sd.inpaint import *
+from sd.outpaint import outpaint_txt2img
 
 api = Namespace(
     name="Text to Image",
@@ -22,13 +22,14 @@ api = Namespace(
 )
 
 
-tmp_directory = "./outputs/inpaint/"
-global_prefix = 'inpaint'
+tmp_directory = "./outputs/outpaint/"
+global_prefix = 'outpaint'
 current_id = 1
 
-
-def get_default_dict():
-    return {"keyframes": "",
+os.makedirs(tmp_directory, exist_ok=True)
+os.makedirs(global_prefix, exist_ok=True)
+"""
+"keyframes": "",
             "prompt": "test",
             "steps": 20,
             "sampler": "klms",
@@ -50,7 +51,27 @@ def get_default_dict():
             "variant_amount": 0.0,
             "variant_seed": "",
             "write_info_files": True,
-            "render_mode": "txt2img"}
+            "render_mode": "txt2img"
+"""
+
+output_directory = "./outputs/outpain_out"
+
+def get_default_dict():
+    return {
+            "C" : 4,
+            "f" : 8,
+            "dyn" : None,
+            "from_file": None,
+            "n_rows" : 2,
+            "plms" : False,
+            "ddim_eta" : 0.0,
+            "n_iter" : 1,
+            "outdir" : output_directory,
+            "skip_grid" : False,
+            "skip_save" : True, #FIXME
+            "fixed_code": False,
+            "save_intermediate_every": 1000
+            }
 
 
 @api.route('/run', methods=['POST'])
@@ -87,13 +108,19 @@ class run_txt2img(Resource):
         try:
             my_data = get_default_dict()
 
-            #print(request)
-
-            #request.
-
-            my_data['strength'] = 0.5  # why it is missing?
+            #my_data['strength'] = 0.5  # why it is missing?
 
             my_data['file_prefix'] = f"{global_prefix}_{current_id}"
+
+            my_data['prompt'] = request.form.get('prompt', default="countryside landscape, Trending on artstation.")
+            my_data['W'] = min(request.form.get('width', default=512, type=int), 2048)
+            my_data['H'] = min(request.form.get('height', default=512, type=int), 2048)
+            my_data['scale'] = request.form.get('guidance', default=7.0, type=float)
+            my_data['seed'] = request.form.get('seed', default=random.randint(0, 99999999), type=int)
+            my_data['steps'] = min(request.form.get('steps', default=50, type=int), 150)
+            my_data['n_samples'] = min(request.form.get('samples', default=1, type=int), 8)
+            my_data['blend_mask'] = None
+            #my_data['return_changes_only'] = request.form.get('returnChangesOnly', default=False, type=bool)
 
             if 'imageGuide' in request.files and request.files['imageGuide'].filename != '':
                 path = os.path.join(tmp_directory, f"{global_prefix}_{current_id}.png")
@@ -113,27 +140,11 @@ class run_txt2img(Resource):
             else:
                 my_data['image_guide'] = False
 
-            my_data['prompt'] = request.form.get('prompt', default="countryside landscape, Trending on artstation.")
-            my_data['W'] = min(request.form.get('width', default=512, type=int), 2048)
-            my_data['H'] = min(request.form.get('height', default=512, type=int), 2048)
-            my_data['scale'] = request.form.get('guidance', default=7.0, type=float)
-            my_data['seed'] = request.form.get('seed', default=random.randint(0, 99999999), type=int)
-            my_data['steps'] = min(request.form.get('steps', default=50, type=int), 150)
-            my_data['n_samples'] = min(request.form.get('samples', default=1, type=int), 8)
-            my_data['blend_mask'] = ""
-            my_data['return_changes_only'] = request.form.get('returnChangesOnly', default=False, type=bool)
-
-            #if my_data['image_guide'] and my_data['mask_for_blend']:
-            #    print('img2img')
-
             mdata = PngInfo()
-            #image = run_txt2img_json_single(my_data)
 
-            inpaint_init()
-            image = inpaint_txt2img(my_data)
+            image = outpaint_txt2img(my_data)
             rnd = int(random.randrange(10000000000))
             filename = f"www/web/static/img/" + str(rnd) + "temp.png"
-
 
             image[0].save(filename, pnginfo=mdata)
 

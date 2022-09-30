@@ -18,7 +18,7 @@ logging.set_verbosity_error()
 from sd.singleton import singleton
 g_store = singleton
 
-from sd.utils  import *
+import sd.utils as utils
 import sd.toxicode_utils as toxicode_utils
 
 from sd.ddim_simplified import DDIMSampler
@@ -38,26 +38,11 @@ inpainting_model   = None
 inpainting_sampler = None
 
 
-output_directory = "./outputs/inpaint_out"
+
 tmp_directory    = "./outputs/inpaint"
 
 device = torch.device("cuda")
 
-locked_params = {
-    "C" : 4,
-    "f" : 8,
-    "dyn" : None,
-    "from_file": None,
-    "n_rows" : 2,
-    "plms" : False,
-    "ddim_eta" : 0.0,
-    "n_iter" : 1,
-    "outdir" : output_directory,
-    "skip_grid" : False,
-    "skip_save" : True, #FIXME
-    "fixed_code": False,
-    "save_intermediate_every": 1000
-}
 
 
 def inpaint_init():
@@ -67,11 +52,7 @@ def inpaint_init():
     config = "../models/v1-inference.yaml"
 
 
-
-
-
-
-def choose_sampler (opt):
+def choose_sampler(opt):
     if opt.plms:
         if opt.image_guide:
             raise NotImplementedError("PLMS sampler not (yet) supported")  # FIXME check ?
@@ -80,10 +61,7 @@ def choose_sampler (opt):
         return ddim_sampler
 
 
-def inpaint_txt2img(opt):
-
-    opt = {**opt, **locked_params}
-
+def outpaint_txt2img(opt):
 
     from types import SimpleNamespace
     opt = SimpleNamespace(**opt)
@@ -93,7 +71,6 @@ def inpaint_txt2img(opt):
     global ddim_sampler
     plms_sampler = PLMSSampler(g_store.models["model"])
     ddim_sampler = DDIMSampler(g_store.models["model"])
-
 
     print(f"txt2img seed: {opt.seed}   steps: {opt.steps}  prompt: {opt.prompt}")
     print(f"size:  {opt.W}x{opt.H}")
@@ -118,11 +95,10 @@ def inpaint_txt2img(opt):
 
     base_count = len(os.listdir(sample_path))
 
-
     batch_size = opt.n_samples
     n_rows     = opt.n_rows if opt.n_rows > 0 else batch_size
 
-    prompts_data = get_prompts_data(opt)
+    prompts_data = utils.get_prompts_data(opt)
 
     grid_path = ''
 
@@ -141,21 +117,22 @@ def inpaint_txt2img(opt):
     sampler.make_schedule(ddim_num_steps=opt.steps, ddim_eta=opt.ddim_eta, verbose=False)
 
     if opt.image_guide:
-        image_guide = image_path_to_torch(opt.image_guide, device)  # [1, 3, 512, 512]
-        latent_guide = torch_image_to_latent(g_store.models["model"], image_guide, n_samples=opt.n_samples)  # [1, 4, 64, 64]
+        image_guide = utils.image_path_to_torch(opt.image_guide, device)  # [1, 3, 512, 512]
+        latent_guide = utils.torch_image_to_latent(g_store.models["model"], image_guide, n_samples=opt.n_samples)  # [1, 4, 64, 64]
+        print(f'image_guide')
 
     if opt.blend_mask:
         [mask_for_reconstruction, latent_mask_for_blend] = toxicode_utils.get_mask_for_latent_blending(
             device, opt.blend_mask, blur=opt.mask_blur)  # [512, 512]  [1, 4, 64, 64]
-        masked_image_for_blend = (
-                                         1 - mask_for_reconstruction) * image_guide[0]  # [3, 512, 512]
+        masked_image_for_blend = (1 - mask_for_reconstruction) * image_guide[0]  # [3, 512, 512]
+        #masked_image_for_blend = mask_for_reconstruction * image_guide[0]  # [3, 512, 512]
+        print(f'blend mask')
 
     elif image_guide is not None:
         assert 0. <= opt.strength <= 1., 'can only work with strength in [0.0, 1.0]'
         t_start = int(opt.strength * opt.steps)
 
         print(f"target t_start is {t_start} steps")
-
 
     multiple_mode = (opt.n_iter * len(prompts_data) * opt.n_samples > 1)
 
@@ -169,7 +146,7 @@ def inpaint_txt2img(opt):
                 seed = opt.seed + counter
                 seed_everything(seed)
 
-                unconditional_conditioning, conditioning = get_conditionings(g_store.models["model"], prompts, opt)
+                unconditional_conditioning, conditioning = utils.get_conditionings(g_store.models["model"], prompts, opt)
 
                 samples = sampler.ddim_sampling(
                     conditioning,               # [1, 77, 768]
@@ -183,7 +160,7 @@ def inpaint_txt2img(opt):
                     unconditional_conditioning=unconditional_conditioning,
                 )  # [1, 4, 64, 64]
 
-                x_samples = encoded_to_torch_image(
+                x_samples = utils.encoded_to_torch_image(
                     g_store.models["model"], samples)  # [1, 3, 512, 512]
 
                 if masked_image_for_blend is not None:
@@ -193,7 +170,7 @@ def inpaint_txt2img(opt):
 
                 if (not opt.skip_save) and (not multiple_mode):
                     for x_sample in x_samples:
-                        image = sampleToImage(x_sample)
+                        image = utils.sampleToImage(x_sample)
 
                         image.save(
                             os.path.join(sample_path, f"{base_count:05}.png"),
@@ -223,7 +200,7 @@ def inpaint_txt2img(opt):
             else:
                 grid = all_samples[0][0]
 
-            image = sampleToImage(grid)
+            image = utils.sampleToImage(grid)
             grid_path = os.path.join(outpath, f'{opt.file_prefix}-0000.png')
 
             print(image)
