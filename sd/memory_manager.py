@@ -20,7 +20,7 @@ class MemUsageMonitor(threading.Thread):
             return
         print(f"[{self.name}] Recording max memory usage...\n")
         # Missing context
-        # handle = pynvml.nvmlDeviceGetHandleByIndex(g_store.defaults.general.gpu)
+        # handle = pynvml.nvmlDeviceGetHandleByIndex(gs.defaults.general.gpu)
         handle = pynvml.nvmlDeviceGetHandleByIndex(0)
         self.total = pynvml.nvmlDeviceGetMemoryInfo(handle).total
         while not self.stop_flag:

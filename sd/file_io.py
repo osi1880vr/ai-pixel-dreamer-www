@@ -1,12 +1,14 @@
 import json
 import os
+import re
+import time
+from datetime import date
 
 import yaml
 
 from PIL.PngImagePlugin import PngInfo
 import piexif
 import piexif.helper
-
 
 from sd.singleton import singleton
 
@@ -30,6 +32,7 @@ elif save_format[0] == 'webp':
     if save_quality < 0:  # e.g. webp:-100 for lossless mode
         save_lossless = True
         save_quality = abs(save_quality)
+
 
 def save_sample(image,
                 sample_path_i,
@@ -116,17 +119,16 @@ def save_sample(image,
             mdata = PngInfo()
             for key in metadata:
                 mdata.add_text(key, str(metadata[key]))
-            image.save(f"{filename_i}.png", pnginfo=mdata)
+            save_image(image, f"{filename_i}.png", pnginfo=mdata)
         else:
             if jpg_sample:
-                image.save(f"{filename_i}.jpg", quality=save_quality,
-                           optimize=True)
+                save_jpg_image(image, f"{filename_i}.jpg", quality=save_quality, optimize=True)
             elif save_ext == "webp":
-                image.save(f"{filename_i}.{save_ext}", f"webp", quality=save_quality,
-                           lossless=save_lossless)
+                save_webp_image(image, f"{filename_i}.{save_ext}", f"webp", quality=save_quality,
+                                lossless=save_lossless)
             else:
                 # not sure what file format this is
-                image.save(f"{filename_i}.{save_ext}", f"{save_ext}")
+                save_image(image, f"{filename_i}.{save_ext}", f"{save_ext}")
             try:
                 exif_dict = piexif.load(f"{filename_i}.{save_ext}")
             except:
@@ -136,4 +138,58 @@ def save_sample(image,
             piexif.insert(piexif.dump(exif_dict), f"{filename_i}.{save_ext}")
 
     # render the image on the frontend
-    #g_store[g_store.render_mode]["preview_image"].image(image)
+    # gs[gs.render_mode]["preview_image"].image(image)
+
+
+def get_output_folder(self, output_path, batch_folder):
+    out_path = os.path.join(os.getcwd(), output_path, time.strftime('%Y-%m'), str(date.today().day))
+    if batch_folder != "":
+        out_path = os.path.join(out_path, batch_folder)
+    print(f"Saving animation frames to {out_path}")
+    os.makedirs(out_path, exist_ok=True)
+    return out_path
+
+
+def save_image(image, filename, pnginfo=None):
+    path = re.match(r'(.*)(\/.*?)', filename)
+    if path:
+        path_name = path.group(1)
+        print(path_name)
+        os.makedirs(path_name, exist_ok=True)
+        try:
+            if pnginfo:
+                image.save(filename, pnginfo)
+            else:
+                image.save(filename)
+        except Exception as e:
+            print(str(e))
+    else:
+        print(f'Image {filename} can not be saved')
+
+
+def save_jpg_image(image, filename, quality=save_quality, optimize=True):
+    path = re.match(r'(.*)(\/.*?)', filename)
+    if path:
+        path_name = path.group(1)
+        print(path_name)
+        os.makedirs(path_name, exist_ok=True)
+        try:
+            image.save(filename, quality=quality, optimize=optimize)
+        except Exception as e:
+            print(str(e))
+    else:
+        print(f'Image {filename} can not be saved')
+
+
+def save_webp_image(image, filename, type=f"webp", quality=save_quality, lossless=save_lossless):
+    path = re.match(r'(.*)(\/.*?)', filename)
+    if path:
+        path_name = path.group(1)
+        print(path_name)
+        os.makedirs(path_name, exist_ok=True)
+        try:
+            image.save(filename, type=type, quality=quality, lossless=lossless)
+        except Exception as e:
+            print(str(e))
+    else:
+        print(f'Image {filename} can not be saved')

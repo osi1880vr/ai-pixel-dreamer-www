@@ -1,12 +1,7 @@
-# base webui import and utils.
-
-import sys, gc
-
-# streamlit imports
-
-
-# other imports
+import gc
 import platform
+import sys
+from sd.file_io import save_image
 
 if "Linux" in platform.platform():
     sys.path.extend([
@@ -37,7 +32,6 @@ import pynvml
 import threading
 import torch
 from torch import autocast
-from torchvision import transforms
 import torch.nn as nn
 from omegaconf import OmegaConf
 import yaml
@@ -541,7 +535,7 @@ class MemUsageMonitor(threading.Thread):
             return
         print(f"[{self.name}] Recording max memory usage...\n")
         # Missing context
-        # handle = pynvml.nvmlDeviceGetHandleByIndex(g_store.defaults.general.gpu)
+        # handle = pynvml.nvmlDeviceGetHandleByIndex(gs.defaults.general.gpu)
         handle = pynvml.nvmlDeviceGetHandleByIndex(0)
         self.total = pynvml.nvmlDeviceGetMemoryInfo(handle).total
         while not self.stop_flag:
@@ -1030,7 +1024,7 @@ def try_loading_LDSR(model_name: str, checking=False):
 
 # Loads Stable Diffusion model by name
 def load_sd_model(model_name: str) -> [any, any, any, any, any]:
-    ckpt_path = g_store.defaults.general.default_model_path
+    ckpt_path = g_store.defaults.general.default_model_ckpt
     if model_name != g_store.defaults.general.default_model:
         ckpt_path = os.path.join("models", "custom", f"{model_name}.ckpt")
 
@@ -1480,17 +1474,17 @@ def save_sample(image,
             mdata = PngInfo()
             for key in metadata:
                 mdata.add_text(key, str(metadata[key]))
-            image.save(f"{filename_i}.png", pnginfo=mdata)
+            save_image(image, f"{filename_i}.png", pnginfo=mdata)
         else:
             if jpg_sample:
-                image.save(f"{filename_i}.jpg", quality=save_quality,
+                save_image(image, f"{filename_i}.jpg", quality=save_quality,
                            optimize=True)
             elif save_ext == "webp":
-                image.save(f"{filename_i}.{save_ext}", f"webp", quality=save_quality,
+                save_image(image, f"{filename_i}.{save_ext}", f"webp", quality=save_quality,
                            lossless=save_lossless)
             else:
                 # not sure what file format this is
-                image.save(f"{filename_i}.{save_ext}", f"{save_ext}")
+                save_image(image, f"{filename_i}.{save_ext}", f"{save_ext}")
             try:
                 exif_dict = piexif.load(f"{filename_i}.{save_ext}")
             except:
@@ -1500,7 +1494,7 @@ def save_sample(image,
             piexif.insert(piexif.dump(exif_dict), f"{filename_i}.{save_ext}")
 
     # render the image on the frontend
-    #g_store[g_store.render_mode]["preview_image"].image(image)
+    #gs[gs.render_mode]["preview_image"].image(image)
 
 
 def get_next_sequence_number(path, prefix=''):
@@ -1883,8 +1877,8 @@ def process_images(outpath,
 
                     if g_store.models["RealESRGAN"].model.name != realesrgan_model_name:
                         # try_loading_RealESRGAN(realesrgan_model_name)
-                        load_models(use_GFPGAN=use_GFPGAN, use_RealESRGAN=use_RealESRGAN,
-                                    RealESRGAN_model=realesrgan_model_name)
+                        load_models(use_gfpgan=use_GFPGAN, use_realesrgan=use_RealESRGAN,
+                                    realesrgan_model=realesrgan_model_name)
 
                     output, img_mode = g_store.models["RealESRGAN"].enhance(x_sample[:, :, ::-1])
                     esrgan_filename = original_filename + '-esrgan4x'
@@ -1936,8 +1930,8 @@ def process_images(outpath,
 
                     if g_store.models["RealESRGAN"].model.name != realesrgan_model_name:
                         # try_loading_RealESRGAN(realesrgan_model_name)
-                        load_models(use_GFPGAN=use_GFPGAN, use_RealESRGAN=use_RealESRGAN,
-                                    RealESRGAN_model=realesrgan_model_name)
+                        load_models(use_gfpgan=use_GFPGAN, use_realesrgan=use_RealESRGAN,
+                                    realesrgan_model=realesrgan_model_name)
 
                     output, img_mode = g_store.models["RealESRGAN"].enhance(gfpgan_sample[:, :, ::-1])
                     gfpgan_esrgan_filename = original_filename + '-gfpgan-esrgan4x'
@@ -1987,8 +1981,8 @@ def process_images(outpath,
                     if use_RealESRGAN and g_store.models["RealESRGAN"] is not None:
                         if g_store.models["RealESRGAN"].model.name != realesrgan_model_name:
                             # try_loading_RealESRGAN(realesrgan_model_name)
-                            load_models(use_GFPGAN=use_GFPGAN, use_RealESRGAN=use_RealESRGAN,
-                                        RealESRGAN_model=realesrgan_model_name)
+                            load_models(use_gfpgan=use_GFPGAN, use_realesrgan=use_RealESRGAN,
+                                        realesrgan_model=realesrgan_model_name)
 
                         output, img_mode = g_store.models["RealESRGAN"].enhance(np.array(init_img, dtype=np.uint8))
                         init_img = Image.fromarray(output)

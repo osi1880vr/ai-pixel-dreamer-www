@@ -10,6 +10,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from flask_cors import CORS, cross_origin
 from www.apis.v1 import blueprint
 
+from sd.file_io import save_image
 
 eventlet.monkey_patch()
 

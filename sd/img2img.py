@@ -1,3 +1,11 @@
+from sd.modelloader import load_models
+from sd.kdiffusion_sampler import KDiffusionSampler
+from sd.callbacks import generation_callback
+from sd.image_processor import process_images, seed_to_int
+
+from ldm.models.diffusion.ddim import DDIMSampler
+from ldm.models.diffusion.plms import PLMSSampler
+
 import os
 import platform
 import random
@@ -6,17 +14,8 @@ from typing import Union
 
 from sd.singleton import singleton
 
-g_store = singleton
+gs = singleton
 
-# from scripts.tools.nsp.nsp_pantry import parser
-
-from sd.modelloader import load_models
-from sd.kdiffusion_sampler import KDiffusionSampler
-from sd.callbacks import generation_callback
-from sd.image_processor import process_images, seed_to_int
-
-from ldm.models.diffusion.ddim import DDIMSampler
-from ldm.models.diffusion.plms import PLMSSampler
 
 if "Linux" in platform.platform():
     sys.path.extend([
@@ -30,9 +29,6 @@ if "Linux" in platform.platform():
         '/content/src/soup',
         '/content/src/Real-ESRGAN'
     ])
-
-
-
 
 
 def txt2img(prompt: str,
@@ -60,7 +56,7 @@ def txt2img(prompt: str,
             ddim_eta: float = 0.0,
             write_info_files: bool = True):
     load_models()
-    outpath = g_store.defaults.general.outdir_txt2img or g_store.defaults.general.outdir or "outputs/txt2img-samples"
+    outpath = gs.defaults.general.outdir_txt2img or gs.defaults.general.outdir or "outputs/txt2img-samples"
     os.makedirs(outpath, exist_ok=True)
     seed = seed_to_int(seed)
 
@@ -78,21 +74,21 @@ def txt2img(prompt: str,
     # use_realesrgan = 8 in toggles
 
     if sampler_name == 'plms':
-        sampler = PLMSSampler(g_store.models["model"])
+        sampler = PLMSSampler(gs.models["model"])
     elif sampler_name == 'ddim':
-        sampler = DDIMSampler(g_store.models["model"])
+        sampler = DDIMSampler(gs.models["model"])
     elif sampler_name == 'k_dpm_2_a':
-        sampler = KDiffusionSampler(g_store.models["model"], 'dpm_2_ancestral')
+        sampler = KDiffusionSampler(gs.models["model"], 'dpm_2_ancestral')
     elif sampler_name == 'k_dpm_2':
-        sampler = KDiffusionSampler(g_store.models["model"], 'dpm_2')
+        sampler = KDiffusionSampler(gs.models["model"], 'dpm_2')
     elif sampler_name == 'k_euler_a':
-        sampler = KDiffusionSampler(g_store.models["model"], 'euler_ancestral')
+        sampler = KDiffusionSampler(gs.models["model"], 'euler_ancestral')
     elif sampler_name == 'k_euler':
-        sampler = KDiffusionSampler(g_store.models["model"], 'euler')
+        sampler = KDiffusionSampler(gs.models["model"], 'euler')
     elif sampler_name == 'k_heun':
-        sampler = KDiffusionSampler(g_store.models["model"], 'heun')
+        sampler = KDiffusionSampler(gs.models["model"], 'heun')
     elif sampler_name == 'klms':
-        sampler = KDiffusionSampler(g_store.models["model"], 'lms')
+        sampler = KDiffusionSampler(gs.models["model"], 'lms')
     else:
         raise Exception("Unknown sampler: " + sampler_name)
 
@@ -110,7 +106,7 @@ def txt2img(prompt: str,
                                          eta=ddim_eta,
                                          x_T=x,
                                          img_callback=generation_callback,
-                                         log_every_t=int(g_store.defaults.general.update_preview_frequency))
+                                         log_every_t=int(gs.defaults.general.update_preview_frequency))
 
         return samples_ddim
 

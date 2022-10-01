@@ -13,7 +13,7 @@ define("/render/main", function () {return async function () {
     clear()
     
     imagine.setServer({
-        url: 'http://localhost:8080/api/v1/txttoimg/explorer'
+        url: '/api/v1/txttoimg/explorer'
     })
     
     
@@ -1635,5 +1635,3 @@ defineModule("snapCoords", function () {
         return snapCoords
     }
 })
-
-

@@ -683,8 +683,8 @@ def process_images(outpath,
 
                     if g_store.models["RealESRGAN"].model.name != realesrgan_model_name:
                         # try_loading_RealESRGAN(realesrgan_model_name)
-                        load_models(use_GFPGAN=use_gfpgan, use_RealESRGAN=use_realesrgan,
-                                    RealESRGAN_model=realesrgan_model_name)
+                        load_models(use_gfpgan=use_gfpgan, use_realesrgan=use_realesrgan,
+                                    realesrgan_model=realesrgan_model_name)
 
                     output, img_mode = g_store.models["RealESRGAN"].enhance(x_sample[:, :, ::-1])
                     esrgan_filename = original_filename + '-esrgan4x'
@@ -737,8 +737,8 @@ def process_images(outpath,
 
                     if g_store.models["RealESRGAN"].model.name != realesrgan_model_name:
                         # try_loading_RealESRGAN(realesrgan_model_name)
-                        load_models(use_GFPGAN=use_gfpgan, use_RealESRGAN=use_realesrgan,
-                                    RealESRGAN_model=realesrgan_model_name)
+                        load_models(use_gfpgan=use_gfpgan, use_realesrgan=use_realesrgan,
+                                    realesrgan_model=realesrgan_model_name)
 
                     output, img_mode = g_store.models["RealESRGAN"].enhance(gfpgan_sample[:, :, ::-1])
                     gfpgan_esrgan_filename = original_filename + '-gfpgan-esrgan4x'
@@ -788,8 +788,8 @@ def process_images(outpath,
                     if use_realesrgan and g_store.models["RealESRGAN"] is not None:
                         if g_store.models["RealESRGAN"].model.name != realesrgan_model_name:
                             # try_loading_RealESRGAN(realesrgan_model_name)
-                            load_models(use_GFPGAN=use_gfpgan, use_RealESRGAN=use_realesrgan,
-                                        RealESRGAN_model=realesrgan_model_name)
+                            load_models(use_gfpgan=use_gfpgan, use_realesrgan=use_realesrgan,
+                                        realesrgan_model=realesrgan_model_name)
 
                         output, img_mode = g_store.models["RealESRGAN"].enhance(np.array(init_img, dtype=np.uint8))
                         init_img = Image.fromarray(output)

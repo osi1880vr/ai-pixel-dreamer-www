@@ -1,5 +1,4 @@
 
-
 import os
 import torch
 from numpy import uint8
@@ -26,6 +25,7 @@ from sd.ddim_simplified import DDIMSampler
 from ldm.models.diffusion.plms import PLMSSampler
 
 from sd.modelloader import load_models
+from sd.file_io import save_image
 
 model  = None
 device = None
@@ -113,7 +113,7 @@ def outpaint_txt2img(opt):
     latent_mask_for_blend   = None
 
     # this explains the [1, 4, 64, 64]
-    shape = (batch_size, opt.C, opt.H//opt.f, opt.W//opt.f)
+    shape = (batch_size, opt.C, opt. H/ /opt.f, opt. W/ /opt.f)
 
     sampler.make_schedule(ddim_num_steps=opt.steps, ddim_eta=opt.ddim_eta, verbose=False)
 
@@ -126,7 +126,7 @@ def outpaint_txt2img(opt):
         [mask_for_reconstruction, latent_mask_for_blend] = toxicode_utils.get_mask_for_latent_blending(
             device, opt.blend_mask, blur=opt.mask_blur)  # [512, 512]  [1, 4, 64, 64]
         masked_image_for_blend = (1 - mask_for_reconstruction) * image_guide[0]  # [3, 512, 512]
-        #masked_image_for_blend = mask_for_reconstruction * image_guide[0]  # [3, 512, 512]
+        # masked_image_for_blend = mask_for_reconstruction * image_guide[0]  # [3, 512, 512]
         print(f'blend mask')
 
     elif image_guide is not None:
@@ -173,7 +173,8 @@ def outpaint_txt2img(opt):
                     for x_sample in x_samples:
                         image = utils.sampleToImage(x_sample)
 
-                        image.save(
+                        save_image(
+                            image,
                             os.path.join(sample_path, f"{base_count:05}.png"),
                             pnginfo=toxicode_utils.metadata(
                                 opt,
@@ -196,8 +197,8 @@ def outpaint_txt2img(opt):
                 grid = make_grid(grid, nrow=n_rows)
 
                 # to image
-                #grid = 255. * rearrange(grid, 'c h w -> h w c').cpu().numpy()
-                #image = Image.fromarray(grid.astype(np.uint8))
+                # grid = 255. * rearrange(grid, 'c h w -> h w c').cpu().numpy()
+                # image = Image.fromarray(grid.astype(np.uint8))
             else:
                 grid = all_samples[0][0]
 
@@ -206,21 +207,22 @@ def outpaint_txt2img(opt):
 
             print(image)
 
-            image.save(grid_path, pnginfo=toxicode_utils.metadata(
-                opt,
-                prompt = prompts[0],  # FIXME [0]
-                seed   = opt.seed,
-                generation_time = generated_time - tic
+            save_image(image,
+                       grid_path,
+                       pnginfo=toxicode_utils.metadata(opt,
+                                                       prompt= prompts[0],  # FIXME [0]
+                                                       seed= opt.seed,
+                                                       generation_time= generated_time - tic
             ))
 
         toc = time.time()
 
         counter += 1
 
-    #FIXME at the end ? at the beginning ?
+    # FIXME at the end ? at the beginning ?
     torch.cuda.empty_cache()
     torch.cuda.ipc_collect()
 
-    print(f"Sampling took {toc-tic:g}s, i.e. produced {opt.n_iter * opt.n_samples / (toc - tic):.2f} samples/sec.")
+    print(f"Sampling took {to c -tic:g}s, i.e. produced {opt.n_iter * opt.n_samples / (toc - tic):.2f} samples/sec.")
 
     return [image, grid_path]
