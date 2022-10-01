@@ -1,4 +1,4 @@
-name: aidng
+name: aidng_test
 channels:
   - pytorch
   - defaults
@@ -55,4 +55,3 @@ dependencies:
     - Werkzeug==2.1.1
     - waitress
     - eventlet==0.33.0
-

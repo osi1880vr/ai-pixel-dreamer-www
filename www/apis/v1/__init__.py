@@ -4,11 +4,11 @@ from flask_restx import Api
 import os
 from omegaconf import OmegaConf
 from sd.singleton import singleton
-g_store = singleton
-g_store.defaults = OmegaConf.load("sd/config/webui_streamlit.yaml")
+gs = singleton
+gs.defaults = OmegaConf.load("sd/config/webui_streamlit.yaml")
 if (os.path.exists("sd/config/userconfig_streamlit.yaml")):
 	user_defaults = OmegaConf.load("sd/config/userconfig_streamlit.yaml")
-	g_store.defaults = OmegaConf.merge(g_store.defaults, user_defaults)
+	gs.defaults = OmegaConf.merge(gs.defaults, user_defaults)
 
 
 from .txt2img import api as txt2img_api

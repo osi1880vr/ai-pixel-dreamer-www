@@ -25,14 +25,14 @@ from sd.callbacks import generation_callback
 
 from sd.singleton import singleton
 
-g_store = singleton
+gs = singleton
 
 # hardcoded as they never change. At least for now
 opt_C = 4
 opt_f = 8
 
 #todo: should be moved to a settings menu in the UI
-grid_format = [s.lower() for s in g_store.defaults.general.grid_format.split(':')]
+grid_format = [s.lower() for s in gs.defaults.general.grid_format.split(':')]
 grid_lossless = False
 grid_quality = 100
 if grid_format[0] == 'png':
@@ -52,8 +52,8 @@ elif grid_format[0] == 'webp':
 
 
 def load_embeddings(fp):
-    if fp is not None and hasattr(g_store.models["model"], "embedding_manager"):
-        g_store.models["model"].embedding_manager.load(fp['name'])
+    if fp is not None and hasattr(gs.models["model"], "embedding_manager"):
+        gs.models["model"].embedding_manager.load(fp['name'])
 
 
 def oxlamon_matrix(prompt, seed, n_iter, batch_size):
@@ -133,13 +133,13 @@ def oxlamon_matrix(prompt, seed, n_iter, batch_size):
 def check_prompt_length(prompt, comments):
     """this function tests if prompt is too long, and if so, adds a message to comments"""
 
-    tokenizer = (g_store.models[
-                     "model"] if not g_store.defaults.general.optimized else g_store.modelCS).cond_stage_model.tokenizer
-    max_length = (g_store.models[
-                      "model"] if not g_store.defaults.general.optimized else g_store.modelCS).cond_stage_model.max_length
+    tokenizer = (gs.models[
+                     "model"] if not gs.defaults.general.optimized else gs.modelCS).cond_stage_model.tokenizer
+    max_length = (gs.models[
+                      "model"] if not gs.defaults.general.optimized else gs.modelCS).cond_stage_model.max_length
 
-    info = (g_store.models[
-                "model"] if not g_store.defaults.general.optimized else g_store.modelCS).cond_stage_model.tokenizer(
+    info = (gs.models[
+                "model"] if not gs.defaults.general.optimized else gs.modelCS).cond_stage_model.tokenizer(
         [prompt],
         truncation=True,
         max_length=max_length,
@@ -168,7 +168,7 @@ def create_random_tensors(shape, seeds):
         # the way I see it, it's better to do this on CPU, so that everyone gets same result;
         # but the original script had it like this so i do not dare change it for now because
         # it will break everyone's seeds.
-        xs.append(torch.randn(shape, device=g_store.defaults.general.gpu))
+        xs.append(torch.randn(shape, device=gs.defaults.general.gpu))
     x = torch.stack(xs)
     return x
 
@@ -305,9 +305,9 @@ def image_grid(imgs, batch_size, force_n_rows=None, captions=None):
     # print (len(imgs))
     if force_n_rows is not None:
         rows = force_n_rows
-    elif g_store.defaults.general.n_rows > 0:
-        rows = g_store.defaults.general.n_rows
-    elif g_store.defaults.general.n_rows == 0:
+    elif gs.defaults.general.n_rows > 0:
+        rows = gs.defaults.general.n_rows
+    elif gs.defaults.general.n_rows == 0:
         rows = batch_size
     else:
         rows = math.sqrt(len(imgs))
@@ -449,7 +449,7 @@ def process_images(outpath,
     mem_mon = MemUsageMonitor('MemMon')
     mem_mon.start()
 
-    if hasattr(g_store.models["model"], "embedding_manager"):
+    if hasattr(gs.models["model"], "embedding_manager"):
         load_embeddings(fp)
 
     os.makedirs(outpath, exist_ok=True)
@@ -493,7 +493,7 @@ def process_images(outpath,
         print(f"Prompt matrix will create {len(all_prompts)} images using a total of {n_iter} batches.")
     else:
 
-        if not g_store.defaults.general.no_verify_input:
+        if not gs.defaults.general.no_verify_input:
             try:
                 check_prompt_length(prompt, comments)
             except:
@@ -504,12 +504,12 @@ def process_images(outpath,
         all_prompts = batch_size * n_iter * [prompt]
         all_seeds = [seed + x for x in range(len(all_prompts))]
 
-    precision_scope = autocast if g_store.defaults.general.precision == "autocast" else nullcontext
+    precision_scope = autocast if gs.defaults.general.precision == "autocast" else nullcontext
     output_images = []
     grid_captions = []
     stats = []
     with torch.no_grad(), precision_scope("cuda"), (
-            g_store.models["model"].ema_scope() if not g_store.defaults.general.optimized else nullcontext()):
+            gs.models["model"].ema_scope() if not gs.defaults.general.optimized else nullcontext()):
         init_data = func_init()
         tic = time.time()
 
@@ -533,11 +533,11 @@ def process_images(outpath,
 
             print(prompt)
 
-            if g_store.defaults.general.optimized:
-                g_store.modelCS.to(g_store.defaults.general.gpu)
+            if gs.defaults.general.optimized:
+                gs.modelCS.to(gs.defaults.general.gpu)
 
-            uc = (g_store.models[
-                      "model"] if not g_store.defaults.general.optimized else g_store.modelCS).get_learned_conditioning(
+            uc = (gs.models[
+                      "model"] if not gs.defaults.general.optimized else gs.modelCS).get_learned_conditioning(
                 len(prompts) * [""])
 
             if isinstance(prompts, tuple):
@@ -552,27 +552,27 @@ def process_images(outpath,
                 c = torch.zeros_like(uc)  # i dont know if this is correct.. but it works
                 for i in range(0, len(weighted_subprompts)):
                     # note if alpha negative, it functions same as torch.sub
-                    c = torch.add(c, (g_store.models[
-                                          "model"] if not g_store.defaults.general.optimized else g_store.modelCS).get_learned_conditioning(
+                    c = torch.add(c, (gs.models[
+                                          "model"] if not gs.defaults.general.optimized else gs.modelCS).get_learned_conditioning(
                         weighted_subprompts[i][0]), alpha=weighted_subprompts[i][1])
             else:  # just behave like usual
-                c = (g_store.models[
-                         "model"] if not g_store.defaults.general.optimized else g_store.modelCS).get_learned_conditioning(
+                c = (gs.models[
+                         "model"] if not gs.defaults.general.optimized else gs.modelCS).get_learned_conditioning(
                     prompts)
 
             shape = [opt_C, height // opt_f, width // opt_f]
 
-            if g_store.defaults.general.optimized:
+            if gs.defaults.general.optimized:
                 mem = torch.cuda.memory_allocated() / 1e6
-                g_store.modelCS.to("cpu")
+                gs.modelCS.to("cpu")
                 while torch.cuda.memory_allocated() / 1e6 >= mem:
                     time.sleep(1)
 
             if noise_mode == 1 or noise_mode == 3:
                 # TODO params for find_noise_to_image
                 x = torch.cat(batch_size * [find_noise_for_image.find_noise_for_image(
-                    g_store.models["model"],
-                    g_store.device,
+                    gs.models["model"],
+                    gs.device,
                     init_img.convert('RGB'),
                     '',
                     find_noise_steps,
@@ -593,7 +593,7 @@ def process_images(outpath,
                     torch.manual_seed(specified_variant_seed)
                     seeds = [specified_variant_seed]
                 # finally, slerp base_x noise to target_x noise for creating a variant
-                x = slerp(g_store.defaults.general.gpu, max(0.0, min(1.0, variant_amount)), base_x, x)
+                x = slerp(gs.defaults.general.gpu, max(0.0, min(1.0, variant_amount)), base_x, x)
 
             try:
                 samples_ddim = func_sample(init_data=init_data,
@@ -604,11 +604,11 @@ def process_images(outpath,
             except Exception as e:
                 print(e)
 
-            if g_store.defaults.general.optimized:
-                g_store.modelFS.to(g_store.defaults.general.gpu)
+            if gs.defaults.general.optimized:
+                gs.modelFS.to(gs.defaults.general.gpu)
 
-            x_samples_ddim = (g_store.models[
-                                  "model"] if not g_store.defaults.general.optimized else g_store.modelFS).decode_first_stage(
+            x_samples_ddim = (gs.models[
+                                  "model"] if not gs.defaults.general.optimized else gs.modelFS).decode_first_stage(
                 samples_ddim)
             x_samples_ddim = torch.clamp((x_samples_ddim + 1.0) / 2.0, min=0.0, max=1.0)
 
@@ -636,10 +636,10 @@ def process_images(outpath,
                 image = Image.fromarray(x_sample)
                 original_filename = filename
 
-                if use_gfpgan and g_store.models["GFPGAN"] is not None and not use_realesrgan:
+                if use_gfpgan and gs.models["GFPGAN"] is not None and not use_realesrgan:
                     # skip_save = True # #287 >_>
                     torch_gc()
-                    cropped_faces, restored_faces, restored_img = g_store.models["GFPGAN"].enhance(
+                    cropped_faces, restored_faces, restored_img = gs.models["GFPGAN"].enhance(
                         x_sample[:, :, ::-1], has_aligned=False, only_center_face=False, paste_back=True)
                     gfpgan_sample = restored_img[:, :, ::-1]
                     gfpgan_image = Image.fromarray(gfpgan_sample)
@@ -677,16 +677,16 @@ def process_images(outpath,
                     if simple_templating:
                         grid_captions.append(captions[i] + "\ngfpgan")
 
-                if use_realesrgan and g_store.models["RealESRGAN"] is not None and not use_gfpgan:
+                if use_realesrgan and gs.models["RealESRGAN"] is not None and not use_gfpgan:
                     # skip_save = True # #287 >_>
                     torch_gc()
 
-                    if g_store.models["RealESRGAN"].model.name != realesrgan_model_name:
+                    if gs.models["RealESRGAN"].model.name != realesrgan_model_name:
                         # try_loading_RealESRGAN(realesrgan_model_name)
                         load_models(use_gfpgan=use_gfpgan, use_realesrgan=use_realesrgan,
                                     realesrgan_model=realesrgan_model_name)
 
-                    output, img_mode = g_store.models["RealESRGAN"].enhance(x_sample[:, :, ::-1])
+                    output, img_mode = gs.models["RealESRGAN"].enhance(x_sample[:, :, ::-1])
                     esrgan_filename = original_filename + '-esrgan4x'
                     esrgan_sample = output[:, :, ::-1]
                     esrgan_image = Image.fromarray(esrgan_sample)
@@ -727,20 +727,20 @@ def process_images(outpath,
                     if simple_templating:
                         grid_captions.append(captions[i] + "\nesrgan")
 
-                if use_realesrgan and g_store.models["RealESRGAN"] is not None and use_gfpgan and g_store.models[
+                if use_realesrgan and gs.models["RealESRGAN"] is not None and use_gfpgan and gs.models[
                     "GFPGAN"] is not None:
                     # skip_save = True # #287 >_>
                     torch_gc()
-                    cropped_faces, restored_faces, restored_img = g_store.models["GFPGAN"].enhance(
+                    cropped_faces, restored_faces, restored_img = gs.models["GFPGAN"].enhance(
                         x_sample[:, :, ::-1], has_aligned=False, only_center_face=False, paste_back=True)
                     gfpgan_sample = restored_img[:, :, ::-1]
 
-                    if g_store.models["RealESRGAN"].model.name != realesrgan_model_name:
+                    if gs.models["RealESRGAN"].model.name != realesrgan_model_name:
                         # try_loading_RealESRGAN(realesrgan_model_name)
                         load_models(use_gfpgan=use_gfpgan, use_realesrgan=use_realesrgan,
                                     realesrgan_model=realesrgan_model_name)
 
-                    output, img_mode = g_store.models["RealESRGAN"].enhance(gfpgan_sample[:, :, ::-1])
+                    output, img_mode = gs.models["RealESRGAN"].enhance(gfpgan_sample[:, :, ::-1])
                     gfpgan_esrgan_filename = original_filename + '-gfpgan-esrgan4x'
                     gfpgan_esrgan_sample = output[:, :, ::-1]
                     gfpgan_esrgan_image = Image.fromarray(gfpgan_esrgan_sample)
@@ -785,17 +785,17 @@ def process_images(outpath,
                     init_img = init_img.convert('RGB')
                     image = image.convert('RGB')
 
-                    if use_realesrgan and g_store.models["RealESRGAN"] is not None:
-                        if g_store.models["RealESRGAN"].model.name != realesrgan_model_name:
+                    if use_realesrgan and gs.models["RealESRGAN"] is not None:
+                        if gs.models["RealESRGAN"].model.name != realesrgan_model_name:
                             # try_loading_RealESRGAN(realesrgan_model_name)
                             load_models(use_gfpgan=use_gfpgan, use_realesrgan=use_realesrgan,
                                         realesrgan_model=realesrgan_model_name)
 
-                        output, img_mode = g_store.models["RealESRGAN"].enhance(np.array(init_img, dtype=np.uint8))
+                        output, img_mode = gs.models["RealESRGAN"].enhance(np.array(init_img, dtype=np.uint8))
                         init_img = Image.fromarray(output)
                         init_img = init_img.convert('RGB')
 
-                        output, img_mode = g_store.models["RealESRGAN"].enhance(np.array(init_mask, dtype=np.uint8))
+                        output, img_mode = gs.models["RealESRGAN"].enhance(np.array(init_mask, dtype=np.uint8))
                         init_mask = Image.fromarray(output)
                         init_mask = init_mask.convert('L')
 
@@ -838,9 +838,9 @@ def process_images(outpath,
                 # if simple_templating:
                 # grid_captions.append( captions[i] )
 
-                if g_store.defaults.general.optimized:
+                if gs.defaults.general.optimized:
                     mem = torch.cuda.memory_allocated() / 1e6
-                    g_store.modelFS.to("cpu")
+                    gs.modelFS.to("cpu")
                     while torch.cuda.memory_allocated() / 1e6 >= mem:
                         time.sleep(1)
 
@@ -882,7 +882,7 @@ def process_images(outpath,
 
     info = f"""
             {prompt}
-            Steps: {steps}, Sampler: {sampler_name}, CFG scale: {cfg_scale}, Seed: {seed}{', Denoising strength: ' + str(denoising_strength) if init_img is not None else ''}{', GFPGAN' if use_gfpgan and g_store.models["GFPGAN"] is not None else ''}{', ' + realesrgan_model_name if use_realesrgan and g_store.models["RealESRGAN"] is not None else ''}{', Prompt Matrix Mode.' if prompt_matrix else ''}""".strip()
+            Steps: {steps}, Sampler: {sampler_name}, CFG scale: {cfg_scale}, Seed: {seed}{', Denoising strength: ' + str(denoising_strength) if init_img is not None else ''}{', GFPGAN' if use_gfpgan and gs.models["GFPGAN"] is not None else ''}{', ' + realesrgan_model_name if use_realesrgan and gs.models["RealESRGAN"] is not None else ''}{', Prompt Matrix Mode.' if prompt_matrix else ''}""".strip()
     stats = f'''
             Took {round(time_diff, 2)}s total ({round(time_diff / (len(all_prompts)), 2)}s per image)
             Peak memory usage: {-(mem_max_used // -1_048_576)} MiB / {-(mem_total // -1_048_576)} MiB / {round(mem_max_used / mem_total * 100, 3)}%'''

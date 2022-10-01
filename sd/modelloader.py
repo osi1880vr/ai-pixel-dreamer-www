@@ -15,12 +15,12 @@ gs.models = {}
 
 def load_gfpgan():
     model_name = 'GFPGANv1.3'
-    model_path = os.path.join(gs.defaults.general.GFPGAN_dir, 'experiments/pretrained_models',
+    model_path = os.path.join(gs.defaults.general.gfpgan_dir, 'experiments/pretrained_models',
                               model_name + '.pth')
     if not os.path.isfile(model_path):
         raise Exception("GFPGAN model not found at path " + model_path)
 
-    sys.path.append(os.path.abspath(gs.defaults.general.GFPGAN_dir))
+    sys.path.append(os.path.abspath(gs.defaults.general.gfpgan_dir))
     from gfpgan import GFPGANer
 
     if gs.defaults.general.gfpgan_cpu or gs.defaults.general.extra_models_cpu:
@@ -111,7 +111,7 @@ def load_models(continue_prev_run=False, use_gfpgan=False, use_realesrgan=False,
             print("GFPGAN already loaded")
         else:
             # Load GFPGAN
-            if os.path.exists(gs.defaults.general.GFPGAN_dir):
+            if os.path.exists(gs.defaults.general.gfpgan_dir):
                 try:
                     gs.models["GFPGAN"] = load_gfpgan()
                     print("Loaded GFPGAN")
