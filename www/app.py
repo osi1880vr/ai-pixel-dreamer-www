@@ -29,9 +29,6 @@ app.register_blueprint(blueprint, url_prefix='/api/v1')
 def index():
 	return redirect('index.html')
 
-print(__name__)
-
-if __name__ == 'app':
-	#hostname = socket.gethostname()
-	#local_ip = socket.gethostbyname(hostname)
-	wsgi.server(eventlet.listen(('localhost', 8080)), app)
+#hostname = socket.gethostname()
+#local_ip = socket.gethostbyname(hostname)
+wsgi.server(eventlet.listen(('localhost', 8080)), app)
