@@ -5,7 +5,7 @@ import { SettingsModel } from './modules/core/settings-model.js'
 import './modules/nodes/nodes-config.js';
 import './modules/txt2img/txt2img-config.js';
 import './modules/outpainting/icanvas-config.js';
-import './modules/txt2vid/txt2vid-config.js';
+//import './modules/txt2vid/txt2vid-config.js';
 const TREE_ID = 'main-navigation-tree';
 
 function handleHashRoute(routes, hashRoute) {
