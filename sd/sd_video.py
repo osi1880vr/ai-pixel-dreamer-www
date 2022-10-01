@@ -16,6 +16,7 @@ from sd.gc_torch import torch_gc
 gs = singleton
 
 
+
 def get_args(json):
     # SimpleNamespace = type(sys.implementation)
 

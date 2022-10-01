@@ -1,16 +1,9 @@
-import json
-
-from flask_restx import Namespace, Resource
-from sd.txt2img import run_txt2img_json, run_txt2img_json_single
-from flask import send_file
-import io
-from PIL.PngImagePlugin import PngInfo
-from flask import jsonify
-import os
-from flask import make_response
 import random
-from io import BytesIO
-import multipart as mp
+
+from PIL.PngImagePlugin import PngInfo
+from flask_restx import Namespace, Resource
+from flask import request
+from sd.txt2img import run_txt2img_json
 
 # from multipart import tob
 
