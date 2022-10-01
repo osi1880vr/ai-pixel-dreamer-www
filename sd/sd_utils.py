@@ -197,8 +197,8 @@ def img2img(prompt: str = '',
     # write_info_files = 7 in toggles
     # write_sample_info_to_log_file = 8 in toggles
     # jpg_sample = 9 in toggles
-    # use_GFPGAN = 10 in toggles
-    # use_RealESRGAN = 11 in toggles
+    # use_gfpgan = 10 in toggles
+    # use_realesrgan = 11 in toggles
 
     if sampler_name == 'PLMS':
         sampler = PLMSSampler(g_store.models["model"])
@@ -1892,7 +1892,7 @@ def process_images(outpath,
                     esrgan_image = Image.fromarray(esrgan_sample)
 
                     # save_sample(image, sample_path_i, original_filename, jpg_sample, prompts, seeds, width, height, steps, cfg_scale,
-                    # normalize_prompt_weights, use_GFPGAN, write_info_files, prompt_matrix, init_img, uses_loopback, uses_random_seed_loopback, skip_save,
+                    # normalize_prompt_weights, use_gfpgan, write_info_files, prompt_matrix, init_img, uses_loopback, uses_random_seed_loopback, skip_save,
                     # save_grid, sort_samples, sampler_name, ddim_eta, n_iter, batch_size, i, denoising_strength, resize_mode)
 
                     save_sample(esrgan_image,
@@ -2175,8 +2175,8 @@ def txt2img(prompt: str,
     #sort_samples = 4 in toggles
     #write_info_files = 5 in toggles
     #jpg_sample = 6 in toggles
-    #use_GFPGAN = 7 in toggles
-    #use_RealESRGAN = 8 in toggles
+    #use_gfpgan = 7 in toggles
+    #use_realesrgan = 8 in toggles
 
     if sampler_name == 'plms':
         sampler = PLMSSampler(g_store.models["model"])

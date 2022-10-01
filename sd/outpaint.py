@@ -22,6 +22,7 @@ import sd.utils as utils
 import sd.toxicode_utils as toxicode_utils
 
 from sd.ddim_simplified import DDIMSampler
+
 from ldm.models.diffusion.plms import PLMSSampler
 
 from sd.modelloader import load_models
@@ -223,4 +224,3 @@ def outpaint_txt2img(opt):
     print(f"Sampling took {toc-tic:g}s, i.e. produced {opt.n_iter * opt.n_samples / (toc - tic):.2f} samples/sec.")
 
     return [image, grid_path]
-

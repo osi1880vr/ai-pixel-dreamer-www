@@ -198,24 +198,24 @@ def layoutFunc():
 					'defaults'].txt2img.save_as_jpg, help="Saves the images as jpg instead of png.")
 
 				if GFPGAN_available:
-					g_store.txt2img["use_GFPGAN"] = st.checkbox("Use GFPGAN", value=st.session_state[
-						'defaults'].txt2img.use_GFPGAN,
+					g_store.txt2img["use_gfpgan"] = st.checkbox("Use GFPGAN", value=st.session_state[
+						'defaults'].txt2img.use_gfpgan,
 																			help="Uses the GFPGAN model to improve faces after the generation. This greatly improve the quality and consistency of faces but uses extra VRAM. Disable if you need the extra VRAM.")
 				else:
-					g_store.txt2img["use_GFPGAN"] = False
+					g_store.txt2img["use_gfpgan"] = False
 
 				if RealESRGAN_available:
-					g_store.txt2img["use_RealESRGAN"] = st.checkbox("Use RealESRGAN",
+					g_store.txt2img["use_realesrgan"] = st.checkbox("Use RealESRGAN",
 																				value=st.session_state[
-																					'defaults'].txt2img.use_RealESRGAN,
+																					'defaults'].txt2img.use_realesrgan,
 																				help="Uses the RealESRGAN model to upscale the images after the generation. This greatly improve the quality and lets you have high resolution images but uses extra VRAM. Disable if you need the extra VRAM.")
-					g_store.txt2img["RealESRGAN_model"] = st.selectbox("RealESRGAN model",
+					g_store.txt2img["realesrgan_model"] = st.selectbox("RealESRGAN model",
 																				   ["RealESRGAN_x4plus",
 																					"RealESRGAN_x4plus_anime_6B"],
 																				   index=0)
 				else:
-					g_store.txt2img["use_RealESRGAN"] = False
-					g_store.txt2img["RealESRGAN_model"] = "RealESRGAN_x4plus"
+					g_store.txt2img["use_realesrgan"] = False
+					g_store.txt2img["realesrgan_model"] = "RealESRGAN_x4plus"
 
 				g_store.txt2img["variant_amount"] = st.slider("Variant Amount:", value=st.session_state[
 					'defaults'].txt2img.variant_amount, min_value=0.0, max_value=1.0, step=0.01)
