@@ -27,3 +27,5 @@ def get_default_dict():
 
 @api.route('/run', methods=['POST'])
 @api.param('body', 'The JSON Data', consumes="application/json")
+def post():
+    pass
