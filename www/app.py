@@ -32,6 +32,6 @@ def index():
 print(__name__)
 
 if __name__ == 'app':
-	hostname = socket.gethostname()
-	local_ip = socket.gethostbyname(hostname)
+	#hostname = socket.gethostname()
+	#local_ip = socket.gethostbyname(hostname)
 	wsgi.server(eventlet.listen(('localhost', 8080)), app)
