@@ -43,25 +43,20 @@ aid.nav_tree = {
                  icon: '<span class="fa-solid fa-terminal" style="color: orange; width: 20px"></span>',
                  action() { window.location.hash = `#${this.type}`; },
                  },
-               { id:"txt2img_rendering",
-               type:"txt2img_rendering",
-               value:"Rendering",
-               icon: '<span class="fa-solid fa-diagram-next" style="color: orange; width: 20px"></span>',
-               data: [
-                   { id:"txt2img_rendering_basic",
-                   type:"txt2img_rendering_basic",
-                   value:"Output",
-                   icon: '<span class="fa-solid fa-download" style="color: orange; width: 20px"></span>',
-                   action() { window.location.hash = `#${this.type}`; },
-                   },
-                   { id:"txt2img_rendering_upscaling",
-                   type:"txt2img_rendering_upscaling",
-                   value:"Upscaling",
-                   icon: '<span class="fa-solid fa-masks-theater" style="color: orange; width: 20px"></span>',
-                    action() { window.location.hash = `#${this.type}`; },
-                    },
 
-               ] }
+                { id:"txt2img_rendering_basic",
+               type:"txt2img_rendering_basic",
+               value:"Output",
+               icon: '<span class="fa-solid fa-download" style="color: orange; width: 20px"></span>',
+               action() { window.location.hash = `#${this.type}`; },
+               },
+               { id:"txt2img_rendering_upscaling",
+               type:"txt2img_rendering_upscaling",
+               value:"Upscaling",
+               icon: '<span class="fa-solid fa-masks-theater" style="color: orange; width: 20px"></span>',
+                action() { window.location.hash = `#${this.type}`; },
+                },
+
            ]},
            { id:"2", open:false, value:"Image 2 Image",
            icon: '<span class="fa-regular fa-clone" style="color: orange; width: 20px"></span>',
@@ -105,4 +100,3 @@ aid.nav_tree = {
 
 
        ]};
-

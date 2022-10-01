@@ -15,7 +15,7 @@ from transformers import logging
 logging.set_verbosity_error()
 
 from sd.singleton import singleton
-g_store = singleton
+gs = singleton
 
 import sd.utils as utils
 import sd.toxicode_utils as toxicode_utils
@@ -26,6 +26,7 @@ from ldm.models.diffusion.plms import PLMSSampler
 
 from sd.modelloader import load_models
 from sd.file_io import save_image
+from sd.gc_torch import torch_gc
 
 model  = None
 device = None
@@ -40,11 +41,13 @@ inpainting_sampler = None
 
 
 
-tmp_directory    = "./outputs/inpaint"
+tmp_directory    = gs.defaults.general.outpaint_tmp_path
 
 device = torch.device("cuda")
 
-
+# hardcoded as they never change. At least for now
+opt_C = 4
+opt_f = 8
 
 def inpaint_init():
     global device
@@ -70,14 +73,13 @@ def outpaint_txt2img(opt):
     load_models()
     global plms_sampler
     global ddim_sampler
-    plms_sampler = PLMSSampler(g_store.models["model"])
-    ddim_sampler = DDIMSampler(g_store.models["model"])
+    plms_sampler = PLMSSampler(gs.models["model"])
+    ddim_sampler = DDIMSampler(gs.models["model"])
 
     print(f"txt2img seed: {opt.seed}   steps: {opt.steps}  prompt: {opt.prompt}")
     print(f"size:  {opt.W}x{opt.H}")
 
-    torch.cuda.empty_cache()
-    torch.cuda.ipc_collect()
+    torch_gc()
 
     # seeds = torch.randint(-2 ** 63, 2 ** 63 - 1, [accelerator.num_processes])
     # torch.manual_seed(seeds[accelerator.process_index].item())
@@ -103,7 +105,6 @@ def outpaint_txt2img(opt):
 
     grid_path = ''
 
-
     image_guide  = None
     latent_guide = None
 
@@ -113,13 +114,13 @@ def outpaint_txt2img(opt):
     latent_mask_for_blend   = None
 
     # this explains the [1, 4, 64, 64]
-    shape = (batch_size, opt.C, opt. H/ /opt.f, opt. W/ /opt.f)
+    shape = (batch_size, opt.C, opt.H//opt.f, opt.W//opt.f)
 
     sampler.make_schedule(ddim_num_steps=opt.steps, ddim_eta=opt.ddim_eta, verbose=False)
 
     if opt.image_guide:
         image_guide = utils.image_path_to_torch(opt.image_guide, device)  # [1, 3, 512, 512]
-        latent_guide = utils.torch_image_to_latent(g_store.models["model"], image_guide, n_samples=opt.n_samples)  # [1, 4, 64, 64]
+        latent_guide = utils.torch_image_to_latent(gs.models["model"], image_guide, n_samples=opt.n_samples)  # [1, 4, 64, 64]
         print(f'image_guide')
 
     if opt.blend_mask:
@@ -137,7 +138,7 @@ def outpaint_txt2img(opt):
 
     multiple_mode = (opt.n_iter * len(prompts_data) * opt.n_samples > 1)
 
-    with torch.no_grad(), g_store.models["model"].ema_scope(), torch.cuda.amp.autocast():
+    with torch.no_grad(), gs.models["model"].ema_scope(), torch.cuda.amp.autocast():
         tic = time.time()
         all_samples = list()
         counter = 0
@@ -147,7 +148,7 @@ def outpaint_txt2img(opt):
                 seed = opt.seed + counter
                 seed_everything(seed)
 
-                unconditional_conditioning, conditioning = utils.get_conditionings(g_store.models["model"], prompts, opt)
+                unconditional_conditioning, conditioning = utils.get_conditionings(gs.models["model"], prompts, opt)
 
                 samples = sampler.ddim_sampling(
                     conditioning,               # [1, 77, 768]
@@ -162,12 +163,14 @@ def outpaint_txt2img(opt):
                 )  # [1, 4, 64, 64]
 
                 x_samples = utils.encoded_to_torch_image(
-                    g_store.models["model"], samples)  # [1, 3, 512, 512]
+                    gs.models["model"], samples)  # [1, 3, 512, 512]
 
                 if masked_image_for_blend is not None:
                     x_samples = mask_for_reconstruction * x_samples + masked_image_for_blend
 
                 all_samples.append(x_samples)
+
+                generated_time = time.time()
 
                 if (not opt.skip_save) and (not multiple_mode):
                     for x_sample in x_samples:
@@ -219,10 +222,8 @@ def outpaint_txt2img(opt):
 
         counter += 1
 
-    # FIXME at the end ? at the beginning ?
-    torch.cuda.empty_cache()
-    torch.cuda.ipc_collect()
+    torch_gc()
 
-    print(f"Sampling took {to c -tic:g}s, i.e. produced {opt.n_iter * opt.n_samples / (toc - tic):.2f} samples/sec.")
+    print(f"Sampling took {toc - tic:g}s, i.e. produced {opt.n_iter * opt.n_samples / (toc - tic):.2f} samples/sec.")
 
     return [image, grid_path]

@@ -148,7 +148,7 @@ def load_models(continue_prev_run=False, use_gfpgan=False, use_realesrgan=False,
         print("Model already loaded")
     else:
         config = OmegaConf.load("configs/stable-diffusion/v1-inference.yaml")
-        gs.models["model"] = load_model_from_config(config, gs.defaults.general.ckpt)
+        gs.models["model"] = load_model_from_config(config, gs.defaults.general.default_model_ckpt)
 
         gs.device = torch.device(
             f"cuda:{gs.defaults.general.gpu}") if torch.cuda.is_available() else torch.device("cpu")

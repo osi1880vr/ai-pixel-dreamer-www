@@ -21,6 +21,7 @@ general:
   outdir_img2img: outputs/img2img-samples
   gfpgan_cpu: False
   esrgan_cpu: False
+  outpaint_tmp_path: "./outputs/outpaint_tmp"
   extra_models_cpu: False
   extra_models_gpu: False
   save_metadata: True

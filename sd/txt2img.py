@@ -135,7 +135,7 @@ def txt2img(prompt: str,
 			write_info_files: bool = True):
 	load_models()
 	outpath = gs.defaults.general.outdir_txt2img or gs.defaults.general.outdir or "outputs/txt2img-samples"
-	os.makedirs(outpath, exist_ok=True)
+
 	seed = seed_to_int(seed)
 
 	print('group by prompt')
