@@ -34,29 +34,6 @@ def metadata (opt, prompt = None, seed = '', generation_time = None):
     return data
 
 
-
-def make_inpaint_batch(image_path, device):
-    image = np_array(Image.open(image_path))
-    mask  = image[:,:,3]
-    image = image[:,:,0:3]
-    image = image.astype(float16)/255.0
-    image = image[None].transpose(0,3,1,2)
-    image = torch.from_numpy(image)
-    mask  = mask[None,None]
-    mask[mask <= 100] = 1
-    mask[mask > 100]  = 0
-    mask = torch.from_numpy(mask)
-
-    masked_image = (1-mask)*image
-
-    batch = {"image": image, "mask": mask, "masked_image": masked_image}
-    for k in batch:
-        batch[k] = batch[k].half().to(device=device)
-        batch[k] = batch[k]*2.0-1.0
-    return batch
-
-
-
 #FIXME optimize ?
 def get_mask_for_latent_blending(device, path, blur = 0):
     mask_image = Image.open(path).convert("L")

@@ -14,6 +14,15 @@ aid.nav_tree = {
            data:[
 
            ]},
+          { id:"i-canvas",
+              open:false,
+              value:"iCanvas",
+              type:"i-canvas",
+              icon: '<span class="fa-brands fa-uncharted" style="color: orange; width: 20px"></span>',
+              action() { window.location.hash = `#${this.type}`; },
+              data:[
+
+          ]},
            { id:"txt2img",
            open:true,
            type:"txt2img",
@@ -41,8 +50,8 @@ aid.nav_tree = {
                data: [
                    { id:"txt2img_rendering_basic",
                    type:"txt2img_rendering_basic",
-                   value:"Basic",
-                   icon: '<span class="fa-solid fa-wrench" style="color: orange; width: 20px"></span>',
+                   value:"Output",
+                   icon: '<span class="fa-solid fa-download" style="color: orange; width: 20px"></span>',
                    action() { window.location.hash = `#${this.type}`; },
                    },
                    { id:"txt2img_rendering_upscaling",

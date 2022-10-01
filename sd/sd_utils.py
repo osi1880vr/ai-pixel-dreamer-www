@@ -161,11 +161,20 @@ def img2img(prompt: str = '',
             width: int = 512,
             resize_mode: int = 0,
             fp=None,
-            variant_amount: float = None, variant_seed: int = None, ddim_eta: float = 0.0,
-            write_info_files: bool = True, RealESRGAN_model: str = "RealESRGAN_x4plus_anime_6B",
-            separate_prompts: bool = False, normalize_prompt_weights: bool = True,
-            save_individual_images: bool = True, save_grid: bool = True, group_by_prompt: bool = True,
-            save_as_jpg: bool = True, use_GFPGAN: bool = True, use_RealESRGAN: bool = True, loopback: bool = False,
+            variant_amount: float = None,
+            variant_seed: int = None,
+            ddim_eta: float = 0.0,
+            write_info_files: bool = True,
+            RealESRGAN_model: str = "RealESRGAN_x4plus_anime_6B",
+            separate_prompts: bool = False,
+            normalize_prompt_weights: bool = True,
+            save_individual_images: bool = True,
+            save_grid: bool = True,
+            group_by_prompt: bool = True,
+            save_as_jpg: bool = True,
+            use_GFPGAN: bool = True,
+            use_RealESRGAN: bool = True,
+            loopback: bool = False,
             random_seed_loopback: bool = False
             ):
     load_models()
@@ -1386,10 +1395,32 @@ def check_prompt_length(prompt, comments):
         f"Warning: too many input tokens; some ({len(overflowing_words)}) have been truncated:\n{overflowing_text}\n")
 
 
-def save_sample(image, sample_path_i, filename, jpg_sample, prompts, seeds, width, height, steps, cfg_scale,
-                normalize_prompt_weights, use_GFPGAN, write_info_files, prompt_matrix, init_img, uses_loopback,
+def save_sample(image,
+                sample_path_i,
+                filename,
+                jpg_sample,
+                prompts,
+                seeds,
+                width,
+                height,
+                steps,
+                cfg_scale,
+                normalize_prompt_weights,
+                use_GFPGAN,
+                write_info_files,
+                prompt_matrix,
+                init_img,
+                uses_loopback,
                 uses_random_seed_loopback,
-                save_grid, sort_samples, sampler_name, ddim_eta, n_iter, batch_size, i, denoising_strength, resize_mode,
+                save_grid,
+                sort_samples,
+                sampler_name,
+                ddim_eta,
+                n_iter,
+                batch_size,
+                i,
+                denoising_strength,
+                resize_mode,
                 save_individual_images):
     filename_i = os.path.join(sample_path_i, filename)
 
@@ -1569,18 +1600,49 @@ def oxlamon_matrix(prompt, seed, n_iter, batch_size):
 
 
 # used OK 20.09.22
-def process_images(
-        outpath, func_init, func_sample, prompt, seed, sampler_name, save_grid, batch_size,
-        n_iter, steps, cfg_scale, width, height, prompt_matrix, use_GFPGAN, use_RealESRGAN, realesrgan_model_name,
-        fp=None, ddim_eta=0.0, normalize_prompt_weights=True, init_img=None, init_mask=None,
-        mask_blur_strength=3, mask_restore=False, denoising_strength=0.75, noise_mode=0, find_noise_steps=1,
-        resize_mode=None, uses_loopback=False,
-        uses_random_seed_loopback=False, sort_samples=True, write_info_files=True, jpg_sample=False,
-        variant_amount=0.0, variant_seed=None, save_individual_images: bool = True):
-    """this is the main loop that both txt2img and img2img use; it calls func_init once inside all the scopes and func_sample once per batch"""
+def process_images(outpath,
+                   func_init,
+                   func_sample,
+                   prompt,
+                   seed,
+                   sampler_name,
+                   save_grid,
+                   batch_size,
+                   n_iter,
+                   steps,
+                   cfg_scale,
+                   width,
+                   height,
+                   prompt_matrix,
+                   use_GFPGAN,
+                   use_RealESRGAN,
+                   realesrgan_model_name,
+                   fp=None,
+                   ddim_eta=0.0,
+                   normalize_prompt_weights=True,
+                   init_img=None,
+                   init_mask=None,
+                   mask_blur_strength=3,
+                   mask_restore=False,
+                   denoising_strength=0.75,
+                   noise_mode=0,
+                   find_noise_steps=1,
+                   resize_mode=None,
+                   uses_loopback=False,
+                   uses_random_seed_loopback=False,
+                   sort_samples=True,
+                   write_info_files=True,
+                   jpg_sample=False,
+                   variant_amount=0.0,
+                   variant_seed=None,
+                   save_individual_images: bool = True):
+
+    """this is the main loop that both txt2img and img2img use;
+       it calls func_init once inside all the scopes and func_sample once per batch"""
     assert prompt is not None
     torch_gc()
-    # start time after garbage collection (or before?)
+
+    # start time after garbage collection
     start_time = time.time()
 
     # We will use this date here later for the folder name, need to start_time if not need
@@ -1610,7 +1672,9 @@ def process_images(
         if prompt.startswith("@"):
             simple_templating = True
             add_original_image = not (use_RealESRGAN or use_GFPGAN)
-            all_seeds, n_iter, prompt_matrix_parts, all_prompts, frows = oxlamon_matrix(prompt, seed, n_iter,
+            all_seeds, n_iter, prompt_matrix_parts, all_prompts, frows = oxlamon_matrix(prompt,
+                                                                                        seed,
+                                                                                        n_iter,
                                                                                         batch_size)
         else:
             all_prompts = []
@@ -1654,8 +1718,8 @@ def process_images(
         # if variant_amount > 0.0 create noise from base seed
         base_x = None
         if variant_amount > 0.0:
-            target_seed_randomizer = seed_to_int('')  # random seed
-            torch.manual_seed(seed)  # this has to be the single starting seed (not per-iteration)
+            target_seed_randomizer = seed_to_int('')    # random seed
+            torch.manual_seed(seed)                     # this has to be the single starting seed (not per-iteration)
             base_x = create_random_tensors([opt_C, height // opt_f, width // opt_f], seeds=[seed])
             # we don't want all_seeds to be sequential from starting seed with variants,
             # since that makes the same variants each time,
@@ -1699,14 +1763,19 @@ def process_images(
             if g_store.defaults.general.optimized:
                 mem = torch.cuda.memory_allocated() / 1e6
                 g_store.modelCS.to("cpu")
-                while (torch.cuda.memory_allocated() / 1e6 >= mem):
+                while torch.cuda.memory_allocated() / 1e6 >= mem:
                     time.sleep(1)
 
             if noise_mode == 1 or noise_mode == 3:
                 # TODO params for find_noise_to_image
                 x = torch.cat(batch_size * [find_noise_for_image.find_noise_for_image(
-                    g_store.models["model"], g_store.device,
-                    init_img.convert('RGB'), '', find_noise_steps, 0.0, normalize=True,
+                    g_store.models["model"],
+                    g_store.device,
+                    init_img.convert('RGB'),
+                    '',
+                    find_noise_steps,
+                    0.0,
+                    normalize=True,
                     generation_callback=generation_callback,
                 )], dim=0)
             else:
@@ -1717,7 +1786,7 @@ def process_images(
                 # using variant_seed as sneaky toggle,
                 # when not None or '' use the variant_seed
                 # otherwise use seeds
-                if variant_seed != None and variant_seed != '':
+                if variant_seed is not None and variant_seed != '':
                     specified_variant_seed = seed_to_int(variant_seed)
                     torch.manual_seed(specified_variant_seed)
                     seeds = [specified_variant_seed]
@@ -1725,8 +1794,11 @@ def process_images(
                 x = slerp(g_store.defaults.general.gpu, max(0.0, min(1.0, variant_amount)), base_x, x)
 
             try:
-                samples_ddim = func_sample(init_data=init_data, x=x, conditioning=c, unconditional_conditioning=uc,
-                                       sampler_name=sampler_name)
+                samples_ddim = func_sample(init_data=init_data,
+                                           x=x,
+                                           conditioning=c,
+                                           unconditional_conditioning=uc,
+                                           sampler_name=sampler_name)
             except Exception as e:
                 print(e)
 
@@ -1773,12 +1845,33 @@ def process_images(
                     gfpgan_image = Image.fromarray(gfpgan_sample)
                     gfpgan_filename = original_filename + '-gfpgan'
 
-                    save_sample(gfpgan_image, sample_path_i, gfpgan_filename, jpg_sample, prompts, seeds, width, height,
-                                steps, cfg_scale,
-                                normalize_prompt_weights, use_GFPGAN, write_info_files, prompt_matrix, init_img,
+                    save_sample(gfpgan_image,
+                                sample_path_i,
+                                gfpgan_filename,
+                                jpg_sample,
+                                prompts,
+                                seeds,
+                                width,
+                                height,
+                                steps,
+                                cfg_scale,
+                                normalize_prompt_weights,
+                                use_GFPGAN,
+                                write_info_files,
+                                prompt_matrix,
+                                init_img,
                                 uses_loopback,
-                                uses_random_seed_loopback, save_grid, sort_samples, sampler_name, ddim_eta,
-                                n_iter, batch_size, i, denoising_strength, resize_mode, save_individual_images=False)
+                                uses_random_seed_loopback,
+                                save_grid,
+                                sort_samples,
+                                sampler_name,
+                                ddim_eta,
+                                n_iter,
+                                batch_size,
+                                i,
+                                denoising_strength,
+                                resize_mode,
+                                save_individual_images=False)
 
                     output_images.append(gfpgan_image)  # 287
                     if simple_templating:
@@ -1802,12 +1895,33 @@ def process_images(
                     # normalize_prompt_weights, use_GFPGAN, write_info_files, prompt_matrix, init_img, uses_loopback, uses_random_seed_loopback, skip_save,
                     # save_grid, sort_samples, sampler_name, ddim_eta, n_iter, batch_size, i, denoising_strength, resize_mode)
 
-                    save_sample(esrgan_image, sample_path_i, esrgan_filename, jpg_sample, prompts, seeds, width, height,
-                                steps, cfg_scale,
-                                normalize_prompt_weights, use_GFPGAN, write_info_files, prompt_matrix, init_img,
-                                uses_loopback, uses_random_seed_loopback,
-                                save_grid, sort_samples, sampler_name, ddim_eta, n_iter, batch_size, i,
-                                denoising_strength, resize_mode, save_individual_images=False)
+                    save_sample(esrgan_image,
+                                sample_path_i,
+                                esrgan_filename,
+                                jpg_sample,
+                                prompts,
+                                seeds,
+                                width,
+                                height,
+                                steps,
+                                cfg_scale,
+                                normalize_prompt_weights,
+                                use_GFPGAN,
+                                write_info_files,
+                                prompt_matrix,
+                                init_img,
+                                uses_loopback,
+                                uses_random_seed_loopback,
+                                save_grid,
+                                sort_samples,
+                                sampler_name,
+                                ddim_eta,
+                                n_iter,
+                                batch_size,
+                                i,
+                                denoising_strength,
+                                resize_mode,
+                                save_individual_images=False)
 
                     output_images.append(esrgan_image)  # 287
                     if simple_templating:
@@ -1830,12 +1944,33 @@ def process_images(
                     gfpgan_esrgan_sample = output[:, :, ::-1]
                     gfpgan_esrgan_image = Image.fromarray(gfpgan_esrgan_sample)
 
-                    save_sample(gfpgan_esrgan_image, sample_path_i, gfpgan_esrgan_filename, jpg_sample, prompts, seeds,
-                                width, height, steps, cfg_scale,
-                                normalize_prompt_weights, False, write_info_files, prompt_matrix, init_img,
-                                uses_loopback, uses_random_seed_loopback,
-                                save_grid, sort_samples, sampler_name, ddim_eta, n_iter, batch_size, i,
-                                denoising_strength, resize_mode, save_individual_images=False)
+                    save_sample(gfpgan_esrgan_image,
+                                sample_path_i,
+                                gfpgan_esrgan_filename,
+                                jpg_sample,
+                                prompts,
+                                seeds,
+                                width,
+                                height,
+                                steps,
+                                cfg_scale,
+                                normalize_prompt_weights,
+                                False,
+                                write_info_files,
+                                prompt_matrix,
+                                init_img,
+                                uses_loopback,
+                                uses_random_seed_loopback,
+                                save_grid,
+                                sort_samples,
+                                sampler_name,
+                                ddim_eta,
+                                n_iter,
+                                batch_size,
+                                i,
+                                denoising_strength,
+                                resize_mode,
+                                save_individual_images=False)
 
                     output_images.append(gfpgan_esrgan_image)  # 287
 
@@ -1866,12 +2001,33 @@ def process_images(
                     image = Image.composite(init_img, image, init_mask)
 
                 if save_individual_images:
-                    save_sample(image, sample_path_i, filename, jpg_sample, prompts, seeds, width, height, steps,
+                    save_sample(image,
+                                sample_path_i,
+                                filename,
+                                jpg_sample,
+                                prompts,
+                                seeds,
+                                width,
+                                height,
+                                steps,
                                 cfg_scale,
-                                normalize_prompt_weights, use_GFPGAN, write_info_files, prompt_matrix, init_img,
-                                uses_loopback, uses_random_seed_loopback,
-                                save_grid, sort_samples, sampler_name, ddim_eta, n_iter, batch_size, i,
-                                denoising_strength, resize_mode, save_individual_images)
+                                normalize_prompt_weights,
+                                use_GFPGAN,
+                                write_info_files,
+                                prompt_matrix,
+                                init_img,
+                                uses_loopback,
+                                uses_random_seed_loopback,
+                                save_grid,
+                                sort_samples,
+                                sampler_name,
+                                ddim_eta,
+                                n_iter,
+                                batch_size,
+                                i,
+                                denoising_strength,
+                                resize_mode,
+                                save_individual_images)
 
                     if not use_GFPGAN or not use_RealESRGAN:
                         output_images.append(image)
@@ -1884,17 +2040,25 @@ def process_images(
                 if g_store.defaults.general.optimized:
                     mem = torch.cuda.memory_allocated() / 1e6
                     g_store.modelFS.to("cpu")
-                    while (torch.cuda.memory_allocated() / 1e6 >= mem):
+                    while torch.cuda.memory_allocated() / 1e6 >= mem:
                         time.sleep(1)
 
         if prompt_matrix or save_grid:
             if prompt_matrix:
                 if simple_templating:
-                    grid = image_grid(output_images, n_iter, force_n_rows=frows, captions=grid_captions)
+                    grid = image_grid(output_images,
+                                      n_iter,
+                                      force_n_rows=frows,
+                                      captions=grid_captions)
                 else:
-                    grid = image_grid(output_images, n_iter, force_n_rows=1 << ((len(prompt_matrix_parts) - 1) // 2))
+                    grid = image_grid(output_images,
+                                      n_iter,
+                                      force_n_rows=1 << ((len(prompt_matrix_parts) - 1) // 2))
                     try:
-                        grid = draw_prompt_matrix(grid, width, height, prompt_matrix_parts)
+                        grid = draw_prompt_matrix(grid,
+                                                  width,
+                                                  height,
+                                                  prompt_matrix_parts)
                     except:
                         import traceback
                         print("Error creating prompt_matrix text:", file=sys.stderr)
@@ -1970,17 +2134,39 @@ def resize_image(resize_mode, im, width, height):
 
     return res
 
-def txt2img(prompt: str, ddim_steps: int, sampler_name: str, realesrgan_model_name: str,
-            n_iter: int, batch_size: int, cfg_scale: float, seed: Union[int, str, None],
-            height: int, width: int, separate_prompts:bool = False, normalize_prompt_weights:bool = True,
-            save_individual_images: bool = True, save_grid: bool = True, group_by_prompt: bool = True,
-            save_as_jpg: bool = True, use_GFPGAN: bool = True, use_RealESRGAN: bool = True,
-            RealESRGAN_model: str = "RealESRGAN_x4plus_anime_6B", fp = None, variant_amount: float = None,
-            variant_seed: int = None, ddim_eta:float = 0.0, write_info_files:bool = True):
+def txt2img(prompt: str,
+            ddim_steps: int,
+            sampler_name: str,
+            realesrgan_model_name: str,
+            n_iter: int,
+            batch_size: int,
+            cfg_scale: float,
+            seed: Union[int, str, None],
+            height: int,
+            width: int,
+            separate_prompts: bool = False,
+            normalize_prompt_weights: bool = True,
+            save_individual_images: bool = True,
+            save_grid: bool = True,
+            group_by_prompt: bool = True,
+            save_as_jpg: bool = True,
+            use_GFPGAN: bool = True,
+            use_RealESRGAN: bool = True,
+            RealESRGAN_model: str = "RealESRGAN_x4plus_anime_6B",
+            fp = None,
+            variant_amount: float = None,
+            variant_seed: int = None,
+            ddim_eta: float = 0.0,
+            write_info_files: bool = True):
     load_models()
     outpath = g_store.defaults.general.outdir_txt2img or g_store.defaults.general.outdir or "outputs/txt2img-samples"
-
+    os.makedirs(outpath, exist_ok=True)
     seed = seed_to_int(seed)
+
+    print('group by prompt')
+    print(group_by_prompt)
+
+
 
     #prompt_matrix = 0 in toggles
     #normalize_prompt_weights = 1 in toggles
@@ -1997,17 +2183,17 @@ def txt2img(prompt: str, ddim_steps: int, sampler_name: str, realesrgan_model_na
     elif sampler_name == 'ddim':
         sampler = DDIMSampler(g_store.models["model"])
     elif sampler_name == 'k_dpm_2_a':
-        sampler = KDiffusionSampler(g_store.models["model"],'dpm_2_ancestral')
+        sampler = KDiffusionSampler(g_store.models["model"], 'dpm_2_ancestral')
     elif sampler_name == 'k_dpm_2':
-        sampler = KDiffusionSampler(g_store.models["model"],'dpm_2')
+        sampler = KDiffusionSampler(g_store.models["model"], 'dpm_2')
     elif sampler_name == 'k_euler_a':
-        sampler = KDiffusionSampler(g_store.models["model"],'euler_ancestral')
+        sampler = KDiffusionSampler(g_store.models["model"], 'euler_ancestral')
     elif sampler_name == 'k_euler':
-        sampler = KDiffusionSampler(g_store.models["model"],'euler')
+        sampler = KDiffusionSampler(g_store.models["model"], 'euler')
     elif sampler_name == 'k_heun':
-        sampler = KDiffusionSampler(g_store.models["model"],'heun')
+        sampler = KDiffusionSampler(g_store.models["model"], 'heun')
     elif sampler_name == 'klms':
-        sampler = KDiffusionSampler(g_store.models["model"],'lms')
+        sampler = KDiffusionSampler(g_store.models["model"], 'lms')
     else:
         raise Exception("Unknown sampler: " + sampler_name)
 
@@ -2015,8 +2201,16 @@ def txt2img(prompt: str, ddim_steps: int, sampler_name: str, realesrgan_model_na
         pass
 
     def sample(init_data, x, conditioning, unconditional_conditioning, sampler_name):
-        samples_ddim, _ = sampler.sample(S=ddim_steps, conditioning=conditioning, batch_size=int(x.shape[0]), shape=x[0].shape, verbose=False, unconditional_guidance_scale=cfg_scale,
-                                         unconditional_conditioning=unconditional_conditioning, eta=ddim_eta, x_T=x, img_callback=generation_callback,
+        samples_ddim, _ = sampler.sample(S=ddim_steps,
+                                         conditioning=conditioning,
+                                         batch_size=int(x.shape[0]),
+                                         shape=x[0].shape,
+                                         verbose=False,
+                                         unconditional_guidance_scale=cfg_scale,
+                                         unconditional_conditioning=unconditional_conditioning,
+                                         eta=ddim_eta,
+                                         x_T=x,
+                                         img_callback=generation_callback,
                                          log_every_t=int(g_store.defaults.general.update_preview_frequency))
 
         return samples_ddim
