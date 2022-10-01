@@ -1,7 +1,7 @@
 from transformers import pipeline, set_seed
 import random, re, string
 from pyparsing import line
-from scripts.tools.nsp.nsp_pantry import parser
+from sd.nsp.nsp_pantry import parser
 import json
 
 gpt2_pipe = pipeline('text-generation', model='Gustavosta/MagicPrompt-Stable-Diffusion', tokenizer='gpt2')
@@ -42,4 +42,3 @@ def generate_prompt(starting_text):
 
     response_end = '\n\n'.join(all_prompts)
     return response_end
-
