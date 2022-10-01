@@ -56,18 +56,34 @@ aid.views.txt2vid = {
                 view: 'txt2vid_prompt_help',
             }, $$('right-content'));
         },
-        'txt2vid_rendering_basic'() {
+        'txt2vid_sampler'() {
             webix.ui({
-                view: 'txt2vid_rendering_basic',
+                view: 'txt2vid_sampler',
             }, $$('right-content'));
 
         },
-        'txt2vid_rendering_upscaling'() {
+        'txt2vid_3d'() {
             this.txt2vid = aid.model.settings.attr
             webix.ui({
-                view: 'txt2vid_rendering_upscaling',
+                view: 'txt2vid_3d',
             }, $$('right-content'));
         },
+
+        'txt2vid_2d_flip'() {
+            this.txt2vid = aid.model.settings.attr
+            webix.ui({
+                view: 'txt2vid_2d_flip',
+            }, $$('right-content'));
+        },
+        'txt2vid_frames'() {
+            this.txt2vid = aid.model.settings.attr
+            webix.ui({
+                view: 'txt2vid_frames',
+            }, $$('right-content'));
+        },
+
+
+
     },
 
     openDetailDialog(model) {

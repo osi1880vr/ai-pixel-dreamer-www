@@ -51,7 +51,7 @@ webix.protoUI({
             },
             {
                 view: "form",
-                id: "myform1",
+                id: "txt2vid_form",
                 height: 900,
 
 
@@ -128,7 +128,7 @@ webix.protoUI({
             },
             {
                 view: "form",
-                id: "myform1",
+                id: "txt2vid_basic_settings_form",
                 height: 900,
                 elements: [
                     { view: "slider",
@@ -189,7 +189,7 @@ webix.protoUI({
                     id: 'txt2vid_n_batch',
                     labelWidth: 250,
                     type: "alt",
-                    label: "Batch Count,
+                    label: "Batch Count",
                     value: config.txt2vid.scale,
                     name: "scale",
                     min: -1,
@@ -315,7 +315,7 @@ webix.protoUI({
 
 }, webix.ui.layout)
 webix.protoUI({
-    name: 'txt2vid_rendering_basic',
+    name: 'txt2vid_sampler',
 
     $init(config) {
         config.id = 'right-content';
@@ -336,7 +336,7 @@ webix.protoUI({
 
             {
                 view: "form",
-                id: "myform1",
+                id: "txt2vid_sampler_form",
                 height: 900,
                 elements: [
                     {
@@ -419,7 +419,7 @@ webix.protoUI({
 
 }, webix.ui.layout)
 webix.protoUI({
-    name: 'txt2vid_rendering_upscaling',
+    name: 'txt2vid_3d',
 
     $init(config) {
         config.id = 'right-content';
@@ -438,7 +438,177 @@ webix.protoUI({
             },
             {
                 view: "form",
-                id: "txt2vid_upscaling_form",
+                id: "txt2vid_3d_form",
+                height: 900,
+                elements: [
+                    {
+                        view: "checkbox",
+                        id: 'txt2vid_use_gfpgan',
+                        labelRight: "Use GFPGAN",
+                        labelWidth: 0,
+                        value: config.txt2vid.use_gfpgan,
+                    },
+                    {
+                        view: "checkbox",
+                        id: 'txt2vid_use_realesrgan',
+                        labelRight: "Use RealESRGAN",
+                        labelWidth: 0,
+                        value: config.txt2vid.use_realesrgan,
+                    },
+
+                    {
+                        view: "text",
+                        id: 'txt2vid_realesrgan_model_name',
+                        labelWidth: 250,
+                        value: config.txt2vid.realesrgan_model_name,
+                        label: "RealESRGAN Model Name"
+                    },
+
+                    {
+                        view: "text",
+                        id: 'txt2vid_realesrgan_model',
+                        labelWidth: 250,
+                        value: config.txt2vid.realesrgan_model,
+                        label: "RealESRGAN Model"
+                    },
+                    {
+                        view: "text",
+                        id: 'txt2vid_fp',
+                        labelWidth: 250,
+                        value: config.txt2vid.fp,
+                        label: "FP"
+                    },
+
+                ],
+                elementsConfig:{
+                    on:{
+                      onChange: function(){
+                        const name = this.config.id.replaceAll('txt2vid_','')
+                        aid.model.settings.attr.txt2vid[name] = this.config.value
+                      }
+                  	}
+                  }
+
+            },
+        ];
+
+        this.$ready.push(this.initComponent)
+    },
+    initComponent() {
+        this.load()
+        console.log('inited')
+    },
+    load() {},
+
+
+}, webix.ui.layout)
+
+webix.protoUI({
+    name: 'txt2vid_2d_flip',
+
+    $init(config) {
+        config.id = 'right-content';
+        config.txt2vid = aid.model.settings.attr.txt2vid
+        config.rows = [
+            {
+                id: TOOLBAR_ID,
+                view: 'toolbar',
+                elements: [
+                    { width: 7 },
+                    {
+                        view: 'label',
+                        label: 'Text to Image Upscaling'
+                    }
+                ]
+            },
+            {
+                view: "form",
+                id: "txt2vid_2d_flip_form",
+                height: 900,
+                elements: [
+                    {
+                        view: "checkbox",
+                        id: 'txt2vid_use_gfpgan',
+                        labelRight: "Use GFPGAN",
+                        labelWidth: 0,
+                        value: config.txt2vid.use_gfpgan,
+                    },
+                    {
+                        view: "checkbox",
+                        id: 'txt2vid_use_realesrgan',
+                        labelRight: "Use RealESRGAN",
+                        labelWidth: 0,
+                        value: config.txt2vid.use_realesrgan,
+                    },
+
+                    {
+                        view: "text",
+                        id: 'txt2vid_realesrgan_model_name',
+                        labelWidth: 250,
+                        value: config.txt2vid.realesrgan_model_name,
+                        label: "RealESRGAN Model Name"
+                    },
+
+                    {
+                        view: "text",
+                        id: 'txt2vid_realesrgan_model',
+                        labelWidth: 250,
+                        value: config.txt2vid.realesrgan_model,
+                        label: "RealESRGAN Model"
+                    },
+                    {
+                        view: "text",
+                        id: 'txt2vid_fp',
+                        labelWidth: 250,
+                        value: config.txt2vid.fp,
+                        label: "FP"
+                    },
+
+                ],
+                elementsConfig:{
+                    on:{
+                      onChange: function(){
+                        const name = this.config.id.replaceAll('txt2vid_','')
+                        aid.model.settings.attr.txt2vid[name] = this.config.value
+                      }
+                  	}
+                  }
+
+            },
+        ];
+
+        this.$ready.push(this.initComponent)
+    },
+    initComponent() {
+        this.load()
+        console.log('inited')
+    },
+    load() {},
+
+
+}, webix.ui.layout)
+
+webix.protoUI({
+    name: 'txt2vid_frames',
+
+    $init(config) {
+        config.id = 'right-content';
+        config.txt2vid = aid.model.settings.attr.txt2vid
+        config.rows = [
+            {
+                id: TOOLBAR_ID,
+                view: 'toolbar',
+                elements: [
+                    { width: 7 },
+                    {
+                        view: 'label',
+                        label: 'Text to Image Upscaling'
+                    }
+                ]
+            },
+            {
+                view: "form",
+                id: "txt2vid_frames_form",
                 height: 900,
                 elements: [
                     {
