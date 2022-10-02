@@ -1,29 +1,41 @@
-import json
-from flask import request
+import random
+
+from PIL.PngImagePlugin import PngInfo
 from flask_restx import Namespace, Resource
+from flask import request
 from sd.txt2img import run_txt2img_json
 
+# from multipart import tob
+
+
 api = Namespace(
-	name="Text to Image",
-	path="/txttoimg",
-	description="Text to Image Related operations"
+    name="Text to Image",
+    path="/txttoimg",
+    description="Text to Image Related operations"
 )
 
 
-@api.route('/run', methods=['POST','GET'])
-@api.param('body', 'The JSON Data', _in="formData")
+@api.route('/run', methods=['POST'])
+@api.param('body', 'The JSON Data', consumes="application/json")
 class run_txt2img(Resource):
 
-	def post(self):
-		try:
-			txt2img_json = request.get_json()
+    def post(self):
+        try:
+            txt2img_json = request.get_json()
 
-			run_txt2img_json(txt2img_json)
+            mdata = PngInfo()
+            images = run_txt2img_json(txt2img_json)
+            rnd = int(random.randrange(10000000000))
+            img_names = []
+            for img in images:
+                filename = f"www/web/static/img/" + str(rnd) + "temp.png"
+                img.save(filename, pnginfo=mdata)
+                imagename = f"/img/" + str(rnd) + "temp.png"
 
-			return {'success': True}, 200
-		except:
-			return {'success': False}, 500
-
-	def get(self):
-		return {'success': True}, 200
-
+                img_names.append(imagename)
+                rnd += 1
+            print(img_names, flush=True)
+            return img_names
+        except Exception as e:
+            print(e, flush=True)
+            return {'success': False}, 500

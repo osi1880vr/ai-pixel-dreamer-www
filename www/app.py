@@ -12,22 +12,24 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from www.apis.v1 import blueprint
 
 
-
-
 eventlet.monkey_patch()
 
-app = Flask('vms_api')
+app = Flask('adi_api',
+			static_url_path='',
+			static_folder='www/web/static',
+			template_folder='www/web/templates')
+app.wsgi_app = CounterMiddleware(app.wsgi_app)
+app.wsgi_app = ProxyFix(app.wsgi_app)
+CORS(app)
+
 app.wsgi_app = CounterMiddleware(app.wsgi_app)
 app.wsgi_app = ProxyFix(app.wsgi_app)
 CORS(app)
 
 
-
-
-
 @app.route("/")
 def index():
-	return redirect('/api/v1')
+	return redirect('index.html')
 
 
 app.register_blueprint(blueprint, url_prefix='/api/v1')
