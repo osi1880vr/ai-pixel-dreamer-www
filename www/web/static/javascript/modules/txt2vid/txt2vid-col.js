@@ -1,10 +1,10 @@
 import { Collection } from '../core/collection.js';
 import { Txt2vidModel } from "./txt2vid-model.js";
 
-export class txt2vidCollection extends Collection {
+export class Txt2vidCollection extends Collection {
     constructor(params) {
         super(params);
-        this.modelClass = txt2vidModel;
+        this.modelClass = Txt2vidModel;
         this.dataSets = {
             'txt2vid': this.items
         }

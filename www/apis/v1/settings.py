@@ -2,8 +2,14 @@ import json
 from flask_restx import Namespace, Resource
 from flask import jsonify
 from flask import request
+
+from sd.singleton import singleton
+
+gs = singleton
+
 import os
 
+# namespace gets activated inside of __init__.py
 api = Namespace(
     name="Settings",
     path="/settings",

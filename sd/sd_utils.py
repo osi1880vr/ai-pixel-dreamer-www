@@ -532,7 +532,7 @@ class MemUsageMonitor(threading.Thread):
             return
         print(f"[{self.name}] Recording max memory usage...\n")
         # Missing context
-        # handle = pynvml.nvmlDeviceGetHandleByIndex(g_store.defaults.general.gpu)
+        # handle = pynvml.nvmlDeviceGetHandleByIndex(gs.defaults.general.gpu)
         handle = pynvml.nvmlDeviceGetHandleByIndex(0)
         self.total = pynvml.nvmlDeviceGetMemoryInfo(handle).total
         while not self.stop_flag:
@@ -1469,7 +1469,7 @@ def save_sample(image, sample_path_i, filename, jpg_sample, prompts, seeds, widt
             piexif.insert(piexif.dump(exif_dict), f"{filename_i}.{save_ext}")
 
     # render the image on the frontend
-    #g_store[g_store.render_mode]["preview_image"].image(image)
+    #gs[gs.render_mode]["preview_image"].image(image)
 
 
 def get_next_sequence_number(path, prefix=''):

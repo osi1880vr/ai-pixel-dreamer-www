@@ -8,20 +8,36 @@
     "default_model": "Stable Diffusion v1.4",
     "default_model_config": "diffusion/configs/stable-diffusion/v1-inference.yaml",
     "default_model_ckpt": "diffusion/models/sd-v1-4.ckpt",
-    "default_path_mode": "subfolders",
+    "default_path_mode": "root",
     "default_path_mode_index": 1,
-    "fp": null,
-    "name": null,
-    "GFPGAN_dir": "./src/gfpgan",
-    "RealESRGAN_dir": "./src/realesrgan",
-    "RealESRGAN_model": "RealESRGAN_x4plus",
-    "LDSR_dir": "./src/latent-diffusion",
+
     "outdir_txt2img": "outputs/txt2img-samples",
     "outdir_img2img": "outputs/img2img-samples",
+    "outdir_txt2vid": "outputs/txt2vid-samples",
+    "outdir_vid_txt2vid": "outputs/txt2vid-videos",
+    "outdir_vid2vid": "outputs/vid2vid-samples",
+    "outdir_vid_vid2vid": "outputs/vid2vid-videos",
+    "outdir_vid_vid2vid_input": "outputs/vid2vid-videos-input",
+    "outdir_vid_frames_vid2vid": "outputs/vid2vid-video_frames",
+
+    "outpaint_tmp_path": "./outputs/outpaint_tmp",
+
+    "pathmode": "root",
+
+    "ffmpeg_path": "C:\\tools\\ffmpeg\\bin\\ffmpeg.exe",
+
+    "fp": null,
+    "name": null,
+    "gfpgan_dir": "./src/gfpgan",
+    "realesrgan_dir": "./src/realesrgan",
+    "realesrgan_model": "RealESRGAN_x4plus",
+    "ldsr_dir": "./src/latent-diffusion",
+
     "gfpgan_cpu": false,
     "esrgan_cpu": false,
     "extra_models_cpu": false,
     "extra_models_gpu": false,
+
     "save_metadata": true,
     "save_format": "png",
     "skip_grid": false,
@@ -36,7 +52,8 @@
     "optimized_turbo": false,
     "optimized_config": "optimizedSD/v1-inference.yaml",
     "update_preview": true,
-    "update_preview_frequency": 5
+    "update_preview_frequency": 5,
+    "dynamic_preview_frequency": true
   },
   "txt2img": {
     "prompt": "",
@@ -97,43 +114,17 @@
     "fp":null
   },
   "txt2vid": {
-    "default_model": "CompVis/stable-diffusion-v1-4",
-    "custom_models_list": [
-      "CompVis/stable-diffusion-v1-4",
-      "naclbit/trinart_stable_diffusion_v2",
-      "hakurei/waifu-diffusion",
-      "osanseviero/BigGAN-deep-128"
-    ],
+
     "prompt": null,
-    "height": 512,
-    "width": 512,
-    "cfg_scale": 7.5,
+    "keyframes": "0",
+
     "seed": null,
-    "batch_count": 1,
-    "batch_size": 1,
-    "sampling_steps": 30,
 
-
-
-    "separate_prompts": false,
-    "update_preview": true,
-    "update_preview_frequency": 5,
-    "dynamic_preview_frequency": true,
-    "normalize_prompt_weights": true,
-    "save_individual_images": true,
-    "save_video": true,
-    "group_by_prompt": true,
-    "write_info_files": true,
-    "do_loop": false,
     "save_as_jpg": false,
-    "use_GFPGAN": false,
-    "use_RealESRGAN": false,
-    "RealESRGAN_model": "RealESRGAN_x4plus",
-    "variant_amount": 0.0,
-    "variant_seed": null,
-    "beta_start": 0.00085,
-    "beta_end": 0.012,
-    "beta_scheduler_type": "linear",
+    "use_gfpgan": false,
+    "use_realesrgan": false,
+    "realesrgan_model": "RealESRGAN_x4plus",
+
     "max_frames": 3,
     "animation_mode": "3D",
     "animation_mode_list": ["2D", "3D"],
@@ -220,6 +211,7 @@
     "save_settings": true,
     "display_samples": true,
     "n_batch": 1,
+    "batch_size": 1,
     "batch_name": "time",
     "filename_format": "{timestring}_{index}_{prompt}.png",
     "file_format_list": [
@@ -252,11 +244,12 @@
     "timestring": null,
     "init_latent": null,
     "init_sample": null,
-    "init_c": null
+    "init_c": null,
+    "generation_mode": "txt2vid"
   },
   "vid2vid": {
     "seed": null,
-    "RealESRGAN_model": "RealESRGAN_x4plus",
+    "realesrgan_model": "RealESRGAN_x4plus",
     "beta_scheduler_type": "linear",
     "max_frames": 3,
     "animation_mode": "3D",
@@ -461,7 +454,7 @@
     "save_as_jpg": false,
     "use_GFPGAN": false,
     "use_RealESRGAN": false,
-    "RealESRGAN_model": "RealESRGAN_x4plus",
+    "realesrgan_model": "RealESRGAN_x4plus",
     "variant_amount": 0.0,
     "variant_seed": null,
     "write_info_files": true,

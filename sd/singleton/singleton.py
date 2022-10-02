@@ -6,6 +6,7 @@ vid2vid = {}
 txt2vid = {}
 img2img = {}
 models = {}
+current_images = []
 render_mode = ''
 device = ''
 modelFS = ''

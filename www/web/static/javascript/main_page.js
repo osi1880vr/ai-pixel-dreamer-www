@@ -46,14 +46,15 @@ function loadNewPage(isInitialLoad=false) {
     }
 }
 
-
+// here we fire up the view models
 
 async function fetchInitial() {
     return Promise.all([
+        aid.model.settings = new SettingsModel(),
+        await aid.model.settings.getSettings(),
         aid.views.nodes.fetch(),
         aid.views.txt2img.fetch(),
-            aid.model.settings = new SettingsModel(),
-            await aid.model.settings.getSettings()
+        aid.views.txt2vid.fetch(),
 
     ])
 }

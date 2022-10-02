@@ -1,6 +1,7 @@
 import gc
 import os
 import random
+import sys
 import time
 from datetime import datetime
 from types import SimpleNamespace
@@ -16,81 +17,88 @@ from sd.gc_torch import torch_gc
 gs = singleton
 
 
-
 def get_args(json):
     # SimpleNamespace = type(sys.implementation)
 
-    W, H = map(lambda x: x - x % 64,
-               (json['W'], json['H']))  # resize to integer multiple of 64
+    W, H = map(lambda x: x - x % 64, (int(json['W']), int(json['H'])))  # resize to integer multiple of 64
 
     now = datetime.now()  # current date and time
     batch_name = now.strftime("%H_%M_%S")
-    if gs.defaults.general.pathmode == "subfolders":
-        out_folder = get_output_folder(gs.defaults.general.outdir, batch_name)
+    if gs.defaults.general.default_path_mode == "subfolders":
+        out_folder = get_output_folder(gs.defaults.general.outdir_txt2vid, batch_name)
     else:
-        out_folder = gs.defaults.general.outdir
+        out_folder = gs.defaults.general.outdir_txt2vid
+
     if json['seed'] == '':
         json['seed'] = int(random.randrange(0, 4200000000))
     else:
-        json['seed'] = int(json['seed'])
-    seed = int(random.randrange(0, 4200000000))
-    DeforumArgs = {  # 'image': json['preview_image'],
-        # 'video': json['preview_video'],
-        'W': W,
-        'H': H,
-        'seed': json['seed'],  # @param
-        'sampler': json['sampler'],
-        # @param ["klms","dpm2","dpm2_ancestral","heun","euler","euler_ancestral","plms", "ddim"]
-        'steps': json['steps'],  # @param
-        'scale': json['scale'],  # @param
-        'ddim_eta': json['ddim_eta'],  # @param
-        'dynamic_threshold': None,
-        'static_threshold': None,
+        if json['seed']:
+            json['seed'] = int(json['seed'])
+        else:
+            json['seed'] = int(random.randrange(0, 4200000000))
 
-        # @markdown **Save & Display Settings**
-        'save_samples': json['save_samples'],  # @param {type:"boolean"}
-        'save_settings': json['save_settings'],  # @param {type:"boolean"}
-        'display_samples': json['display_samples'],  # @param {type:"boolean"}
+    try:
 
-        # @markdown **Batch Settings**
-        'n_batch': json["iterations"],  # @param
-        'batch_name': batch_name,  # @param {type:"string"}
-        'filename_format': json['filename_format'],
-        # @param ["{timestring}_{index}_{seed}.png","{timestring}_{index}_{prompt}.png"]
-        'seed_behavior': json['seed_behavior'],  # @param ["iter","fixed","random"]
-        'make_grid': json['make_grid'],  # @param {type:"boolean"}
-        'grid_rows': json['grid_rows'],  # @param
-        'outdir': out_folder,
+        DeforumArgs = {  # 'image': json['preview_image'],
+            # 'video': json['preview_video'],
+            'W': W,
+            'H': H,
+            'seed': json['seed'],  # @param
+            'sampler': json['sampler'],
+            # @param ["klms","dpm2","dpm2_ancestral","heun","euler","euler_ancestral","plms", "ddim"]
+            'steps': json['steps'],  # @param
+            'scale': json['scale'],  # @param
+            'ddim_eta': json['ddim_eta'],  # @param
+            'dynamic_threshold': None,
+            'static_threshold': None,
 
-        # @markdown **Init Settings**
-        'use_init': json['use_init'],  # @param {type:"boolean"}
-        'strength': json['strength'],  # @param {type:"number"}
-        'strength_0_no_init': json['strength_0_no_init'],
-        # Set the strength to 0 automatically when no init image is used
-        'init_image': json['init_image'],  # @param {type:"string"}
-        # Whiter areas of the mask are areas that change more
-        'use_mask': json['use_mask'],  # @param {type:"boolean"}
-        'use_alpha_as_mask': json['use_alpha_as_mask'],
-        # use the alpha channel of the init image as the mask
-        'mask_file': json['mask_file'],  # @param {type:"string"}
-        'invert_mask': json['invert_mask'],  # @param {type:"boolean"}
-        # Adjust mask image, 1.0 is no adjustment. Should be positive numbers.
-        'mask_brightness_adjust': json['mask_brightness_adjust'],  # @param {type:"number"}
-        'mask_contrast_adjust': json['mask_contrast_adjust'],  # @param {type:"number"}
+            # @markdown **Save & Display Settings**
+            'save_samples': json['save_samples'],  # @param {type:"boolean"}
+            'save_settings': json['save_settings'],  # @param {type:"boolean"}
+            'display_samples': json['display_samples'],  # @param {type:"boolean"}
 
-        'n_samples': json["batch_size"],
-        'precision': 'autocast',
-        'C': 4,
-        'f': 8,
+            # @markdown **Batch Settings**
+            'n_batch': json["n_samples"],  # @param
+            'batch_name': batch_name,  # @param {type:"string"}
+            'filename_format': json['filename_format'],
+            # @param ["{timestring}_{index}_{seed}.png","{timestring}_{index}_{prompt}.png"]
+            'seed_behavior': json['seed_behavior'],  # @param ["iter","fixed","random"]
+            'make_grid': json['make_grid'],  # @param {type:"boolean"}
+            'grid_rows': json['grid_rows'],  # @param
+            'outdir': out_folder,
 
-        'keyframes': json['keyframes'],
-        'prompt': json['prompt'],
+            # @markdown **Init Settings**
+            'use_init': json['use_init'],  # @param {type:"boolean"}
+            'strength': json['strength'],  # @param {type:"number"}
+            'strength_0_no_init': json['strength_0_no_init'],
+            # Set the strength to 0 automatically when no init image is used
+            'init_image': json['init_image'],  # @param {type:"string"}
+            # Whiter areas of the mask are areas that change more
+            'use_mask': json['use_mask'],  # @param {type:"boolean"}
+            'use_alpha_as_mask': json['use_alpha_as_mask'],
+            # use the alpha channel of the init image as the mask
+            'mask_file': json['mask_file'],  # @param {type:"string"}
+            'invert_mask': json['invert_mask'],  # @param {type:"boolean"}
+            # Adjust mask image, 1.0 is no adjustment. Should be positive numbers.
+            'mask_brightness_adjust': json['mask_brightness_adjust'],  # @param {type:"number"}
+            'mask_contrast_adjust': json['mask_contrast_adjust'],  # @param {type:"number"}
+            'generation_mode': json["generation_mode"],
+            'n_samples': json["batch_size"],
+            'precision': 'autocast',
+            'C': 4,
+            'f': 8,
 
-        'timestring': "",
-        'init_latent': None,
-        'init_sample': None,
-        'init_c': None,
-    }
+            'keyframes': json['keyframes'],
+            'prompt': json['prompt'],
+
+            'timestring': "",
+            'init_latent': None,
+            'init_sample': None,
+            'init_c': None,
+        }
+
+    except Exception as e:
+        print('get_args_error' + str(e))
 
     if json["generation_mode"] == "txt2img":
         deforum_anim_args = {
@@ -183,39 +191,49 @@ def get_args(json):
 
 
 def run_batch(json):
-    args, anim_args = get_args(json)
+    try:
+        args, anim_args = get_args(json)
 
-    # clean up unused memory
-    torch_gc()
 
-    models_path = os.path.join(os.getcwd(), 'content', 'models')
 
-    animation_prompts = {
-        0: json['prompt'],
-    }
+        # clean up unused memory
+        torch_gc()
 
-    # dispatch to appropriate renderer
-    if anim_args.animation_mode == '2D' or anim_args.animation_mode == '3D' or anim_args.animation_mode == 'Video Input':
-        generator.render_animation(args, anim_args, animation_prompts, models_path)
+        models_path = os.path.join(os.getcwd(), 'diffusion', 'models')
 
-        # args.outdir = f'{args.outdir}/_anim_stills/{args.batch_name}_{args.firstseed}'
-        if gs.defaults.general.pathmode == "subfolders":
-            image_path = os.path.join(args.outdir, f"{args.timestring}_%05d.png")
-            mp4_path = os.path.join(args.outdir, f"{args.timestring}.mp4")
-        else:
-            image_path = os.path.join(args.outdir, f"{args.timestring}_%05d.png")
-            os.makedirs(os.path.join(args.rootoutdir, "_mp4s"), exist_ok=True)
-            mp4_path = os.path.join(args.rootoutdir, f"_mp4s/{args.timestring}_{args.firstseed}.mp4")
+        animation_prompts = {
+            0: json['prompt'],
+        }
 
-        max_frames = anim_args.max_frames
-        json['preview_image'].empty()
+        # dispatch to appropriate renderer
+        if anim_args.animation_mode == '2D' or anim_args.animation_mode == '3D' or anim_args.animation_mode == 'Video Input':
+            generator.render_animation(args, anim_args, animation_prompts, models_path)
 
-        video.produce_video(args, image_path, mp4_path, max_frames)
+            # args.outdir = f'{args.outdir}/_anim_stills/{args.batch_name}_{args.firstseed}'
+            if gs.defaults.general.pathmode == "subfolders":
+                image_path = os.path.join(args.outdir, f"{args.timestring}_%05d.png")
+                mp4_path = os.path.join(args.outdir, f"{args.timestring}.mp4")
+            else:
+                image_path = os.path.join(args.outdir, f"{args.timestring}_%05d.png")
+                os.makedirs(os.path.join(args.rootoutdir, "_mp4s"), exist_ok=True)
+                mp4_path = os.path.join(args.rootoutdir, f"_mp4s/{args.timestring}_{args.firstseed}.mp4")
 
-    elif anim_args.animation_mode == 'None':
-        generator.render_animation(args, anim_args, animation_prompts, models_path)
+            max_frames = anim_args.max_frames
+            json['preview_image'].empty()
 
-        # image_path = os.path.join(args.outdir, f"{args.timestring}_willsanitizeprompt.png")
+            video.produce_video(args, image_path, mp4_path, max_frames)
+
+        elif anim_args.animation_mode == 'None':
+            generator.render_animation(args, anim_args, animation_prompts, models_path)
+
+            # image_path = os.path.join(args.outdir, f"{args.timestring}_willsanitizeprompt.png")
+
+    except Exception as e:
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
+        print('error generating args: ' + str(e))
+        return
 
 
 def run_txt2img(json):

@@ -1,22 +1,21 @@
+import os
+import sys
 
-
-
-import random
-
-from PIL.PngImagePlugin import PngInfo
-from flask_restx import Namespace, Resource
 from flask import request
-from sd.txt2img import run_txt2img_json
+from flask_restx import Namespace, Resource
+
+import sd.sd_video as sd_video
+from www.apis.v1.http.response import respond_500
 
 # from multipart import tob
 
 
+#namespace gets activated inside of __init__.py
 api = Namespace(
-    name="Text to Image",
-    path="/txttoimg",
-    description="Text to Image Related operations"
+    name="Text to Video",
+    path="/txttovid",
+    description="Text to Video Related operations"
 )
-
 
 def get_default_dict():
     return {
@@ -27,5 +26,19 @@ def get_default_dict():
 
 @api.route('/run', methods=['POST'])
 @api.param('body', 'The JSON Data', consumes="application/json")
-def post():
+class run_txt2vid(Resource):
+
+    def post(self):
+        try:
+            txt2vid_json = request.get_json()
+
+            sd_video.run_batch(txt2vid_json)
+
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            message = 'txt2vid Error: ' + str(e)
+            respond_500(message)
+
     pass

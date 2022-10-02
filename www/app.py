@@ -9,6 +9,15 @@ from flask_cors import CORS
 from www.middleware.counter import CounterMiddleware
 from werkzeug.middleware.proxy_fix import ProxyFix
 
+
+
+import www.setup_loader.settings as settings
+from sd.singleton import singleton
+
+gs = singleton
+
+settings.load_settings_json()
+
 from www.apis.v1 import blueprint
 
 
@@ -22,15 +31,9 @@ app.wsgi_app = CounterMiddleware(app.wsgi_app)
 app.wsgi_app = ProxyFix(app.wsgi_app)
 CORS(app)
 
-app.wsgi_app = CounterMiddleware(app.wsgi_app)
-app.wsgi_app = ProxyFix(app.wsgi_app)
-CORS(app)
-
-
 @app.route("/")
 def index():
 	return redirect('index.html')
-
 
 app.register_blueprint(blueprint, url_prefix='/api/v1')
 

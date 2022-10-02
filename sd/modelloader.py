@@ -4,7 +4,7 @@ import base64
 import sys
 from omegaconf import OmegaConf
 import torch
-
+from helpers import DepthModel
 from ldm.util import instantiate_from_config
 
 from sd.singleton import singleton
@@ -158,3 +158,13 @@ def load_models(continue_prev_run=False, use_gfpgan=False, use_realesrgan=False,
         gs.models["model"].half().to(gs.device)
 
         print("Model loaded.")
+
+
+def load_depth_model(anim_args, model_path, device):
+    if "depth_model" in gs.models:
+        print("Using depth model from cache")
+    else:
+        gs.models["depth_model"] = DepthModel(device)
+        gs.models["depth_model"].load_midas(model_path)
+    if anim_args.midas_weight < 1.0:
+        gs.models["depth_model"].load_adabins()

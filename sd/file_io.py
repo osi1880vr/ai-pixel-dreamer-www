@@ -12,10 +12,10 @@ import piexif.helper
 
 from sd.singleton import singleton
 
-g_store = singleton
+gs = singleton
 
 # should and will be moved to a settings menu in the UI at some point
-save_format = [s.lower() for s in g_store.defaults['general'].save_format.split(':')]
+save_format = [s.lower() for s in gs.defaults.general.save_format.split(':')]
 save_lossless = False
 save_quality = 100
 if save_format[0] == 'png':
@@ -63,7 +63,7 @@ def save_sample(image,
                 save_individual_images):
     filename_i = os.path.join(sample_path_i, filename)
 
-    if g_store.defaults.general.save_metadata or write_info_files:
+    if gs.defaults.general.save_metadata or write_info_files:
         # toggles differ for txt2img vs. img2img:
         offset = 0 if init_img is None else 2
         toggles = []
@@ -103,7 +103,7 @@ def save_sample(image,
         with open(f"{filename_i}.yaml", "w", encoding="utf8") as f:
             yaml.dump(metadata, f, allow_unicode=True, width=10000)
 
-    if g_store.defaults.general.save_metadata:
+    if gs.defaults.general.save_metadata:
         # metadata = {
         # 	"SD:prompt": prompts[i],
         # 	"SD:seed": str(seeds[i]),

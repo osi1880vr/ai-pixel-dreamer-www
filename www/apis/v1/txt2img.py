@@ -6,8 +6,8 @@ from flask import request
 from sd.txt2img import run_txt2img_json
 
 # from multipart import tob
-
-
+from www.apis.v1.http.response import respond_500
+#namespace gets activated inside of __init__.py
 api = Namespace(
     name="Text to Image",
     path="/txttoimg",
@@ -37,5 +37,5 @@ class run_txt2img(Resource):
             print(img_names, flush=True)
             return img_names
         except Exception as e:
-            print(e, flush=True)
-            return {'success': False}, 500
+            message = 'txt2img error' + str(e)
+            respond_500(message)

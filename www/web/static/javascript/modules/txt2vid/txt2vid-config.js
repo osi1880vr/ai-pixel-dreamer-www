@@ -1,5 +1,5 @@
 import './txt2vid-comp.js';
-import { txt2vidCollection } from "./txt2vid-col.js";
+import { Txt2vidCollection } from "./txt2vid-col.js";
 
 
 aid.views.txt2vid = {
@@ -112,7 +112,7 @@ aid.views.txt2vid = {
     async fetch() {
         console.log('fetch module txt2vid')
 
-        aid.model.txt2vid = new txt2vidCollection()
+        aid.model.txt2vid = new Txt2vidCollection()
 
     }
 

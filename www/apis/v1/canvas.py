@@ -12,7 +12,7 @@ from flask import request
 
 from sd.outpaint import outpaint_txt2img
 
-
+#namespace gets activated inside of __init__.py
 api = Namespace(
     name="Canvas",
     path="/canvas",
