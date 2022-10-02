@@ -7,6 +7,7 @@ txt2vid = {}
 img2img = {}
 models = {}
 current_images = []
+current_video_frames = []
 render_mode = ''
 device = ''
 modelFS = ''

@@ -1,3 +1,6 @@
+"""
+
+
 from flask import Blueprint
 from flask_restx import Api
 
@@ -26,3 +29,4 @@ api.add_namespace(settings_api)
 api.add_namespace(canvas_api)
 api.add_namespace(txt2img_api)
 api.add_namespace(txt2vid_api)
+"""

@@ -6,8 +6,9 @@ from flask_restx import Namespace, Resource
 
 import sd.sd_video as sd_video
 from www.apis.v1.http.response import respond_500
+from sd.singleton import singleton
 
-# from multipart import tob
+gs = singleton
 
 
 #namespace gets activated inside of __init__.py
@@ -33,6 +34,27 @@ class run_txt2vid(Resource):
             txt2vid_json = request.get_json()
 
             sd_video.run_batch(txt2vid_json)
+
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            message = 'txt2vid Error: ' + str(e)
+            respond_500(message)
+
+    pass
+
+
+@api.route('/get_results', methods=['GET'])
+# @api.param('body', 'The JSON Data', consumes="application/json")
+class get_results_txt2vid(Resource):
+
+    def get(self):
+        try:
+
+            return gs.current_video_frames
+
+
 
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()

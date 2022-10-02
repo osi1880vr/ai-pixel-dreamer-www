@@ -36,7 +36,6 @@ from sd.gc_torch import torch_gc
 gs = singleton
 
 if "Linux" in platform.platform():
-
     sys.path.extend([
         'src/taming-transformers',
         'src/clip',
@@ -65,10 +64,12 @@ def sanitize(prompt):
     tmp = ''.join(filter(whitelist.__contains__, prompt))
     return tmp.replace(' ', '_')
 
+
 def torch_gc():
     gc.collect()
     torch.cuda.empty_cache()
     torch.cuda.ipc_collect()
+
 
 def render_image_batch(args):
     load_models()
@@ -85,8 +86,8 @@ def render_image_batch(args):
     if args.save_settings or args.save_samples:
         print(f"Saving to {os.path.join(args.outdir, args.timestring)}_*")
 
-    #image_pipe = gs[gs["generation_mode"]]["preview_image"]
-    #video_pipe = gs[gs["generation_mode"]]["preview_video"]
+    # image_pipe = gs[gs["generation_mode"]]["preview_image"]
+    # video_pipe = gs[gs["generation_mode"]]["preview_video"]
 
     # save settings for the batch
     if args.save_settings:
@@ -158,11 +159,10 @@ def render_image_batch(args):
                         else:
                             save_image(image, filename)
 
-
-                        #image_pipe.image(image)
+                        # image_pipe.image(image)
 
                     if "with_nodes" in gs:
-                        #gs['node_pipe'] = filename
+                        # gs['node_pipe'] = filename
                         pass
                     else:
                         gs.current_images.append(filename)
@@ -371,12 +371,12 @@ def render_animation(args, anim_args, animation_prompts, model_path, half_precis
         # os.makedirs(args.outdir, exist_ok=True)
         # print(f"Saving animation frames to {args.outdir}")
 
-        #image_pipe = gs[gs["generation_mode"]]["preview_image"]
-        #video_pipe = gs[gs["generation_mode"]]["preview_video"]
-        #video_pipe.empty()
+        # image_pipe = gs[gs["generation_mode"]]["preview_image"]
+        # video_pipe = gs[gs["generation_mode"]]["preview_video"]
+        # video_pipe.empty()
 
         # save settings for the batch
-        if args.save_settings: # todo make this folders a controlable setting
+        if args.save_settings:  # todo make this folders a controlable setting
             if gs.defaults.general.pathmode == "subfolders":
                 os.makedirs(args.outdir, exist_ok=True)
                 settings_filename = os.path.join(args.outdir, f"{args.timestring}_settings.txt")
@@ -388,7 +388,7 @@ def render_animation(args, anim_args, animation_prompts, model_path, half_precis
                 json.dump(s, f, ensure_ascii=False, indent=4)
 
         # resume from timestring
-        if anim_args.resume_from_timestring: # todo make this folders a controlable setting
+        if anim_args.resume_from_timestring:  # todo make this folders a controlable setting
             args.timestring = anim_args.resume_timestring
         if gs.defaults.general.pathmode == "root":
             args.firstseed = args.seed
@@ -451,7 +451,8 @@ def render_animation(args, anim_args, animation_prompts, model_path, half_precis
             max_frames = len([f for f in pathlib.Path(video_in_frame_path).glob('*.jpg')])
 
             use_init = True
-            print(f"Loading {max_frames} input frames from {video_in_frame_path} and saving video frames to {args.outdir}")
+            print(
+                f"Loading {max_frames} input frames from {video_in_frame_path} and saving video frames to {args.outdir}")
 
         # load depth model for 3D
         predict_depths = (anim_args.animation_mode == '3D' and anim_args.use_depth_warping) or anim_args.save_depth_maps
@@ -497,7 +498,8 @@ def render_animation(args, anim_args, animation_prompts, model_path, half_precis
             if turbo_steps > 1:
                 tween_frame_start_idx = max(0, frame_idx - turbo_steps)
                 for tween_frame_idx in range(tween_frame_start_idx, frame_idx):
-                    tween = float(tween_frame_idx - tween_frame_start_idx + 1) / float(frame_idx - tween_frame_start_idx)
+                    tween = float(tween_frame_idx - tween_frame_start_idx + 1) / float(
+                        frame_idx - tween_frame_start_idx)
                     print(f"  creating in between frame {tween_frame_idx} tween:{tween:0.2f}")
 
                     advance_prev = turbo_prev_image is not None and tween_frame_idx > turbo_prev_frame_idx
@@ -509,14 +511,18 @@ def render_animation(args, anim_args, animation_prompts, model_path, half_precis
 
                     if anim_args.animation_mode == '2D':
                         if advance_prev:
-                            turbo_prev_image = anim_frame_warp_2d(turbo_prev_image, args, anim_args, keys, tween_frame_idx)
+                            turbo_prev_image = anim_frame_warp_2d(turbo_prev_image, args, anim_args, keys,
+                                                                  tween_frame_idx)
                         if advance_next:
-                            turbo_next_image = anim_frame_warp_2d(turbo_next_image, args, anim_args, keys, tween_frame_idx)
+                            turbo_next_image = anim_frame_warp_2d(turbo_next_image, args, anim_args, keys,
+                                                                  tween_frame_idx)
                     else:  # '3D'
                         if advance_prev:
-                            turbo_prev_image = anim_frame_warp_3d(turbo_prev_image, depth, anim_args, keys, tween_frame_idx)
+                            turbo_prev_image = anim_frame_warp_3d(turbo_prev_image, depth, anim_args, keys,
+                                                                  tween_frame_idx)
                         if advance_next:
-                            turbo_next_image = anim_frame_warp_3d(turbo_next_image, depth, anim_args, keys, tween_frame_idx)
+                            turbo_next_image = anim_frame_warp_3d(turbo_next_image, depth, anim_args, keys,
+                                                                  tween_frame_idx)
                     turbo_prev_frame_idx = turbo_next_frame_idx = tween_frame_idx
 
                     if turbo_prev_image is not None and tween < 1.0:
@@ -525,10 +531,12 @@ def render_animation(args, anim_args, animation_prompts, model_path, half_precis
                         img = turbo_next_image
 
                     filename = f"{args.timestring}_{tween_frame_idx:05}.png"
-                    cv2.imwrite(os.path.join(args.outdir, filename), cv2.cvtColor(img.astype(np.uint8), cv2.COLOR_RGB2BGR))
+                    cv2.imwrite(os.path.join(args.outdir, filename),
+                                cv2.cvtColor(img.astype(np.uint8), cv2.COLOR_RGB2BGR))
                     if anim_args.save_depth_maps:
-                        gs.models["depth_model"].save(os.path.join(args.outdir, f"{args.timestring}_depth_{tween_frame_idx:05}.png"),
-                                         depth)
+                        gs.models["depth_model"].save(
+                            os.path.join(args.outdir, f"{args.timestring}_depth_{tween_frame_idx:05}.png"),
+                            depth)
                 if turbo_next_image is not None:
                     prev_sample = sample_from_cv2(turbo_next_image)
 
@@ -538,7 +546,8 @@ def render_animation(args, anim_args, animation_prompts, model_path, half_precis
                     prev_img = anim_frame_warp_2d(sample_to_cv2(prev_sample), args, anim_args, keys, frame_idx)
                 else:  # '3D'
                     prev_img_cv2 = sample_to_cv2(prev_sample)
-                    depth = gs.models["depth_model"].predict(prev_img_cv2, anim_args) if gs.models["depth_model"] else None
+                    depth = gs.models["depth_model"].predict(prev_img_cv2, anim_args) if gs.models[
+                        "depth_model"] else None
                     prev_img = anim_frame_warp_3d(prev_img_cv2, depth, anim_args, keys, frame_idx)
 
                 # apply color matching
@@ -586,11 +595,13 @@ def render_animation(args, anim_args, animation_prompts, model_path, half_precis
                 if anim_args.save_depth_maps:
                     if depth is None:
                         depth = gs.models["depth_model"].predict(sample_to_cv2(sample), anim_args)
-                    gs.models["depth_model"].save(os.path.join(args.outdir, f"{args.timestring}_depth_{frame_idx:05}.png"), depth)
+                    gs.models["depth_model"].save(
+                        os.path.join(args.outdir, f"{args.timestring}_depth_{frame_idx:05}.png"), depth)
                 frame_idx += 1
 
-            #image_pipe.image(image)
+            # image_pipe.image(image)
 
+            gs.current_video_frames.append(filename)
 
             args.seed = next_seed(args)
 
@@ -598,6 +609,7 @@ def render_animation(args, anim_args, animation_prompts, model_path, half_precis
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
+
 
 def maintain_colors(prev_img, color_match_sample, mode):
     if mode == 'Match Frame 0 RGB':
@@ -798,7 +810,6 @@ def make_callback(sampler_name, dynamic_threshold=None, static_threshold=None, m
 
 
 def generate(args, return_latent=False, return_sample=False, return_c=False):
-
     try:
 
         global device
@@ -869,7 +880,8 @@ def generate(args, return_latent=False, return_sample=False, return_c=False):
         k_sigmas = k_sigmas[len(k_sigmas) - t_enc - 1:]
 
         if args.sampler in ['plms', 'ddim']:
-            sampler.make_schedule(ddim_num_steps=args.steps, ddim_eta=args.ddim_eta, ddim_discretize='fill', verbose=False)
+            sampler.make_schedule(ddim_num_steps=args.steps, ddim_eta=args.ddim_eta, ddim_discretize='fill',
+                                  verbose=False)
 
         callback = make_callback(sampler_name=args.sampler,
                                  dynamic_threshold=args.dynamic_threshold,
@@ -940,18 +952,11 @@ def generate(args, return_latent=False, return_sample=False, return_c=False):
                             x_sample = x_sample.astype(np.uint8)
                             image = Image.fromarray(x_sample)
                             results.append(image)
-                            #x_samples = gs.models["model"]..decode_first_stage(samples)
+                            # x_samples = gs.models["model"]..decode_first_stage(samples)
                         if return_sample:
                             results.append(x_samples_ddim.clone())
 
-
-
-
-
-
-
-
-        #x_samples = torch.clamp((x_samples + 1.0) / 2.0, min=0.0, max=1.0)
+        # x_samples = torch.clamp((x_samples + 1.0) / 2.0, min=0.0, max=1.0)
 
         if return_c:
             results.append(c.clone())
@@ -961,12 +966,12 @@ def generate(args, return_latent=False, return_sample=False, return_c=False):
             if args.use_gfpgan:
                 load_gfpgan()
                 # skip_save = True # #287 >_>
-                #torch_gc()
-                image=np.array(image)
+                # torch_gc()
+                image = np.array(image)
                 input_img = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
                 cropped_faces, restored_faces, restored_img = gs["GFPGAN"].enhance(
                     input_img, has_aligned=False, only_center_face=False, paste_back=True)
-                #gfpgan_sample = restored_img[:, :, ::-1]
+                # gfpgan_sample = restored_img[:, :, ::-1]
                 gfpgan_image = cv2.cvtColor(restored_img, cv2.COLOR_BGR2RGB)
                 gfpgan_image = Image.fromarray(gfpgan_image)
 
@@ -989,6 +994,7 @@ def generate(args, return_latent=False, return_sample=False, return_c=False):
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
+
 
 from functools import reduce
 

@@ -10,7 +10,7 @@
       "default_path_mode_index": 1,
       "fp": null,
       "name": null,
-      "GFPGAN_dir": "./src/gfpgan",
+      "gfpgan_dir": "./src/gfpgan",
       "realesrgan_dir": "./src/realesrgan",
       "realesrgan_model": "RealESRGAN_x4plus",
       "ldsr_dir": "./src/latent-diffusion",
