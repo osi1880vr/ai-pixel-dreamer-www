@@ -4,23 +4,24 @@
 # of the properties below.
 general:
   gpu: 0
-  outdir: outputs
-  ckpt: "diffusion/models/models/sd-v1-4.ckpt"
+  outdir: 'outputs'
   default_model: "Stable Diffusion v1.4"
   default_model_config: "diffusion/configs/stable-diffusion/v1-inference.yaml"
-  default_model_path: "diffusion/models/models/sd-v1-4.ckpt"
+  default_model_ckpt: "diffusion/models/sd-v1-4.ckpt"
+  default_model_path: "diffusion/models"
   default_path_mode: "subfolders"
   default_path_mode_index: 1
   fp:
   name: ''
-  GFPGAN_dir: "./src/gfpgan"
-  RealESRGAN_dir: "./src/realesrgan"
-  RealESRGAN_model: "RealESRGAN_x4plus"
-  LDSR_dir: "./src/latent-diffusion"
+  gfpgan_dir: "./src/gfpgan"
+  realesrgan_dir: "./src/realesrgan"
+  realesrgan_model: "RealESRGAN_x4plus"
+  ldsr_dir: "./src/latent-diffusion"
   outdir_txt2img: outputs/txt2img-samples
   outdir_img2img: outputs/img2img-samples
   gfpgan_cpu: False
   esrgan_cpu: False
+  outpaint_tmp_path: "./outputs/outpaint_tmp"
   extra_models_cpu: False
   extra_models_gpu: False
   save_metadata: True
@@ -57,9 +58,9 @@ txt2img:
   save_grid: True
   group_by_prompt: True
   save_as_jpg: False
-  use_GFPGAN: False
-  use_RealESRGAN: False
-  RealESRGAN_model: "RealESRGAN_x4plus"
+  use_gfpgan: False
+  use_realesrgan: False
+  realesrgan_model: "RealESRGAN_x4plus"
   variant_amount: 0.0
   variant_seed: ""
   write_info_files: True
@@ -123,9 +124,9 @@ txt2vid:
   write_info_files: True
   do_loop: False
   save_as_jpg: False
-  use_GFPGAN: False
-  use_RealESRGAN: False
-  RealESRGAN_model: "RealESRGAN_x4plus"
+  use_gfpgan: False
+  use_realesrgan: False
+  realesrgan_model: "RealESRGAN_x4plus"
   variant_amount: 0.0
   variant_seed: ""
   beta_start: 0.00085
@@ -234,7 +235,7 @@ vid2vid:
 
 
   seed: ""
-  RealESRGAN_model: "RealESRGAN_x4plus"
+  realesrgan_model: "RealESRGAN_x4plus"
   beta_scheduler_type: "linear"
   max_frames: 3
   # @markdown ####**Animation:**
@@ -384,9 +385,9 @@ img2img:
   save_grid: True
   group_by_prompt: True
   save_as_jpg: False
-  use_GFPGAN: False
-  use_RealESRGAN: False
-  RealESRGAN_model: "RealESRGAN_x4plus"
+  use_gfpgan: False
+  use_realesrgan: False
+  realesrgan_model: "RealESRGAN_x4plus"
   variant_amount: 0.0
   variant_seed: ""
   write_info_files: True

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/baklavajs/dist/styles.css">
+    <div style="width:90vw;height:90vh"><div id="editor"></div></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+    <script src="../../libs/baklavajs/main.js"></script>
+    <script src="../../libs/baklavajs/plugin-engine/dist/index.js"></script>
+    <script src="../../libs/baklavajs/plugin-interface-types/dist/index.js"></script>
+    <script src="../../libs/baklavajs/plugin-interface-types/dist/index.js"></script>
+    <script src="./customnode.js"></script>
+    <script>
+        const plugin = BaklavaJS.createBaklava(document.getElementById("editor"));
+        const editor = plugin.editor;
+
+        const viewPlugin= new BaklavaJS.PluginRendererVue.ViewPlugin();
+        const engine= new BaklavaJS.PluginEngine.Engine(true);
+        const intfTypePlugin= new BaklavaJS.PluginInterfaceTypes.InterfaceTypePlugin();
+
+        editor.use(viewPlugin);
+        editor.use(engine);
+        editor.use(new BaklavaJS.PluginOptionsVue.OptionPlugin())
+        editor.use(intfTypePlugin)
+        intfTypePlugin.addType("number", "#00FF00");
+        viewPlugin.enableMinimap = true;
+
+
+        const myNode = new BaklavaJS.Core.NodeBuilder("My Node")
+            .addInputInterface("My Interface")
+            .build();
+        editor.registerNodeType("My Node", myNode);
+        const myNode2 = new BaklavaJS.Core.NodeBuilder("My Node2")
+            .addInputInterface("My Interface2")
+            .build();
+        editor.registerNodeType("My Node2", myNode);
+
+        const customNode = new BaklavaJS.Core.NodeBuilder("MathNode")
+        .setName("Math")
+        .addInputInterface("Number 1", "NumberOption", 1)
+        .addInputInterface("Number 2", "NumberOption", 10)
+        .addOption("Operation", "SelectOption", "Add", undefined, {
+            items: [ "Add", "Subtract" ]
+        })
+        .addOutputInterface("Output")
+        .onCalculate((n) => {
+            const n1 = n.getInterface("Number 1").value;
+            const n2 = n.getInterface("Number 2").value;
+            const operation = n.getOptionValue("Operation");
+            let result;
+            if (operation === "Add") {
+                result = n1 + n2;
+            } else if (operation === "Subtract") {
+                result = n1 - n2;
+            }
+            n.getInterface("Output").value = result;
+        })
+        .build();
+        editor.registerNodeType("MathNode", customNode);
+    </script>
+    <script>
+
+        async function get_result(){
+            const result = await engine.calculate({ foo: "bar" });
+            for (const v of result.values()) {
+                console.log(v);
+            }
+        }
+
+    </script>
+
+</head>
+<body>
+<div>
+    <button type="button" onclick="get_result()">Click Me!</button>
+</div>
+
+
+</body>
+
+
+</html>

@@ -1,0 +1,90 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/rete/build/rete.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/rete-vue-render-plugin/build/vue-render-plugin.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/rete-connection-plugin@0.9.0/build/connection-plugin.min.js"></script>
+
+
+    <script>
+
+        window.addEventListener('load', (event) => {
+              console.log('page is fully loaded');
+              console.log(document.querySelector('#rete'))
+              //on_load();
+            });
+
+    </script>
+
+    <script>
+        const numSocket = new Rete.Socket('Number value');
+
+        class NumComponent extends Rete.Component {
+          constructor() {
+            super('Number');
+          }
+
+          builder(node) {
+            let out = new Rete.Output('num', 'Number', numSocket);
+
+            node.addOutput(out);
+          }
+
+          worker(node, inputs, outputs) {
+            outputs['num'] = node.data.num;
+          }
+        }
+
+    </script>
+
+
+    <script>
+        const data = {
+                       "id": "demo@0.1.0",
+                       "nodes": {
+                          "1": {
+                             "id": 1,
+                             "data": {
+                                "num": 2
+                             },
+                             "inputs": {},
+                             "outputs": {
+                                "num": {
+                                   "connections": [{
+                                      "node": 3,
+                                      "input": "num1",
+                                      "data": {}
+                                   }]
+                                }
+                             },
+                             "position": [80, 200],
+                             "name": "Number"
+                          }
+                       }
+                    }
+
+
+    </script>
+
+    <script  type="module" src="./rete-editor.js"></script>
+
+</head>
+<body>
+<div height="500" width="500" >
+    <div id="rete"></div>
+</div>
+<script>
+
+
+
+
+</script>
+
+</body>
+
+
+</html>
