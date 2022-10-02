@@ -29,14 +29,7 @@ webix.ui.datafilter.customSelectStatus = {
     },
     render(a, b){
         console.log('render')
-        return  `
-            <select id="${b.columnId}">
-                <option value=''></option>
-                <option value='critical 0'>CRITICAL</option>
-                <option value='critical 60'>CRITICAL 60</option>
-                <option value='critical 90'>CRITICAL 90</option>
-            </select>
-        `;
+        return  ``;
     }
 };
 

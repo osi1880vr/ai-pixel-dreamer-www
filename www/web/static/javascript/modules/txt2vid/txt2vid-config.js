@@ -41,44 +41,59 @@ aid.views.txt2vid = {
 
     routes: {
         'txt2vid'() {
+            this.txt2vid = aid.model.settings.attr
             webix.ui({
                 view: 'txt2vid',
             }, $$('right-content'));
 
         },
         'txt2vid_basic_settings'() {
+            this.txt2vid = aid.model.settings.attr
             webix.ui({
-                view: 'txt2vid_basic_settings',
-            }, $$('right-content'));
-        },
-        'txt2vid_prompt_help'() {
-            webix.ui({
-                view: 'txt2vid_prompt_help',
+                view: 'txt2vid_basic_settings_view',
             }, $$('right-content'));
         },
         'txt2vid_sampler'() {
             webix.ui({
-                view: 'txt2vid_sampler',
+                view: 'txt2vid_sampler_view',
             }, $$('right-content'));
-
         },
-        'txt2vid_3d'() {
+        'txt2vid_init'() {
             this.txt2vid = aid.model.settings.attr
             webix.ui({
-                view: 'txt2vid_3d',
+                view: 'txt2vid_init_view',
+            }, $$('right-content'));
+
+        },
+        'txt2vid_animation_mode'() {
+            this.txt2vid = aid.model.settings.attr
+            webix.ui({
+                view: 'txt2vid_animation_mode_view',
             }, $$('right-content'));
         },
 
+        'txt2vid_3d_motion'() {
+            this.txt2vid = aid.model.settings.attr
+            webix.ui({
+                view: 'txt2vid_3d_motion_view',
+            }, $$('right-content'));
+        },
+        'txt2vid_3d_depth_warping'() {
+            this.txt2vid = aid.model.settings.attr
+            webix.ui({
+                view: 'txt2vid_3d_depth_warping_view',
+            }, $$('right-content'));
+        },
         'txt2vid_2d_flip'() {
             this.txt2vid = aid.model.settings.attr
             webix.ui({
-                view: 'txt2vid_2d_flip',
+                view: 'txt2vid_2d_flip_view',
             }, $$('right-content'));
         },
-        'txt2vid_frames'() {
+        'txt2vid_upscaling'() {
             this.txt2vid = aid.model.settings.attr
             webix.ui({
-                view: 'txt2vid_frames',
+                view: 'txt2vid_upscaling_view',
             }, $$('right-content'));
         },
 

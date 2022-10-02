@@ -74,23 +74,23 @@ webix.protoUI({
                             aid.model.txt2img.dream()
                         }
                     },
-                     {
+                    {
 
-                            view:"template",
-                            id:"carousel_template",
-                            scroll: true,
-                            template: '<div id="container"></div>'
+                        view: "template",
+                        id: "carousel_template",
+                        scroll: true,
+                        template: '<div id="container"></div>'
 
 
-                     }
-                ],
-                 elementsConfig:{
-                     on:{
-                       onChange: function(){
-                         aid.model.settings.attr.txt2img[this.config.id.replaceAll('txt2img_','')] = this.config.value
-                       }
                     }
-                   }
+                ],
+                elementsConfig: {
+                    on: {
+                        onChange: function () {
+                            aid.model.settings.attr.txt2img[this.config.id.replaceAll('txt2img_', '')] = this.config.value
+                        }
+                    }
+                }
             }
 
         ];
@@ -131,69 +131,81 @@ webix.protoUI({
                 id: "myform1",
                 height: 900,
                 elements: [
-                    { view: "slider",
-                    id: 'txt2img_H',
-                    labelWidth: 250,
-                    type: "alt",
-                    label: "Height",
-                    value: config.txt2img.H ,
-                    name: "H",
-                    min: 1,
-                     max: 2048,
-                     step: 64,
-                     title: webix.template("#value#") },
-                    { view: "slider",
-                    id: 'txt2img_W',
-                    labelWidth: 250,
-                     type: "alt",
-                     label: "Width",
-                     value: config.txt2img.W,
-                     name: "W",
-                     min: 1,
-                     max: 2048,
-                     step: 64,
-                     title: webix.template("#value#") },
-                    { view: "slider",
-                    id: 'txt2img_steps',
-                    labelWidth: 250,
-                    type: "alt",
-                     label: "Steps",
-                     value: config.txt2img.steps ,
-                      name: "steps",
-                      min: 1,
-                      max: 200,
-                      title: webix.template("#value#") },
-                    { view: "slider",
-                    id: 'txt2img_iterations',
-                    labelWidth: 250,
-                    type: "alt",
-                    label: "Iterations",
-                    value: config.txt2img.iterations,
-                     name: "iterations",
-                     min: 1,
-                     max: 200,
-                     title: webix.template("#value#") },
-                    { view: "slider",
-                    id: 'txt2img_batch_size',
-                     labelWidth: 250,
-                     type: "alt",
-                     label: "Batch Size",
-                     value: config.txt2img.batch_size,
-                     name: "batch_size",
-                     min: 1,
-                     max: 50,
-                     title: webix.template("#value#") },
-                    { view: "slider",
-                    id: 'txt2img_scale',
-                    labelWidth: 250,
-                    type: "alt",
-                    label: "Scale",
-                    value: config.txt2img.scale,
-                    name: "scale",
-                    min: 1,
-                    max: 30,
-                    step: 0.2,
-                    title: webix.template("#value#") },
+                    {
+                        view: "slider",
+                        id: 'txt2img_H',
+                        labelWidth: 250,
+                        type: "alt",
+                        label: "Height",
+                        value: config.txt2img.H,
+                        name: "H",
+                        min: 1,
+                        max: 2048,
+                        step: 64,
+                        title: webix.template("#value#")
+                    },
+                    {
+                        view: "slider",
+                        id: 'txt2img_W',
+                        labelWidth: 250,
+                        type: "alt",
+                        label: "Width",
+                        value: config.txt2img.W,
+                        name: "W",
+                        min: 1,
+                        max: 2048,
+                        step: 64,
+                        title: webix.template("#value#")
+                    },
+                    {
+                        view: "slider",
+                        id: 'txt2img_steps',
+                        labelWidth: 250,
+                        type: "alt",
+                        label: "Steps",
+                        value: config.txt2img.steps,
+                        name: "steps",
+                        min: 1,
+                        max: 200,
+                        title: webix.template("#value#")
+                    },
+                    {
+                        view: "slider",
+                        id: 'txt2img_iterations',
+                        labelWidth: 250,
+                        type: "alt",
+                        label: "Iterations",
+                        value: config.txt2img.iterations,
+                        name: "iterations",
+                        min: 1,
+                        max: 200,
+                        title: webix.template("#value#")
+                    },
+                    {
+                        view: "slider",
+                        id: 'txt2img_batch_size',
+                        labelWidth: 250,
+                        type: "alt",
+                        label: "Batch Size",
+                        value: config.txt2img.batch_size,
+                        name: "batch_size",
+                        min: 1,
+                        max: 50,
+                        title: webix.template("#value#")
+                    },
+                    {
+                        view: "slider",
+                        id: 'txt2img_scale',
+                        labelWidth: 250,
+                        type: "alt",
+                        label: "Scale",
+                        value: config.txt2img.scale,
+                        name: "scale",
+                        min: 1,
+                        max: 30,
+                        step: 0.2,
+                        title: webix.template("#value#")
+                    },
                     {
                         view: "combo",
                         id: 'txt2img_sampler',
@@ -210,7 +222,7 @@ webix.protoUI({
                         value: config.txt2img.sampling_mode,
                         options: config.txt2img.sampling_mode_list
                     },
-                   {
+                    {
                         view: "text",
                         labelWidth: 250,
                         value: config.txt2img.seed,
@@ -235,13 +247,13 @@ webix.protoUI({
                     { view: "slider", labelWidth: 250, id: "txt2img_variant_amount", type: "alt", label: "Variant Amount", value: config.txt2img.variant_amount, name: "scale", min: 1, max: 30, step: 0.1, title: webix.template("#value#") },
 
                 ],
-                 elementsConfig:{
-                     on:{
-                       onChange: function(){
-                         aid.model.settings.attr.txt2img[this.config.id.replaceAll('txt2img_','')] = this.config.value
-                       }
+                elementsConfig: {
+                    on: {
+                        onChange: function () {
+                            aid.model.settings.attr.txt2img[this.config.id.replaceAll('txt2img_', '')] = this.config.value
+                        }
                     }
-                   }
+                }
 
             }
 
@@ -376,13 +388,13 @@ webix.protoUI({
                         value: config.txt2img.normalize_prompt_weights,
                     }
                 ],
-                 elementsConfig:{
-                     on:{
-                       onChange: function(){
-                         aid.model.settings.attr.txt2img[this.config.id.replaceAll('txt2img_','')] = this.config.value
-                       }
+                elementsConfig: {
+                    on: {
+                        onChange: function () {
+                            aid.model.settings.attr.txt2img[this.config.id.replaceAll('txt2img_', '')] = this.config.value
+                        }
                     }
-                   }
+                }
 
             },
 
@@ -465,14 +477,14 @@ webix.protoUI({
                     },
 
                 ],
-                elementsConfig:{
-                    on:{
-                      onChange: function(){
-                        const name = this.config.id.replaceAll('txt2img_','')
-                        aid.model.settings.attr.txt2img[name] = this.config.value
-                      }
-                  	}
-                  }
+                elementsConfig: {
+                    on: {
+                        onChange: function () {
+                            const name = this.config.id.replaceAll('txt2img_', '')
+                            aid.model.settings.attr.txt2img[name] = this.config.value
+                        }
+                    }
+                }
 
             },
         ];
@@ -483,7 +495,7 @@ webix.protoUI({
         this.load()
         console.log('inited')
     },
-    load() {},
+    load() { },
 
 
 }, webix.ui.layout)

@@ -112,9 +112,9 @@
     "batch_count": 1,
     "batch_size": 1,
     "sampling_steps": 30,
-    "num_inference_steps": 200,
-    "default_sampler": "k_euler",
-    "scheduler_name": "klms",
+
+
+
     "separate_prompts": false,
     "update_preview": true,
     "update_preview_frequency": 5,
@@ -136,7 +136,9 @@
     "beta_scheduler_type": "linear",
     "max_frames": 3,
     "animation_mode": "3D",
+    "animation_mode_list": ["2D", "3D"],
     "border": "wrap",
+    "border_list": ["wrap", "replicate"],
     "angle": "0:(0)",
     "zoom": "0:(1.04)",
     "translation_x": "0:(0)",
@@ -155,7 +157,7 @@
     "contrast_schedule": "0: (1.0)",
     "color_coherence": "Match Frame 0 LAB",
     "color_coherence_list": [
-      "null",
+      "",
       "Match Frame 0 HSV",
       "Match Frame 0 LAB",
       "Match Frame 0 RGB"
@@ -199,7 +201,7 @@
     "H": 512,
     "HW_calc": "map(lambda x: x - x % 64, (W, H))",
     "sampler": "plms",
-    "sample_list": [
+    "sampler_list": [
       "klms",
       "dpm2",
       "dpm2_ancestral",
