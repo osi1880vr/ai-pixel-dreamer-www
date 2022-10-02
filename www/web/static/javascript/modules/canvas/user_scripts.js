@@ -13,7 +13,7 @@ define("/render/main", function () {return async function () {
     clear()
     
     imagine.setServer({
-        url: 'http://127.0.0.1:8080/api/v1/canvas'
+        url: location.protocol + '//' + location.host + '/api/v1/canvas' //'http://127.0.0.1:8080/api/v1/canvas'
     })
     
     
