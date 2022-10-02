@@ -1,9 +1,12 @@
+import shutil
+
 from fastapi import APIRouter, File, UploadFile, Form
 import os
 import random
 from PIL.PngImagePlugin import PngInfo
 from fastapi.responses import FileResponse
 from sd.outpaint import * # outpaint_txt2img
+from typing import Union
 
 router = APIRouter()
 
@@ -34,7 +37,12 @@ def get_default_dict():
         "save_intermediate_every": 1000
     }
 
-
+def save_upload_file(upload_file: UploadFile, destination) -> None:
+    try:
+        with open(destination,"wb") as buffer:
+            shutil.copyfileobj(upload_file.file, buffer)
+    finally:
+        upload_file.file.close()
 
 @router.post('/api/v1/canvas/run', status_code=201)
 # @api.param('body', 'The JSON Data',  consumes="multipart/form-data")
@@ -46,12 +54,12 @@ async def canvas_run(
         guidance: float = Form(7),
         steps: int = Form(50),
         samples: int = Form(1),
-        imageGuide: bytes = File(None),
-        maskForBlend: bytes = File(None),
+        imageGuide: Union[UploadFile, None]  = File(default=None),
+        maskForBlend: Union[UploadFile, None]  = File(default=None),
         blend_mask: str = Form(None),
         strength: int = Form(None),
         seed: str = Form(None),
-        maskBlur: str = Form()
+        maskBlur: int = Form()
 ):
 
     try:
@@ -76,13 +84,13 @@ async def canvas_run(
 
         if imageGuide != b'undefined' and imageGuide.filename != '':
             path = os.path.join(tmp_directory, f"{global_prefix}_{current_id}.png")
-            imageGuide.save(path)
+            save_upload_file(imageGuide, path)
             my_data['image_guide'] = path
 
-            if maskForBlend and maskForBlend.filename != '':
+            if maskForBlend  != b'undefined' and maskForBlend.filename != '':
                 mask_path = os.path.join(
                     tmp_directory, f"{global_prefix}_{current_id}_mask.png")
-                maskForBlend.save(mask_path)
+                save_upload_file(maskForBlend, mask_path)
                 my_data['blend_mask'] = mask_path
                 my_data['mask_blur'] = maskBlur
             else:
