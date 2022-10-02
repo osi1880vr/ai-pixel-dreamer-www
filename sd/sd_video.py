@@ -85,12 +85,12 @@ def get_args(json):
             'generation_mode': json["generation_mode"],
             'n_samples': json["batch_size"],
             'precision': 'autocast',
-            'C': 4,
-            'f': 8,
-
             'keyframes': json['keyframes'],
             'prompt': json['prompt'],
-
+            'use_gfpgan':json['use_gfpgan'],
+            'use_realesrgan':json['use_realesrgan'],
+            'C': 4,
+            'f': 8,
             'timestring': "",
             'init_latent': None,
             'init_sample': None,
@@ -219,7 +219,7 @@ def run_batch(json):
                 mp4_path = os.path.join(args.rootoutdir, f"_mp4s/{args.timestring}_{args.firstseed}.mp4")
 
             max_frames = anim_args.max_frames
-            json['preview_image'].empty()
+            #json['preview_image'].empty()
 
             video.produce_video(args, image_path, mp4_path, max_frames)
 

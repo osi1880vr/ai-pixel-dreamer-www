@@ -958,9 +958,8 @@ def generate(args, return_latent=False, return_sample=False, return_c=False):
 
         for image in results:
 
-            if gs["use_gfpgan"] == True:
-                if "GFPGAN" not in gs.models:
-                    gs.models["GFPGAN"] = load_gfpgan()
+            if args.use_gfpgan:
+                load_gfpgan()
                 # skip_save = True # #287 >_>
                 #torch_gc()
                 image=np.array(image)
