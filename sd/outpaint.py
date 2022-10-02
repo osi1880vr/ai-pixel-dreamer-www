@@ -1,22 +1,22 @@
 
 import os
-import torch
-from numpy import uint8
-from PIL import Image
-from tqdm import tqdm, trange
-from einops import rearrange
-from torchvision.utils import make_grid
 import time
+
+import torch
+from einops import rearrange
 from pytorch_lightning import seed_everything
-
-
+from torchvision.utils import make_grid
+from tqdm import tqdm, trange
 # removes init model warning with weights
 from transformers import logging
+
 logging.set_verbosity_error()
 
 from sd.singleton import singleton
 gs = singleton
-
+from sd.modelloader import load_models
+from sd.file_io import save_image
+from sd.gc_torch import torch_gc
 import sd.utils as utils
 import sd.toxicode_utils as toxicode_utils
 
@@ -24,9 +24,7 @@ from sd.ddim_simplified import DDIMSampler
 
 from ldm.models.diffusion.plms import PLMSSampler
 
-from sd.modelloader import load_models
-from sd.file_io import save_image
-from sd.gc_torch import torch_gc
+
 
 model  = None
 device = None
@@ -38,7 +36,6 @@ ddim_sampler = None
 inpainting_config  = None
 inpainting_model   = None
 inpainting_sampler = None
-
 
 
 tmp_directory    = gs.defaults.general.outpaint_tmp_path
@@ -216,7 +213,7 @@ def outpaint_txt2img(opt):
                                                        prompt= prompts[0],  # FIXME [0]
                                                        seed= opt.seed,
                                                        generation_time= generated_time - tic
-            ))
+                                                       ))
 
         toc = time.time()
 

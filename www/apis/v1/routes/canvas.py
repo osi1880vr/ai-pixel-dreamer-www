@@ -1,13 +1,11 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, File, UploadFile, Form
 import os
 import random
 from PIL.PngImagePlugin import PngInfo
-from fastapi import FastAPI, File, UploadFile, Form
 from fastapi.responses import FileResponse
-from sd.outpaint import outpaint_txt2img
+from sd.outpaint import * # outpaint_txt2img
 
 router = APIRouter()
-
 
 
 tmp_directory = "./outputs/outpaint/"
@@ -18,7 +16,6 @@ current_id = 1
 
 os.makedirs(tmp_directory, exist_ok=True)
 os.makedirs(global_prefix, exist_ok=True)
-
 
 def get_default_dict():
     return {
