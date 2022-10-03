@@ -17,7 +17,7 @@ settings.load_settings_json()
 from www.apis.v1.routes import canvas_api
 from www.apis.v1.routes import settings_api
 from www.apis.v1.routes import txt2img_api
-
+from www.apis.v1.routes import txt2vid_api
 
 app = FastAPI()
 
@@ -47,6 +47,7 @@ logger = logging.getLogger("foo")
 app.include_router(canvas_api.router)
 app.include_router(settings_api.router)
 app.include_router(txt2img_api.router)
+app.include_router(txt2vid_api.router)
 
 app.mount("/", StaticFiles(directory="www/web/static", html=True), name="static")
 

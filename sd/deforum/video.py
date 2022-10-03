@@ -2,7 +2,11 @@ import os
 import subprocess
 from base64 import b64encode
 import platform
-import streamlit as st
+
+from sd.singleton import singleton
+
+gs = singleton
+
 
 if "Linux" in platform.platform():
 	ffmpeg = 'ffmpeg'
@@ -46,8 +50,3 @@ def produce_video(args, image_path, mp4_path, max_frames, fps=12):
 
 	# mp4 = open(mp4_path,'rb').read()
 	# data_url = "data:video/mp4;base64," + b64encode(mp4).decode()
-	st.session_state[st.session_state["generation_mode"]]["mp4_path"] = mp4_path
-	st.session_state[st.session_state["generation_mode"]]['preview_video'].empty()
-	st.session_state[st.session_state["generation_mode"]]['preview_video'].video(st.session_state[st.session_state["generation_mode"]]["mp4_path"])
-
-# display.display( display.HTML(f'<video controls loop><source src="{data_url}" type="video/mp4"></video>') )

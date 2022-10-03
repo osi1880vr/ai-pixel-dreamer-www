@@ -8,6 +8,7 @@ img2img = {}
 models = {}
 current_images = []
 current_video_frames = []
+current_video = ''
 rendering = False
 render_mode = ''
 device = ''

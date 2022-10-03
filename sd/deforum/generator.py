@@ -591,6 +591,7 @@ def render_animation(args, anim_args, animation_prompts, model_path, half_precis
                 frame_idx += turbo_steps
             else:
                 filename = f"{args.timestring}_{frame_idx:05}.png"
+                image.save(os.path.join(args.outdir, filename))
                 save_image(image, os.path.join(args.outdir, filename))
                 if anim_args.save_depth_maps:
                     if depth is None:

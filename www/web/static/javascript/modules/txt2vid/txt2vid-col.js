@@ -32,6 +32,25 @@ export class Txt2vidCollection extends Collection {
 
     setDataSets() { }
 
+    async getData(url = '',) {
+        // Default options are marked with *
+        let response = await fetch(url, {
+            method: 'GET', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, *cors, same-origin
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // include, *same-origin, omit
+            headers: {
+              'Content-Type': 'application/json'
+              // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            redirect: 'follow', // manual, *follow, error
+            referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        });
+
+        const text = await response.text();
+        return text;
+
+    }
 
         async postData(url = '', data = {}) {
           // Default options are marked with *
@@ -70,7 +89,7 @@ export class Txt2vidCollection extends Collection {
         get_carousel(image_array) {
 
           function img(obj){
-            return '<img src="http://localhost:8080/'+obj.src+'" class="content" ondragstart="return false"/>'
+             return '<img src="' + location.protocol + '//' + location.host +obj.src+'" class="content" ondragstart="return false"/>'
           }
 
 
@@ -79,6 +98,10 @@ export class Txt2vidCollection extends Collection {
             carousel_array.images.push({ css: "image", template:img, data:{src:image} })
         }
         const data = carousel_array.images
+
+        if ($$('carousel')) {
+            $$('carousel').destructor()
+        }
 
         const dummy = webix.ui({
             view:"window",
@@ -100,7 +123,18 @@ export class Txt2vidCollection extends Collection {
           }).show();
 
         }
+        async refresh_current_images(me){
+            let response = await me.getData('/api/v1/txttovid/get_results')
+            response = JSON.parse(response)
 
+            if (!response.rendering & response.current_images.length > 0){
+                clearInterval(me.interval);
+            }
+            if(response.current_images.length > 0){
+                me.get_carousel(JSON.parse(response.current_images))
+            }
+
+        }
          async handler(id){
                 // your code here
                 //this.set_empty_container()
@@ -110,7 +144,18 @@ export class Txt2vidCollection extends Collection {
                 let response = await this.postData('api/v1/txttovid/run',data_out)
                 console.log(response)
 
-                this.get_carousel(JSON.parse(response))
+                this.interval = setInterval( async () => {
+                    const me = this
+                    let response = await me.getData('/api/v1/txttoimg/get_results')
+                    response = JSON.parse(response)
+
+                    if (!response.rendering & response.current_images.length > 0){
+                        clearInterval(me.interval);
+                    }
+                    if(response.current_images.length > 0){
+                        me.get_carousel(response.current_images)
+                    }
+                  }, 1000); // update 1 time per second
 
             }
     dream() {

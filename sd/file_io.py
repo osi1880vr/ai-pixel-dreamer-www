@@ -166,6 +166,19 @@ def prepare_response_image(src):
     dst = f"/img/" + str(rnd) + src_filename
     gs.current_images.append(dst)
 
+def prepare_response_video(src):
+    rnd = int(random.randrange(10000000000))
+    src_filename = re.match(r'(.*\/)(.*)', src)
+    src_filename = src_filename.group(2)
+    dst_path = f"www/web/static/img/"
+    os.makedirs(dst_path, exist_ok=True)
+    #copy file to a loocation where webserver can fetch it
+    dst = dst_path + str(rnd) + src_filename
+    shutil.copyfile(src, dst)
+    #shorten the filename so browser can fetch the file from webserver
+    dst = f"/img/" + str(rnd) + src_filename
+    gs.current_video = dst
+
 
 def save_image(image, filename, pnginfo=None):
     filename = filename.replace('\\', '/')
