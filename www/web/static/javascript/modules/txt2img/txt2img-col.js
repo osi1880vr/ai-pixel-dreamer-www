@@ -86,7 +86,9 @@ export class Txt2imgCollection extends Collection {
         get_carousel(image_array) {
 
           function img(obj){
-            return '<img src="http://localhost:8080/'+obj.src+'" class="content" ondragstart="return false"/>'
+           //'<img src="http://localhost:8080/'+obj.src+'" class="content" ondragstart="return false"/>'
+             return '<img src="' + location.protocol + '//' + location.host +obj.src+'" class="content" ondragstart="return false"/>'
+
           }
 
 
@@ -113,13 +115,13 @@ export class Txt2imgCollection extends Collection {
             },
             head:{
               view:"toolbar", type:"MainBar", elements:[
-                {view:"label", label: "Photobook", align:'left'}
+                {view:"label", label: "Text to Image Result(s)", align:'left'}
               ]
             },
             top:10,
             left:10
           }).show();
-
+        $$('carousel').resize();
         }
 
         async refresh_current_images(me){
