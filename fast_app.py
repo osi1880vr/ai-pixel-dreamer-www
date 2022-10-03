@@ -50,4 +50,4 @@ app.include_router(txt2img_api.router)
 
 app.mount("/", StaticFiles(directory="www/web/static", html=True), name="static")
 
-uvicorn.run(app, host="localhost", port=8080, log_level="debug")
+uvicorn.run(app, host="0.0.0.0", port=8080, log_level="debug")
