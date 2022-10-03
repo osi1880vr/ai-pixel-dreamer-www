@@ -88,7 +88,7 @@ webix.protoUI({
                         id: "prompts_text",
                         gravity:3,
                         scroll: true,
-                         readonly:true
+                       //  readonly:true
 
 
                     },

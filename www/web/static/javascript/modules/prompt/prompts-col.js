@@ -60,6 +60,7 @@ export class PromptsCollection extends Collection {
             let image = document.getElementById('image');
             let data_out = aid.model.settings.attr.prompts
             let response = await this.postData('api/v1/prompts/dream',data_out)
+            response = response.replaceAll('\"','').replaceAll('"','').replaceAll('\\n','\n')
             $$('prompts_text').setValue(response)
 
         }
