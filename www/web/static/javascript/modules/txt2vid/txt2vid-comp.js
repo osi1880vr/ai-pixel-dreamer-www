@@ -71,17 +71,35 @@ webix.protoUI({
                         label: "Keyframes",
                         placeholder: "Keyframes"
                     },
-
                     {
-                        view: "button",
-                        id: "txt2vid_dream",
-                        value: "Dream",
-                        css: "webix_primary",
-                        inputWidth: 100,
-                        click: function (id, event) {
-                            aid.model.txt2vid.dream()
-                        }
+                        margin: 5,
+                        cols: [
+                        {
+                            view: "button",
+                            id: "txt2vid_dream",
+                            value: "Dream",
+                            css: "webix_primary",
+                            inputWidth: 100,
+                            click: function (id, event) {
+                                aid.model.txt2vid.dream()
+                            }
+                        },
+                        {
+                            view: "button",
+                            id: "txt2vid_toggle",
+                            value: "Toggle Updates",
+                            css: "webix_primary",
+                            inputWidth: 150,
+                            click: function (id, event) {
+                                aid.model.txt2vid.toggle_updates()
+                            }
+                        },
+                        ]
+
+
                     },
+
+
                     {
 
                         view: "template",

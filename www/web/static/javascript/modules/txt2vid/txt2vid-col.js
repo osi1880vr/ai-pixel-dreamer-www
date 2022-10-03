@@ -164,7 +164,31 @@ export class Txt2vidCollection extends Collection {
     }
 
 
+    toggle_updates() {
+        if (this.interval) {
+            clearInterval(this.interval);
+        } else {
 
+            this.interval = setInterval( async () => {
+                const me = this
+                let response = await me.getData('/api/v1/txttoimg/get_results')
+                response = JSON.parse(response)
+
+                if (!response.rendering & response.current_images.length > 0){
+                    clearInterval(me.interval);
+                }
+                if(response.current_images.length > 0){
+                    me.get_carousel(response.current_images)
+                }
+              }, 1000); // update 1 time per second
+
+
+
+        }
+
+
+
+    }
 
 
 
