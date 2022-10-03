@@ -42,7 +42,6 @@ class run_txt2vid(Resource):
             message = 'txt2vid Error: ' + str(e)
             respond_500(message)
 
-    pass
 
 
 @api.route('/get_results', methods=['GET'])
@@ -53,8 +52,6 @@ class get_results_txt2vid(Resource):
         try:
 
             return gs.current_video_frames
-
-
 
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()

@@ -1,5 +1,6 @@
 import json
 import os
+import random
 import re
 import time
 from datetime import date
@@ -9,6 +10,8 @@ import yaml
 from PIL.PngImagePlugin import PngInfo
 import piexif
 import piexif.helper
+
+import shutil
 
 from sd.singleton import singleton
 
@@ -119,6 +122,7 @@ def save_sample(image,
             mdata = PngInfo()
             for key in metadata:
                 mdata.add_text(key, str(metadata[key]))
+            image.save(f"{filename_i}.png", pnginfo=mdata)
             save_image(image, f"{filename_i}.png", pnginfo=mdata)
         else:
             if jpg_sample:
@@ -149,18 +153,27 @@ def get_output_folder(self, output_path, batch_folder):
     os.makedirs(out_path, exist_ok=True)
     return out_path
 
+def prepare_response_image(src):
+    rnd = int(random.randrange(10000000000))
+    src_filename = re.match(r'(.*\/)(.*)', src)
+    src_filename = src_filename.group(2)
+    #copy file to a loocation where webserver can fetch it
+    dst = f"www/web/static/img/" + str(rnd) + src_filename
+    shutil.copyfile(src, dst)
+    #shorten the filename so browser can fetch the file from webserver
+    dst = f"/img/" + str(rnd) + src_filename
+    gs.current_images.append(dst)
+
 
 def save_image(image, filename, pnginfo=None):
+    filename = filename.replace('\\', '/')
     path = re.match(r'(.*)(\/.*?)', filename)
     if path:
         path_name = path.group(1)
         print(path_name)
         os.makedirs(path_name, exist_ok=True)
         try:
-            if pnginfo:
-                image.save(filename, pnginfo)
-            else:
-                image.save(filename)
+            prepare_response_image(filename)
         except Exception as e:
             print(str(e))
     else:
@@ -175,6 +188,7 @@ def save_jpg_image(image, filename, quality=save_quality, optimize=True):
         os.makedirs(path_name, exist_ok=True)
         try:
             image.save(filename, quality=quality, optimize=optimize)
+            prepare_response_image(filename)
         except Exception as e:
             print(str(e))
     else:
@@ -189,6 +203,7 @@ def save_webp_image(image, filename, type=f"webp", quality=save_quality, lossles
         os.makedirs(path_name, exist_ok=True)
         try:
             image.save(filename, type=type, quality=quality, lossless=lossless)
+            prepare_response_image(filename)
         except Exception as e:
             print(str(e))
     else:

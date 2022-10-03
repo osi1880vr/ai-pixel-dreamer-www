@@ -8,6 +8,7 @@ export class Txt2imgCollection extends Collection {
         this.dataSets = {
             'txt2img': this.items
         }
+        this.interval = ''
     }
 
     getUrlPath() { return `/txt2img/${this.id}` }
@@ -32,11 +33,10 @@ export class Txt2imgCollection extends Collection {
 
     setDataSets() { }
 
-
-        async postData(url = '', data = {}) {
-          // Default options are marked with *
-          let response = await fetch(url, {
-            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+    async getData(url = '',) {
+        // Default options are marked with *
+        let response = await fetch(url, {
+            method: 'GET', // *GET, POST, PUT, DELETE, etc.
             mode: 'cors', // no-cors, *cors, same-origin
             cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
             credentials: 'same-origin', // include, *same-origin, omit
@@ -46,16 +46,32 @@ export class Txt2imgCollection extends Collection {
             },
             redirect: 'follow', // manual, *follow, error
             referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-            body: JSON.stringify(data) // body data type must match "Content-Type" header
-          });
+        });
 
-            const text = await response.text();
-            return text;
+        const text = await response.text();
+        return text;
 
+    }
 
+    async postData(url = '', data = {}) {
+      // Default options are marked with *
+      let response = await fetch(url, {
+        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        mode: 'cors', // no-cors, *cors, same-origin
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: 'same-origin', // include, *same-origin, omit
+        headers: {
+          'Content-Type': 'application/json'
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        redirect: 'follow', // manual, *follow, error
+        referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        body: JSON.stringify(data) // body data type must match "Content-Type" header
+      });
 
-         // return response.json(); // parses JSON response into native JavaScript objects
-        }
+        const text = await response.text();
+        return text;
+    }
 
         set_empty_container() {
             $$('temp_container').rows = [{
@@ -80,6 +96,11 @@ export class Txt2imgCollection extends Collection {
         }
         const data = carousel_array.images
 
+        if ($$('carousel')) {
+            $$('carousel').destructor()
+        }
+
+
         const dummy = webix.ui({
             view:"window",
             container: "container",
@@ -101,16 +122,44 @@ export class Txt2imgCollection extends Collection {
 
         }
 
+        async refresh_current_images(me){
+            let response = await me.getData('/api/v1/txttoimg/get_results')
+            response = JSON.parse(response)
+
+            if (!response.rendering & response.current_images.length > 0){
+                clearInterval(me.interval);
+            }
+            if(response.current_images.length > 0){
+                me.get_carousel(JSON.parse(response.current_images))
+            }
+
+        }
+
          async handler(id){
                 // your code here
                 //this.set_empty_container()
                 let image = document.getElementById('image');
                 let data_out = aid.model.settings.attr.txt2img
                 console.log(data_out)
-                let response = await this.postData('http://localhost:8080/api/v1/txttoimg/run',data_out)
+                let response = await this.postData('/api/v1/txttoimg/run',data_out)
                 console.log(response)
 
-                this.get_carousel(JSON.parse(response))
+                //this.interval = setInterval(this.refresh_current_images(this), 2000, this);
+
+                this.interval = setInterval( async () => {
+                    const me = this
+                    let response = await me.getData('/api/v1/txttoimg/get_results')
+                    response = JSON.parse(response)
+
+                    if (!response.rendering & response.current_images.length > 0){
+                        clearInterval(me.interval);
+                    }
+                    if(response.current_images.length > 0){
+                        me.get_carousel(response.current_images)
+                    }
+                  }, 1000); // update 1 time per second
+
+
 
             }
     dream() {
@@ -125,4 +174,3 @@ export class Txt2imgCollection extends Collection {
 
 
 }
-

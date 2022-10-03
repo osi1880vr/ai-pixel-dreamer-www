@@ -7,7 +7,9 @@ from PIL.PngImagePlugin import PngInfo
 from fastapi.responses import FileResponse
 from sd.outpaint import * # outpaint_txt2img
 from typing import Union
+from sd.singleton import singleton
 
+gs = singleton
 router = APIRouter()
 
 
