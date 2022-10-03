@@ -41,6 +41,7 @@ webix.protoUI({
             {
                 id: TOOLBAR_ID,
                 view: 'toolbar',
+                gravity: 1,
                 elements: [
                     { width: 7 },
                     {
@@ -52,7 +53,7 @@ webix.protoUI({
             {
                 view: "form",
                 id: "myform1",
-                height: 900,
+                gravity: 15,
 
 
                 elements: [
@@ -75,13 +76,12 @@ webix.protoUI({
                         }
                     },
                     {
-
                         view: "template",
                         id: "carousel_template",
                         scroll: true,
-                        template: '<div id="container"></div>'
+                        gravity:3,
 
-
+                        template: '<div id="container"  ></div>'
                     }
                 ],
                 elementsConfig: {
@@ -91,8 +91,11 @@ webix.protoUI({
                         }
                     }
                 }
+            },
+            {
+            view: "template",
+            gravity:1,
             }
-
         ];
 
         this.$ready.push(this.initComponent)
@@ -499,4 +502,3 @@ webix.protoUI({
 
 
 }, webix.ui.layout)
-
