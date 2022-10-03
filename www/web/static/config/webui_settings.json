@@ -55,6 +55,9 @@
     "update_preview_frequency": 5,
     "dynamic_preview_frequency": true
   },
+"prompts": {
+  "prompt": ""
+},
   "txt2img": {
     "prompt": "",
     "W": 512,

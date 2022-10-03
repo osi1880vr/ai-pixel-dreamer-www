@@ -5,6 +5,15 @@ aid.nav_tree = {
     value:"Chose your Dream",
     open:true,
     data:[
+            { id:"ai-prompts",
+           open:false,
+           value:"aiPrompts",
+           type:"ai-prompts",
+           icon: '<span class="fa-solid fa-network-wired" style="color: orange; width: 20px"></span>',
+           action() { window.location.hash = `#${this.type}`; },
+           data:[
+
+           ]},
             { id:"ai-nodes",
            open:false,
            value:"aiNodes",

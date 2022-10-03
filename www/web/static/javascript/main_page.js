@@ -2,6 +2,7 @@ import './helper.js'
 import './modules/aid/main-comp.js';
 
 import { SettingsModel } from './modules/core/settings-model.js'
+import './modules/prompt/prompts-config.js';
 import './modules/nodes/nodes-config.js';
 import './modules/txt2img/txt2img-config.js';
 import './modules/canvas/icanvas-config.js';
@@ -55,7 +56,7 @@ async function fetchInitial() {
         aid.views.nodes.fetch(),
         aid.views.txt2img.fetch(),
         aid.views.txt2vid.fetch(),
-
+        aid.views.prompts.fetch(),
     ])
 }
 function removeHash () {

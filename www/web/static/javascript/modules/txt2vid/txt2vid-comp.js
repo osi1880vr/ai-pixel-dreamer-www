@@ -28,7 +28,6 @@ webix.ui.datafilter.customSelectStatus = {
         //txt2vid.onclick = webix.html.preventEvent;
     }
 
-
 };
 
 webix.protoUI({
@@ -130,6 +129,7 @@ webix.protoUI({
     load() { }
 
 }, webix.ui.layout)
+
 webix.protoUI({
     name: 'txt2vid_basic_settings_view',
     $init(config) {
@@ -387,6 +387,7 @@ webix.protoUI({
     load() { }
 
 }, webix.ui.layout)
+
 webix.protoUI({
     name: 'txt2vid_init_view',
     $init(config) {
@@ -513,8 +514,6 @@ webix.protoUI({
     },
     load() { },
 }, webix.ui.layout)
-
-
 
 webix.protoUI({
     name: 'txt2vid_animation_mode_view',

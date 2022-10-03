@@ -21,12 +21,12 @@ class parser:
 
 	def get_data(self):
 
-		if not os.path.exists('./scripts/tools/nsp/nsp_pantry.json'):
+		if not os.path.exists('./sd/nsp/nsp_pantry.json'):
 			self.wget('https://raw.githubusercontent.com/WASasquatch/noodle-soup-prompts/main/nsp_pantry.json',
 				 './scripts/ui/nsp/nsp_pantry.json')
 
 		if self.nspterminology is None:
-			with open('./scripts/tools/nsp/nsp_pantry.json', 'r', encoding="utf-8") as f:
+			with open('./sd/nsp/nsp_pantry.json', 'r', encoding="utf-8") as f:
 				self.nspterminology = json.loads(f.read())
 
 

@@ -13,11 +13,11 @@ gs = singleton
 
 import www.setup_loader.settings as settings
 settings.load_settings_json()
-
-from www.apis.v1.routes import canvas_api
-from www.apis.v1.routes import settings_api
-from www.apis.v1.routes import txt2img_api
-from www.apis.v1.routes import txt2vid_api
+from www.apis.v1 import prompts_api
+from www.apis.v1 import canvas_api
+from www.apis.v1 import settings_api
+from www.apis.v1 import txt2img_api
+from www.apis.v1 import txt2vid_api
 
 app = FastAPI()
 
@@ -44,6 +44,9 @@ async def add_process_time_header(request, call_next):
 
 logging.basicConfig(level=logging.DEBUG)   # add this line
 logger = logging.getLogger("foo")
+
+
+app.include_router(prompts_api.router)
 app.include_router(canvas_api.router)
 app.include_router(settings_api.router)
 app.include_router(txt2img_api.router)
