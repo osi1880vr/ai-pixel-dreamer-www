@@ -19,6 +19,7 @@ class CFGDenoiser(nn.Module):
         return uncond + (cond - uncond) * cond_scale
 
 
+# used OK 20.09.22
 class KDiffusionSampler:
     def __init__(self, m, sampler):
         self.model = m
@@ -28,15 +29,9 @@ class KDiffusionSampler:
     def get_sampler_name(self):
         return self.schedule
 
-    def sample(self,
-               s,
-               conditioning,
-               batch_size,
-               shape,
-               verbose,
-               unconditional_guidance_scale,
+    def sample(self, S, conditioning, batch_size, shape, verbose, unconditional_guidance_scale,
                unconditional_conditioning, eta, x_T, img_callback=None, log_every_t=None):
-        sigmas = self.model_wrap.get_sigmas(s)
+        sigmas = self.model_wrap.get_sigmas(S)
         x = x_T * sigmas[0]
         model_wrap_cfg = CFGDenoiser(self.model_wrap)
         samples_ddim = None

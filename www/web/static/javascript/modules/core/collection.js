@@ -9,15 +9,6 @@ export class Collection {
         this.modelClass = Model;
     }
 
-    async read() {
-        const read = new Request({
-            url: this.getUrl(),
-            method: 'GET',
-        })
-
-        this.responseJson = await read.fetch()
-        this.parse()
-    }
 
     getUrlHost(){ return aid.api.host}
 
@@ -31,14 +22,6 @@ export class Collection {
         return this.responseJson
     }
 
-    remove(modelItems){
-        const me = this
-        _.each(modelItems, (model) => {
-            this.items = _.reject(this.items, (item)=>{
-                return _.isEqual(model, item)
-            })
-        });
-    }
 
     set(jsonItems){
         const me = this
@@ -62,16 +45,6 @@ export class Collection {
         this.onParse();
     }
 
-    where(aAttributes){
-        const me = this;
-
-        return _.filter(me.items, (aItem)=>{
-            if(_.isMatch(aItem.attributes, aAttributes)){
-                return aItem
-            }
-        })
-
-    }
 
     toJSON(){
         return _.map(this.items,(item)=>{
@@ -79,15 +52,7 @@ export class Collection {
         })
     }
 
-    toViewList(selection = this.items){
-        const list = []
 
-        for(const item of selection){
-            list.push(item.toViewJSON())
-        }
-
-        return list
-    }
 
     count(){
         return this.items.length
@@ -103,5 +68,80 @@ export class Collection {
 
     onParse(){}
     onSet(){}
+
+    async postData(url = '', data = {}) {
+      // Default options are marked with *
+      let response = await fetch(url, {
+        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        mode: 'cors', // no-cors, *cors, same-origin
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: 'same-origin', // include, *same-origin, omit
+        headers: {
+          'Content-Type': 'application/json'
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        redirect: 'follow', // manual, *follow, error
+        referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        body: JSON.stringify(data) // body data type must match "Content-Type" header
+      });
+        const text = await response.text();
+        return text;
+    }
+
+    async getData(url = '',) {
+        // Default options are marked with *
+        let response = await fetch(url, {
+            method: 'GET', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, *cors, same-origin
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // include, *same-origin, omit
+            headers: {
+              'Content-Type': 'application/json'
+              // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            redirect: 'follow', // manual, *follow, error
+            referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        });
+
+        const text = await response.text();
+        return text;
+
+    }
+
+    get_carousel(image_array, title) {
+
+      function img(obj){
+         return '<img src="' + location.protocol + '//' + location.host +obj.src+'" class="content" ondragstart="return false"/>'
+      }
+        let carousel_array = {"images":[]}
+        for (const image of image_array) {
+            carousel_array.images.push({ css: "image", template:img, data:{src:image} })
+        }
+        const data = carousel_array.images
+
+        if ($$('carousel')) {
+            $$('carousel').destructor()
+        }
+
+        const dummy = webix.ui({
+            view:"window",
+            container: "container",
+            body:{
+              view:"carousel",
+              id:"carousel",
+              width:aid.model.settings.attr.txt2vid.W+30,
+              height:aid.model.settings.attr.txt2vid.H+30,
+              cols:data
+            },
+            head:{
+              view:"toolbar", type:"MainBar", elements:[
+                {view:"label", label: title, align:'left'}
+              ]
+            },
+            top:10,
+            left:10
+          }).show();
+
+    }
 
 }

@@ -253,7 +253,7 @@ webix.protoUI({
                         label: 'Sampler',
                         labelWidth: 250,
                         value: config.txt2vid.sampler,
-                        options: config.txt2vid.sampler_list
+                        options: config.defaults.general.sampler_list
                     },
                     {
                         view: "text",
@@ -268,7 +268,7 @@ webix.protoUI({
                         labelWidth: 250,
                         label: 'Seed behavior',
                         value: config.txt2vid.seed_behavior,
-                        options: config.txt2vid.seed_behavior_list
+                        options: config.defaults.general.seed_behavior_list
                     },
 
                     {
@@ -277,7 +277,7 @@ webix.protoUI({
                         labelWidth: 250,
                         label: 'Sampling Mode',
                         value: config.txt2vid.sampling_mode,
-                        options: config.txt2vid.sampling_mode_list
+                        options: config.defaults.general.sampling_mode_list,
                     },
 
                 ],
@@ -548,7 +548,7 @@ webix.protoUI({
                         labelWidth: 250,
                         label: 'Animation Mode',
                         value: config.txt2vid.animation_mode,
-                        options: config.txt2vid.animation_mode_list  // todo what 'Interpolation' do ?
+                        options: config.defaults.general.animation_mode_list  // todo what 'Interpolation' do ?
                     },
 {
                         view: "slider",
@@ -569,7 +569,7 @@ webix.protoUI({
                         labelWidth: 250,
                         label: 'Border',
                         value: config.txt2vid.border,
-                        options: config.txt2vid.border_list
+                        options: config.defaults.general.border_list
                     },
 
                 ],
@@ -789,14 +789,14 @@ webix.protoUI({
                         id: 'txt2vid_padding_mode',
                         labelRight: "Padding Mode",
                         labelWidth: 0,
-                        value: config.txt2vid.padding_mode_list,
+                        value: config.defaults.general.padding_mode_list,
                     },
                     {
                         view: "combo",
                         id: 'txt2vid_sampling_mode',
                         labelRight: "Sampling Mode",
                         labelWidth: 0,
-                        value: config.txt2vid.sampling_mode_list,
+                        value: config.defaults.general.sampling_mode_list,
                     },
                     {
                         view: "checkbox",
@@ -969,7 +969,7 @@ webix.protoUI({
                         labelWidth: 250,
                         label: 'Animation Mode',
                         value: config.txt2vid.color_coherence,
-                        options: config.txt2vid.color_coherence_list
+                        options: config.defaults.general.color_coherence_list
                     },
                     {
                         view: "combo",
@@ -977,7 +977,7 @@ webix.protoUI({
                         labelWidth: 250,
                         label: 'Animation Mode',
                         value: config.txt2vid.diffusion_cadence,
-                        options: config.txt2vid.diffusion_cadence_list
+                        options: config.defaults.general.diffusion_cadence_list
                     },
 
                 ],

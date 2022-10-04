@@ -156,15 +156,15 @@ def txt2img(prompt: str,
             sampler = PLMSSampler(gs.models["model"])
         elif sampler_name == 'ddim':
             sampler = DDIMSampler(gs.models["model"])
-        elif sampler_name == 'k_dpm_2_a':
+        elif sampler_name == 'dpm2_ancestral':
             sampler = KDiffusionSampler(gs.models["model"], 'dpm_2_ancestral')
-        elif sampler_name == 'k_dpm_2':
+        elif sampler_name == 'dpm2':
             sampler = KDiffusionSampler(gs.models["model"], 'dpm_2')
-        elif sampler_name == 'k_euler_a':
+        elif sampler_name == 'euler_ancestral':
             sampler = KDiffusionSampler(gs.models["model"], 'euler_ancestral')
         elif sampler_name == 'k_euler':
             sampler = KDiffusionSampler(gs.models["model"], 'euler')
-        elif sampler_name == 'k_heun':
+        elif sampler_name == 'heun':
             sampler = KDiffusionSampler(gs.models["model"], 'heun')
         elif sampler_name == 'klms':
             sampler = KDiffusionSampler(gs.models["model"], 'lms')
@@ -174,7 +174,7 @@ def txt2img(prompt: str,
     except Exception as e:
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-        print(exc_type, fname, exc_tb.tb_lineno)
+        print(e, exc_type, fname, exc_tb.tb_lineno)
 
     def init():
         pass

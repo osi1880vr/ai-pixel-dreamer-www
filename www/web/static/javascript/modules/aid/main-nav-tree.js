@@ -67,12 +67,6 @@ aid.nav_tree = {
                 },
 
            ]},
-           { id:"2", open:false, value:"Image 2 Image",
-           icon: '<span class="fa-regular fa-clone" style="color: orange; width: 20px"></span>',
-           data:[
-               { id:"2.1", value:"Basic Settings",icon: '<span class="fa-solid fa-sliders" style="color: orange; width: 20px"></span>', },
-               { id:"2.2", value:"Prompt Help",icon: '<span class="fa-solid fa-terminal" style="color: orange; width: 20px"></span>', },
-           ]},
          { id:"txt2vid",
          open:true,
          value:"Text 2 Video",
@@ -126,6 +120,22 @@ aid.nav_tree = {
               icon: '<span class="fa-solid fa-camera-retro " style="color: orange; width: 20px"></span>',
                action() { window.location.hash = `#${this.type}`; },},
          ]},
+          {
+            id:"img2img",
+            type:"img2img",
+            open:false,
+            value:"Image 2 Image",
+            icon: '<span class="fa-regular fa-clone" style="color: orange; width: 20px"></span>',
+            action() { window.location.hash = `#${this.type}`; },
+                    data:[
+                        { id:"img2img_basic_settings",
+                        type:"img2img_basic_settings",
+                        value:"Basic Settings",
+                        icon: '<span class="fa-solid fa-sliders" style="color: orange; width: 20px"></span>',
+                         action() { window.location.hash = `#${this.type}`; },},
+
+                    ]},
+
          { id:"4",
          open:false,
          value:"Video 2 Video",

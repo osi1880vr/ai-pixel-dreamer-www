@@ -46,7 +46,7 @@
       "iterations": 1,
       "batch_size": 1,
       "steps": 30,
-      "sampler": "k_euler",
+      "sampler": "plms",
       "separate_prompts": false,
       "update_preview": true,
       "update_preview_frequency": 5,

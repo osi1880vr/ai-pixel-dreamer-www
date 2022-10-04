@@ -18,6 +18,8 @@ from www.apis.v1 import canvas_api
 from www.apis.v1 import settings_api
 from www.apis.v1 import txt2img_api
 from www.apis.v1 import txt2vid_api
+#from www.apis.v1 import img2img_api
+
 
 app = FastAPI()
 
@@ -51,6 +53,8 @@ app.include_router(canvas_api.router)
 app.include_router(settings_api.router)
 app.include_router(txt2img_api.router)
 app.include_router(txt2vid_api.router)
+#app.include_router(img2img_api.router)
+
 
 app.mount("/", StaticFiles(directory="www/web/static", html=True), name="static")
 

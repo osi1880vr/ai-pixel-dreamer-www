@@ -215,7 +215,7 @@ webix.protoUI({
                         label: 'Sampler',
                         labelWidth: 250,
                         value: config.txt2img.sampler,
-                        options: config.txt2img.sampler_list
+                        options: config.defaults.general.sampler_list
                     },
                     {
                         view: "combo",
@@ -223,7 +223,7 @@ webix.protoUI({
                         labelWidth: 250,
                         label: 'Sampling Mode',
                         value: config.txt2img.sampling_mode,
-                        options: config.txt2img.sampling_mode_list
+                        options: config.defaults.general.sampling_mode_list,
                     },
                     {
                         view: "text",
@@ -238,7 +238,7 @@ webix.protoUI({
                         labelWidth: 250,
                         label: 'Seed behavior',
                         value: config.txt2img.seed_behavior,
-                        options: config.txt2img.seed_behavior_list
+                        options: config.defaults.general.seed_behavior_list
                     },
                     {
                         view: "text",
