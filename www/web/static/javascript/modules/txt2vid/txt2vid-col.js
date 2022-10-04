@@ -50,6 +50,59 @@ export class Txt2vidCollection extends Collection {
         this.handler()
     }
 
+       test_popup() {
+
+        if ($$('my_popup')){
+            $$('my_popup').destructor()
+        }
+
+           var popup = webix.ui({
+               view:"popup",
+               id:"my_popup",
+               height:250,
+               width:300,
+               body:{
+                   rows: [
+                   {},
+                   {view: 'datatable',
+                   id:'datatable1',
+                   label:'test',
+                   headerRowHeight:40,
+                    height:150,
+                    width:300,
+                   gravity:10,
+                    cols:[
+                    { id:"key",    header:"Keyframe",              width:50},
+                    { id:"prompt",   header:"Prompt",    width:200},
+
+                    ],
+                    data: [
+                        {id:111111, key:'0', prompt:'a corgi'},
+                        {id:222222, key:'10', prompt:'a corgis girlfrind'},
+                    ],
+                       scroll:true,
+                       autoheight:true,
+                       footer:true
+
+                   },
+                   {
+                       view: "button",
+                       id: "popup_close",
+                       value: "Close",
+                       css: "webix_primary",
+                       inputWidth: 150,
+                       click: function (id, event) {
+                          $$('my_popup').destructor()
+                       }
+                   }
+
+                   ]
+               }
+           }).show();
+           $$('datatable1').refresh();
+           $$('datatable1').resize();
+       }
+
 
     toggle_updates() {
         if (this.interval) {

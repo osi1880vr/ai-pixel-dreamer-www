@@ -35,6 +35,7 @@ webix.protoUI({
     $init(config) {
         config.id = 'right-content';
         config.txt2vid = aid.model.settings.attr.txt2vid
+        config.general = aid.model.settings.attr.general
         config.rows = [
             {
                 id: TOOLBAR_ID,
@@ -93,6 +94,17 @@ webix.protoUI({
                                 aid.model.txt2vid.toggle_updates()
                             }
                         },
+                        {
+                            view: "button",
+                            id: "txt2vid_popup",
+                            value: "Test Popup",
+                            css: "webix_primary",
+                            inputWidth: 150,
+                            click: function (id, event) {
+                                aid.model.txt2vid.test_popup()
+                            }
+                        },
+
                         ]
 
 
@@ -138,6 +150,7 @@ webix.protoUI({
     name: 'txt2vid_basic_settings_view',
     $init(config) {
         config.txt2vid = aid.model.settings.attr.txt2vid
+        config.general = aid.model.settings.attr.general
         config.id = 'right-content';
         config.rows = [
             {
@@ -307,6 +320,7 @@ webix.protoUI({
     $init(config) {
         config.id = 'right-content';
         config.txt2vid = aid.model.settings.attr.txt2vid
+        config.general = aid.model.settings.attr.general
         config.rows = [
             {
                 id: TOOLBAR_ID,
@@ -397,6 +411,7 @@ webix.protoUI({
     $init(config) {
         config.id = 'right-content';
         config.txt2vid = aid.model.settings.attr.txt2vid
+        config.general = aid.model.settings.attr.general
         config.rows = [
             {
                 id: TOOLBAR_ID,
@@ -524,6 +539,7 @@ webix.protoUI({
     $init(config) {
         config.id = 'right-content';
         config.txt2vid = aid.model.settings.attr.txt2vid
+        config.general = aid.model.settings.attr.general
         config.rows = [
             {
                 id: TOOLBAR_ID,
@@ -599,6 +615,7 @@ webix.protoUI({
     $init(config) {
         config.id = 'right-content';
         config.txt2vid = aid.model.settings.attr.txt2vid
+        config.general = aid.model.settings.attr.general
         config.rows = [
             {
                 id: TOOLBAR_ID,
@@ -715,6 +732,7 @@ webix.protoUI({
     $init(config) {
         config.id = 'right-content';
         config.txt2vid = aid.model.settings.attr.txt2vid
+        config.general = aid.model.settings.attr.general
         config.rows = [
             {
                 id: TOOLBAR_ID,
@@ -848,6 +866,7 @@ webix.protoUI({
     $init(config) {
         config.id = 'right-content';
         config.txt2vid = aid.model.settings.attr.txt2vid
+        config.general = aid.model.settings.attr.general
         config.rows = [
             {
                 id: TOOLBAR_ID,
@@ -945,6 +964,7 @@ webix.protoUI({
     $init(config) {
         config.id = 'right-content';
         config.txt2vid = aid.model.settings.attr.txt2vid
+        config.general = aid.model.settings.attr.general
         config.rows = [
             {
                 id: TOOLBAR_ID,
@@ -1007,6 +1027,7 @@ webix.protoUI({
     $init(config) {
         config.id = 'right-content';
         config.txt2vid = aid.model.settings.attr.txt2vid
+        config.general = aid.model.settings.attr.general
         config.rows = [
             {
                 id: TOOLBAR_ID,
