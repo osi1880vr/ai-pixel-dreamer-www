@@ -59,6 +59,8 @@ export class Txt2vidCollection extends Collection {
            var popup = webix.ui({
                view:"window",
                    modal:true,
+                   move:true,
+                   resize: true,
                id:"my_popup",
                height:350,
                width:400,
