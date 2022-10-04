@@ -13,6 +13,7 @@ from sd.image_processor import seed_to_int, process_images
 from sd.kdiffusion_sampler import KDiffusionSampler
 from sd.modelloader import load_models
 from sd.singleton import singleton
+from sd.get_sampler import choose_sampler
 
 gs = singleton
 
@@ -152,24 +153,7 @@ def txt2img(prompt: str,
         # use_gfpgan = 7 in toggles
         # use_realesrgan = 8 in toggles
 
-        if sampler_name == 'plms':
-            sampler = PLMSSampler(gs.models["model"])
-        elif sampler_name == 'ddim':
-            sampler = DDIMSampler(gs.models["model"])
-        elif sampler_name == 'dpm2_ancestral':
-            sampler = KDiffusionSampler(gs.models["model"], 'dpm_2_ancestral')
-        elif sampler_name == 'dpm2':
-            sampler = KDiffusionSampler(gs.models["model"], 'dpm_2')
-        elif sampler_name == 'euler_ancestral':
-            sampler = KDiffusionSampler(gs.models["model"], 'euler_ancestral')
-        elif sampler_name == 'k_euler':
-            sampler = KDiffusionSampler(gs.models["model"], 'euler')
-        elif sampler_name == 'heun':
-            sampler = KDiffusionSampler(gs.models["model"], 'heun')
-        elif sampler_name == 'klms':
-            sampler = KDiffusionSampler(gs.models["model"], 'lms')
-        else:
-            raise Exception("Unknown sampler: " + sampler_name)
+        sampler = choose_sampler(sampler_name)
 
     except Exception as e:
         exc_type, exc_obj, exc_tb = sys.exc_info()

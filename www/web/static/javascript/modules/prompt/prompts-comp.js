@@ -36,6 +36,7 @@ webix.protoUI({
     $init(config) {
         config.id = 'right-content';
         config.prompts = aid.model.settings.attr.prompts
+        config.general = aid.model.settings.attr.general
         config.rows = [
             {
                 id: TOOLBAR_ID,

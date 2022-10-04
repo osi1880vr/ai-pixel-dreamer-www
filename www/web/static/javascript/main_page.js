@@ -20,7 +20,7 @@ function handleHashRoute(routes, hashRoute) {
     } else {
         webix.alert({
             title: "ERROR",
-            text: `Der url-Abschnitt<p>"#${hashRoute || ''}"<p>ist ungültig.`,
+            text: `The URL Part<p>"#${hashRoute || ''}"<p>is not valid.`,
             type: "alert-error"
         }).then(() => {
             window.location.hash = '#team'

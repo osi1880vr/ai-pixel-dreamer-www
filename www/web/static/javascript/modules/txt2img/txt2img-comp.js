@@ -37,6 +37,7 @@ webix.protoUI({
     $init(config) {
         config.id = 'right-content';
         config.txt2img = aid.model.settings.attr.txt2img
+        config.general = aid.model.settings.attr.general
         config.rows = [
             {
                 id: TOOLBAR_ID,
@@ -116,6 +117,7 @@ webix.protoUI({
 
     $init(config) {
         config.txt2img = aid.model.settings.attr.txt2img
+        config.general = aid.model.settings.attr.general
         config.id = 'right-content';
         config.rows = [
             {
@@ -215,7 +217,7 @@ webix.protoUI({
                         label: 'Sampler',
                         labelWidth: 250,
                         value: config.txt2img.sampler,
-                        options: config.defaults.general.sampler_list
+                        options: config.general.sampler_list
                     },
                     {
                         view: "combo",
@@ -223,7 +225,7 @@ webix.protoUI({
                         labelWidth: 250,
                         label: 'Sampling Mode',
                         value: config.txt2img.sampling_mode,
-                        options: config.defaults.general.sampling_mode_list,
+                        options: config.general.sampling_mode_list,
                     },
                     {
                         view: "text",
@@ -238,7 +240,7 @@ webix.protoUI({
                         labelWidth: 250,
                         label: 'Seed behavior',
                         value: config.txt2img.seed_behavior,
-                        options: config.defaults.general.seed_behavior_list
+                        options: config.general.seed_behavior_list
                     },
                     {
                         view: "text",
@@ -329,6 +331,7 @@ webix.protoUI({
     $init(config) {
         config.id = 'right-content';
         config.txt2img = aid.model.settings.attr.txt2img
+        config.general = aid.model.settings.attr.general
         config.rows = [
             {
                 id: TOOLBAR_ID,
@@ -424,6 +427,7 @@ webix.protoUI({
     $init(config) {
         config.id = 'right-content';
         config.txt2img = aid.model.settings.attr.txt2img
+        config.general = aid.model.settings.attr.general
         config.rows = [
             {
                 id: TOOLBAR_ID,
