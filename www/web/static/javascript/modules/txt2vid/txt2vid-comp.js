@@ -50,7 +50,7 @@ webix.protoUI({
             {
                 view: "form",
                 id: "txt2vid_form",
-                height: 900,
+                gravity:15,
 
 
                 elements: [
@@ -76,9 +76,9 @@ webix.protoUI({
                         {
                             view: "button",
                             id: "txt2vid_dream",
-                            value: "Dream",
+                            value: "Dream Video",
                             css: "webix_primary",
-                            inputWidth: 100,
+                            inputWidth: 150,
                             click: function (id, event) {
                                 aid.model.txt2vid.dream()
                             }
@@ -116,9 +116,13 @@ webix.protoUI({
                         }
                     }
                 }
-            }
+            },
+              {
+                 view: "template",
+                 gravity:1,
+                 }
 
-        ];
+        ]
 
         this.$ready.push(this.initComponent)
     },

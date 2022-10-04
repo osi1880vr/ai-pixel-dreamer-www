@@ -44,14 +44,14 @@ webix.protoUI({
                     { width: 7 },
                     {
                         view: 'label',
-                        label: 'Text to Video'
+                        label: 'aiPrompts Dreamer'
                     }
                 ]
             },
             {
                 view: "form",
                 id: "prompts_form",
-                height: 900,
+                gravity:15,
 
 
                 elements: [
@@ -91,11 +91,7 @@ webix.protoUI({
                        //  readonly:true
 
 
-                    },
-                     {
-                     view:'template',
-                     gravity:1
-                     }
+                    }
 
                 ],
                 elementsConfig: {
@@ -105,7 +101,11 @@ webix.protoUI({
                         }
                     }
                 }
-            }
+            },
+              {
+              view:'template',
+              gravity:1
+              }
 
         ];
 

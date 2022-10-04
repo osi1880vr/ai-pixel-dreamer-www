@@ -37,6 +37,8 @@ function loadNewPage(isInitialLoad=false) {
     .sortBy((view) => {return view.nav.order})
     .each((view) => { _.extend(routes, view.routes) });
 
+     _.chain(aid.views)
+    .each((view) => { view.nav.setTree });
 
     if (isInitialLoad && hashRoute == undefined) {
         hashRoute = "aid"
@@ -81,10 +83,5 @@ webix.ready(async () => {
          loadNewPage()
      })
 
-    aid.reload = () => {
-        $$('main-view').destructor()
-        console.log("%c\ Reloading...\  ", "background: #c567c7; color: black;"),
-        startUp();
-    }
 
 });

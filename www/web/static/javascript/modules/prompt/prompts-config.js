@@ -6,24 +6,8 @@ aid.views.prompts = {
 
     nav: {
         order: 500,
-
-        setTree(data) {
-            data.push({
-                id: 'prompts',
-                value: `prompts`,
-                open: true,
-                type: 'vul',
-                icon: '<span class="fas fa-bolt" width: 20px"></span>',
-                action() {
-                    window.location.hash = `#${this.type}`;
-                },
-                data: aid.model.prompts.filterNodes
-            });
-
-
-
         },
-    },
+
 
 
     contextmenu: {

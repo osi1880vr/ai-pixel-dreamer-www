@@ -7,22 +7,7 @@ aid.views.txt2img = {
     nav: {
         order: 500,
 
-        setTree(data) {
-            data.push({
-                id: 'txt2img',
-                value: `txt2img`,
-                open: true,
-                type: 'vul',
-                icon: '<span class="fas fa-bolt" width: 20px"></span>',
-                action() {
-                    window.location.hash = `#${this.type}`;
-                },
-                data: aid.model.txt2img.filterNodes
-            });
 
-
-
-        },
     },
 
 

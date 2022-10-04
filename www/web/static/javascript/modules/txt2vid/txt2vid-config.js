@@ -6,26 +6,7 @@ aid.views.txt2vid = {
 
     nav: {
         order: 500,
-
-        setTree(data) {
-            data.push({
-                id: 'txt2vid',
-                value: `txt2vid`,
-                open: true,
-                type: 'vul',
-                icon: '<span class="fas fa-bolt" width: 20px"></span>',
-                action() {
-                    window.location.hash = `#${this.type}`;
-                },
-                data: aid.model.txt2vid.filterNodes
-            });
-
-
-
-        },
     },
-
-
     contextmenu: {
         'adi-txt2vid-list': {
             'show-detail': {
@@ -38,14 +19,12 @@ aid.views.txt2vid = {
 
         }
     },
-
     routes: {
         'txt2vid'() {
             this.txt2vid = aid.model.settings.attr
             webix.ui({
                 view: 'txt2vid',
             }, $$('right-content'));
-
         },
         'txt2vid_basic_settings'() {
             this.txt2vid = aid.model.settings.attr
@@ -63,7 +42,6 @@ aid.views.txt2vid = {
             webix.ui({
                 view: 'txt2vid_init_view',
             }, $$('right-content'));
-
         },
         'txt2vid_animation_mode'() {
             this.txt2vid = aid.model.settings.attr
@@ -71,7 +49,6 @@ aid.views.txt2vid = {
                 view: 'txt2vid_animation_mode_view',
             }, $$('right-content'));
         },
-
         'txt2vid_3d_motion'() {
             this.txt2vid = aid.model.settings.attr
             webix.ui({
@@ -96,11 +73,7 @@ aid.views.txt2vid = {
                 view: 'txt2vid_upscaling_view',
             }, $$('right-content'));
         },
-
-
-
     },
-
     openDetailDialog(model) {
         webix.ui({
             view: 'adiDetailDialog',
@@ -108,12 +81,8 @@ aid.views.txt2vid = {
             model: model
         }).show()
     },
-
     async fetch() {
         console.log('fetch module txt2vid')
-
         aid.model.txt2vid = new Txt2vidCollection()
-
     }
-
 }

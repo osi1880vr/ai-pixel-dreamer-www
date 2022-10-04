@@ -68,9 +68,9 @@ webix.protoUI({
                     {
                         view: "button",
                         id: "txt2img_dream",
-                        value: "Dream",
+                        value: "Dream Image",
                         css: "webix_primary",
-                        inputWidth: 100,
+                        inputWidth: 150,
                         click: function (id, event) {
                             aid.model.txt2img.dream()
                         }
