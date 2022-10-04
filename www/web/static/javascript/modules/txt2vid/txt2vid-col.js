@@ -57,35 +57,42 @@ export class Txt2vidCollection extends Collection {
         }
 
            var popup = webix.ui({
-               view:"popup",
+               view:"window",
+                   modal:true,
                id:"my_popup",
-               height:250,
-               width:300,
+               height:350,
+               width:400,
+               head: {
+                       view: "toolbar",
+                       elements: [
+                           {view: "label", label: "Test shit"},
+                       ]
+                   },
                body:{
-                   rows: [
-                   {},
-                   {view: 'datatable',
+                   view: "form",
+                   id: 'dataform',
+                           elements: [
+                   {
+                   view: 'datatable',
                    id:'datatable1',
-                   label:'test',
-                   headerRowHeight:40,
-                    height:150,
-                    width:300,
+                autoheight: true,
+                autowidth: true,
                    gravity:10,
                     cols:[
-                    { id:"key",    header:"Keyframe",              width:50},
+                    { id:"keyframe",    header:"Keyframe",              width:50},
                     { id:"prompt",   header:"Prompt",    width:200},
 
                     ],
                     data: [
-                        {id:111111, key:'0', prompt:'a corgi'},
-                        {id:222222, key:'10', prompt:'a corgis girlfrind'},
-                    ],
-                       scroll:true,
-                       autoheight:true,
-                       footer:true
+                        {id:111111, keyframe:'0', prompt:'a corgi'},
+                        {id:222222, keyframe:'10', prompt:'a corgis girlfrind'},
+                    ]
 
                    },
-                   {
+                   {type: "space",
+                                   cols: [
+
+                   {},{
                        view: "button",
                        id: "popup_close",
                        value: "Close",
@@ -94,6 +101,7 @@ export class Txt2vidCollection extends Collection {
                        click: function (id, event) {
                           $$('my_popup').destructor()
                        }
+                   }]
                    }
 
                    ]
