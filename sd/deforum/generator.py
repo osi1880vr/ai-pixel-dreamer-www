@@ -27,7 +27,7 @@ from torchvision.utils import make_grid
 
 from ldm.models.diffusion.ddim import DDIMSampler
 from ldm.models.diffusion.plms import PLMSSampler
-from sd.modelloader import load_models, load_depth_model, load_gfpgan
+from sd.modelloader import load_models, load_gfpgan, load_depth_model
 from sd.file_io import save_image
 
 from sd.singleton import singleton
@@ -72,112 +72,119 @@ def torch_gc():
 
 
 def render_image_batch(args):
-    load_models()
-    if gs.defaults.general.pathmode == 'root':
-        args.outdir = f'{args.outdir}/_batch_images'
-    # = args.prompts
 
-    prompts = list(args.prompts.split("\n"))
-    prompts = [line for line in prompts if line.strip() != ""]
+    try:
+        load_models()
+        if gs.defaults.general.pathmode == 'root':
+            args.outdir = f'{args.outdir}/_batch_images'
+        # = args.prompts
 
-    args.prompts = {k: f"{v:05d}" for v, k in enumerate(prompts)}
-    # create output folder for the batch
-    os.makedirs(args.outdir, exist_ok=True)
-    if args.save_settings or args.save_samples:
-        print(f"Saving to {os.path.join(args.outdir, args.timestring)}_*")
+        prompts = list(args.prompts.split("\n"))
+        prompts = [line for line in prompts if line.strip() != ""]
 
-    # image_pipe = gs[gs["generation_mode"]]["preview_image"]
-    # video_pipe = gs[gs["generation_mode"]]["preview_video"]
+        args.prompts = {k: f"{v:05d}" for v, k in enumerate(prompts)}
+        # create output folder for the batch
+        os.makedirs(args.outdir, exist_ok=True)
+        if args.save_settings or args.save_samples:
+            print(f"Saving to {os.path.join(args.outdir, args.timestring)}_*")
 
-    # save settings for the batch
-    if args.save_settings:
-        if gs.defaults.general.pathmode == "subfolders":
-            settings_filename = os.path.join(args.outdir, f"{args.timestring}_settings.txt")
+        # image_pipe = gs[gs["generation_mode"]]["preview_image"]
+        # video_pipe = gs[gs["generation_mode"]]["preview_video"]
+
+        # save settings for the batch
+        if args.save_settings:
+            if gs.defaults.general.pathmode == "subfolders":
+                settings_filename = os.path.join(args.outdir, f"{args.timestring}_settings.txt")
+            else:
+                os.makedirs(os.path.join(args.outdir, f"_configs/_batch_configs"), exist_ok=True)
+                settings_filename = os.path.join(args.outdir, f"_configs/_batch_configs/{args.timestring}_settings.txt")
+            with open(settings_filename, "w+", encoding="utf-8") as f:
+                s = {**dict(args.__dict__)}
+                json.dump(s, f, ensure_ascii=False, indent=4)
+
+        index = 0
+
+        # function for init image batching
+        init_array = []
+        if args.use_init:
+            if args.init_image == "":
+                raise FileNotFoundError("No path was given for init_image")
+            if args.init_image.startswith('http://') or args.init_image.startswith('https://'):
+                init_array.append(args.init_image)
+            elif not os.path.isfile(args.init_image):
+                if args.init_image[-1] != "/":  # avoids path error by adding / to end if not there
+                    args.init_image += "/"
+                for image in sorted(os.listdir(args.init_image)):  # iterates dir and appends images to init_array
+                    if image.split(".")[-1] in ("png", "jpg", "jpeg"):
+                        init_array.append(args.init_image + image)
+            else:
+                init_array.append(args.init_image)
         else:
-            os.makedirs(os.path.join(args.outdir, f"_configs/_batch_configs"), exist_ok=True)
-            settings_filename = os.path.join(args.outdir, f"_configs/_batch_configs/{args.timestring}_settings.txt")
-        with open(settings_filename, "w+", encoding="utf-8") as f:
-            s = {**dict(args.__dict__)}
-            json.dump(s, f, ensure_ascii=False, indent=4)
+            init_array = [""]
 
-    index = 0
+        # when doing large batches don't flood browser with images
+        clear_between_batches = args.n_batch >= 32
 
-    # function for init image batching
-    init_array = []
-    if args.use_init:
-        if args.init_image == "":
-            raise FileNotFoundError("No path was given for init_image")
-        if args.init_image.startswith('http://') or args.init_image.startswith('https://'):
-            init_array.append(args.init_image)
-        elif not os.path.isfile(args.init_image):
-            if args.init_image[-1] != "/":  # avoids path error by adding / to end if not there
-                args.init_image += "/"
-            for image in sorted(os.listdir(args.init_image)):  # iterates dir and appends images to init_array
-                if image.split(".")[-1] in ("png", "jpg", "jpeg"):
-                    init_array.append(args.init_image + image)
-        else:
-            init_array.append(args.init_image)
-    else:
-        init_array = [""]
+        for iprompt, prompt in enumerate(prompts):
+            args.prompt = prompt
+            print(f"Prompt {iprompt + 1} of {len(prompts)}")
+            print(f"{args.prompt}")
+            all_images = []
 
-    # when doing large batches don't flood browser with images
-    clear_between_batches = args.n_batch >= 32
+            for batch_index in range(args.n_batch):
+                # if clear_between_batches and batch_index % 32 == 0:
+                # display.clear_output(wait=True)
+                print(f"Batch {batch_index + 1} of {args.n_batch}")
 
-    for iprompt, prompt in enumerate(prompts):
-        args.prompt = prompt
-        print(f"Prompt {iprompt + 1} of {len(prompts)}")
-        print(f"{args.prompt}")
-        all_images = []
+                for image in init_array:  # iterates the init images
+                    args.init_image = image
+                    results = generate(args)
+                    x = 0
+                    for image in results:
+                        if args.make_grid:
+                            all_images.append(T.functional.pil_to_tensor(image))
+                        if args.save_samples:
+                            if args.filename_format == "{timestring}_{index}_{prompt}.png":
+                                filename = f"{args.timestring}_{index:05}_{sanitize(prompt)[:160]}.png"
+                            else:
+                                filename = f"{args.timestring}_{index:05}_{args.seed}.png"
+                            filename = os.path.join(args.outdir, filename)
 
-        for batch_index in range(args.n_batch):
-            # if clear_between_batches and batch_index % 32 == 0:
-            # display.clear_output(wait=True)
-            print(f"Batch {batch_index + 1} of {args.n_batch}")
+                            if gs.defaults.general.save_metadata:
+                                meta = PngInfo()
+                                meta.add_text("Prompt", str(prompt))
+                                meta.add_text("Seed", str(args.seed))
+                                meta.add_text("Sampler", str(args.sampler))
+                                meta.add_text("Steps", str(args.steps))
+                                meta.add_text("Cfg Scale", str(args.scale))
+                                image.save(filename, pnginfo=meta)
+                                save_image(image, filename, pnginfo=meta)
+                            else:
+                                image.save(filename)
+                                save_image(image, filename)
 
-            for image in init_array:  # iterates the init images
-                args.init_image = image
-                results = generate(args)
-                x = 0
-                for image in results:
-                    if args.make_grid:
-                        all_images.append(T.functional.pil_to_tensor(image))
-                    if args.save_samples:
-                        if args.filename_format == "{timestring}_{index}_{prompt}.png":
-                            filename = f"{args.timestring}_{index:05}_{sanitize(prompt)[:160]}.png"
-                        else:
-                            filename = f"{args.timestring}_{index:05}_{args.seed}.png"
-                        filename = os.path.join(args.outdir, filename)
+                            # image_pipe.image(image)
 
-                        if gs.defaults.general.save_metadata:
-                            meta = PngInfo()
-                            meta.add_text("Prompt", str(prompt))
-                            meta.add_text("Seed", str(args.seed))
-                            meta.add_text("Sampler", str(args.sampler))
-                            meta.add_text("Steps", str(args.steps))
-                            meta.add_text("Cfg Scale", str(args.scale))
-                            save_image(image, filename, pnginfo=meta)
-                        else:
-                            save_image(image, filename)
+                        #if "with_nodes" in gs:
+                            # gs['node_pipe'] = filename
+                        #    pass
+                        #else:
+                        index += 1
+                    args.seed = next_seed(args)
 
-                        # image_pipe.image(image)
-
-                    if "with_nodes" in gs:
-                        # gs['node_pipe'] = filename
-                        pass
-                    else:
-                        gs.current_images.append(filename)
-                    index += 1
-                args.seed = next_seed(args)
-
-        # print(len(all_images))
-        if args.make_grid:
-            grid = make_grid(all_images, nrow=int(len(all_images) / args.grid_rows))
-            grid = rearrange(grid, 'c h w -> h w c').cpu().numpy()
-            filename = f"{args.timestring}_{iprompt:05d}_grid_{args.seed}.png"
-            grid_image = Image.fromarray(grid.astype(np.uint8))
-            save_image(grid_image, os.path.join(args.outdir, filename))
-    torch_gc()
-
+            # print(len(all_images))
+            if args.make_grid:
+                grid = make_grid(all_images, nrow=int(len(all_images) / args.grid_rows))
+                grid = rearrange(grid, 'c h w -> h w c').cpu().numpy()
+                filename = f"{args.timestring}_{iprompt:05d}_grid_{args.seed}.png"
+                grid_image = Image.fromarray(grid.astype(np.uint8))
+                save_image(grid_image, os.path.join(args.outdir, filename))
+        torch_gc()
+    except Exception as e:
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(e, exc_type, fname, exc_tb.tb_lineno)
+        print('error generating args: ' + str(e))
 
 class DeformAnimKeys:
     def __init__(self, anim_args):
@@ -357,6 +364,7 @@ def render_animation(args, anim_args, animation_prompts, model_path, half_precis
         animation_prompts = args.prompt
 
         # expand key frame strings to values
+
         keys = DeformAnimKeys(anim_args)
         print(keys)
         # resume animation
@@ -609,7 +617,7 @@ def render_animation(args, anim_args, animation_prompts, model_path, half_precis
     except Exception as e:
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-        print(exc_type, fname, exc_tb.tb_lineno)
+        print(e, exc_type, fname, exc_tb.tb_lineno)
 
 
 def maintain_colors(prev_img, color_match_sample, mode):
@@ -965,12 +973,12 @@ def generate(args, return_latent=False, return_sample=False, return_c=False):
         for image in results:
 
             if args.use_gfpgan:
-                load_gfpgan()
+                gs.models["GFPGAN"] = load_gfpgan()
                 # skip_save = True # #287 >_>
                 # torch_gc()
                 image = np.array(image)
                 input_img = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-                cropped_faces, restored_faces, restored_img = gs["GFPGAN"].enhance(
+                cropped_faces, restored_faces, restored_img = gs.models["GFPGAN"].enhance(
                     input_img, has_aligned=False, only_center_face=False, paste_back=True)
                 # gfpgan_sample = restored_img[:, :, ::-1]
                 gfpgan_image = cv2.cvtColor(restored_img, cv2.COLOR_BGR2RGB)
@@ -994,7 +1002,7 @@ def generate(args, return_latent=False, return_sample=False, return_c=False):
     except Exception as e:
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-        print(exc_type, fname, exc_tb.tb_lineno)
+        print(e, exc_type, fname, exc_tb.tb_lineno)
 
 
 from functools import reduce

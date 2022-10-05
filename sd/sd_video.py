@@ -206,7 +206,10 @@ def run_batch(json):
         }
 
         # dispatch to appropriate renderer
-        if anim_args.animation_mode == '2D' or anim_args.animation_mode == '3D' or anim_args.animation_mode == 'Video Input':
+        if anim_args.animation_mode == '2D' \
+                or anim_args.animation_mode == '3D' \
+                or anim_args.animation_mode == 'Video Input':
+
             generator.render_animation(args, anim_args, animation_prompts, models_path)
 
             # args.outdir = f'{args.outdir}/_anim_stills/{args.batch_name}_{args.firstseed}'
@@ -224,9 +227,11 @@ def run_batch(json):
             video.produce_video(args, image_path, mp4_path, max_frames)
             prepare_response_video(mp4_path)
 
-
         elif anim_args.animation_mode == 'None':
-            generator.render_animation(args, anim_args, animation_prompts, models_path)
+
+            args.prompts = json.prompt
+            args.n_batch = json.iterations
+            generator.render_image_batch(args) #, anim_args, animation_prompts, models_path)
 
             # image_path = os.path.join(args.outdir, f"{args.timestring}_willsanitizeprompt.png")
 

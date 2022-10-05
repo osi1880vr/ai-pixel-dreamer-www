@@ -51,7 +51,7 @@ export class Txt2imgCollection extends Collection {
         let response = await this.postData('/api/v1/txttoimg/run',data_out)
         console.log(response)
 
-        this.interval = setInterval( async () => {
+        /*this.interval = setInterval( async () => {
             const me = this
             let response = await me.getData('/api/v1/txttoimg/get_results')
             response = JSON.parse(response)
@@ -62,7 +62,7 @@ export class Txt2imgCollection extends Collection {
             if(response.current_images.length > 0){
                 me.get_carousel(response.current_images, me.title)
             }
-          }, 1000); // update 1 time per second
+          }, 1000); // update 1 time per second*/
         }
     dream() {
         console.log('dreaming')

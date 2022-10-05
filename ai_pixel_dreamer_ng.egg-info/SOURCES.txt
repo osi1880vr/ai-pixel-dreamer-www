@@ -3,4 +3,7 @@ ai_pixel_dreamer_ng.egg-info/PKG-INFO
 ai_pixel_dreamer_ng.egg-info/SOURCES.txt
 ai_pixel_dreamer_ng.egg-info/dependency_links.txt
 ai_pixel_dreamer_ng.egg-info/top_level.txt
-diffusion/__init__.py
+helpers/__init__.py
+helpers/depth.py
+helpers/k_samplers.py
+helpers/save_images.py

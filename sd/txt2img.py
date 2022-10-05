@@ -41,7 +41,15 @@ else:
     realesrgan_available = False
 
 
+
 def run_txt2img_json(json):
+
+
+
+
+
+
+def run_txt2img_json_old(json):
     output_images = None
     try:
         output_images, seeds, info, stats = txt2img(prompt=json.prompt,
