@@ -105,8 +105,6 @@ class Txt2Img(BaseModel):
 
 
 def txt2img_json(t2i_json):
-
-    #run_txt2img_json(t2i_json)
     sd_video.run_batch(t2i_json)
 
 

@@ -42,7 +42,7 @@ else:
 
 
 
-def run_txt2img_json(json):
+
 
 
 
