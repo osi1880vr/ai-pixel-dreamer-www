@@ -19,7 +19,7 @@ class Txt2Img(BaseModel):
     W: int
     H: int
     scale: float
-    seed: Union[int, None] = random.randint(0, 2 ** 32 - 1)
+    seed: Union[int, str, None] = random.randint(0, 2 ** 32 - 1)
     iterations: int
     batch_size: int
     steps: int
@@ -105,6 +105,15 @@ class Txt2Img(BaseModel):
 
 
 def txt2img_json(t2i_json):
+
+
+    if not t2i_json.seed :
+        t2i_json.seed = random.randint(0, 2 ** 32 - 1)
+
+
+    if t2i_json.seed == '':
+        t2i_json.seed = random.randint(0, 2 ** 32 - 1)
+
     sd_video.run_batch(t2i_json)
 
 

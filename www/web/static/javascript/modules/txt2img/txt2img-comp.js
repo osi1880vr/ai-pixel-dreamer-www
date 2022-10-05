@@ -183,7 +183,7 @@ webix.protoUI({
                         value: config.txt2img.iterations,
                         name: "iterations",
                         min: 1,
-                        max: 200,
+                        max: 2000,
                         title: webix.template("#value#")
                     },
                     {
