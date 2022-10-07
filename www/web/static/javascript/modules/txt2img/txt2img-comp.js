@@ -59,7 +59,7 @@ webix.protoUI({
 
                 elements: [
                     {
-                        view: "text",
+                        view: "textarea",
                         id: 'txt2img_prompt',
                         labelWidth: 250,
                         value: config.txt2img.prompt,
